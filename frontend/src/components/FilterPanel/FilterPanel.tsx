@@ -267,7 +267,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               ref={categoryDropdownRef}
               role="listbox"
               aria-label={isZh ? '類別選項' : 'Category options'}
-              className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+              className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-xl max-h-60 overflow-auto"
             >
               <div
                 role="option"
@@ -287,7 +287,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   }
                 }}
                 tabIndex={0}
-                className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center ${
+                className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center text-gray-700 transition-colors duration-150 ${
                   focusedCategoryIndex === 0 ? 'bg-blue-100 ring-2 ring-inset ring-blue-500' : ''
                 }`}
               >
@@ -317,8 +317,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                         }
                       }}
                       tabIndex={0}
-                      className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center ${
-                        selectedCategory === category.id ? 'bg-blue-100 font-semibold' : ''
+                      className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center text-gray-700 transition-colors duration-150 ${
+                        selectedCategory === category.id ? 'bg-blue-100 font-semibold text-blue-900' : ''
                       } ${focusedCategoryIndex === optionIndex ? 'ring-2 ring-inset ring-blue-500' : ''}`}
                     >
                       {isZh ? category.name_tc : category.name_en}
@@ -364,7 +364,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               ref={venueDropdownRef}
               role="listbox"
               aria-label={isZh ? '場地選項' : 'Venue options'}
-              className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+              className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-xl max-h-60 overflow-auto"
             >
               <div
                 role="option"
@@ -384,7 +384,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   }
                 }}
                 tabIndex={0}
-                className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center ${
+                className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center text-gray-700 transition-colors duration-150 ${
                   focusedVenueIndex === 0 ? 'bg-blue-100 ring-2 ring-inset ring-blue-500' : ''
                 }`}
               >
@@ -412,8 +412,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                       }
                     }}
                     tabIndex={0}
-                    className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center ${
-                      selectedVenue === venue.id ? 'bg-blue-100 font-semibold' : ''
+                    className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center text-gray-700 transition-colors duration-150 ${
+                      selectedVenue === venue.id ? 'bg-blue-100 font-semibold text-blue-900' : ''
                     } ${focusedVenueIndex === optionIndex ? 'ring-2 ring-inset ring-blue-500' : ''}`}
                   >
                     {isZh ? venue.name_tc : venue.name_en}
