@@ -1,6 +1,7 @@
 import React from 'react';
 import { Film, Category } from '../../types';
 import { FilmCard } from './FilmCard';
+import './FilmList.css';
 
 interface FilmListProps {
   films: Film[];
@@ -16,7 +17,7 @@ export const FilmList: React.FC<FilmListProps> = ({ films, categories, onFilmCli
   return (
     <div
       data-testid="film-grid"
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
+      className="film-grid"
     >
       {films.map((film) => (
         <FilmCard
