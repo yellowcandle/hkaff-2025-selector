@@ -41,3 +41,4 @@ export const SkeletonGrid: React.FC<SkeletonGridProps> = ({ count = 6, className
     </div>
   );
 };
+
