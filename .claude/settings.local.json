@@ -24,7 +24,9 @@
       "Bash(git config:*)",
       "Bash(git remote add:*)",
       "Bash(git checkout:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfix: Update Tailwind CSS PostCSS configuration for v4\n\n- Install @tailwindcss/postcss plugin\n- Update postcss.config.js to use new plugin format\n- Fixes build error in Cloudflare Pages deployment\n\nBuild now succeeds: 77.7KB gzipped bundle\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
