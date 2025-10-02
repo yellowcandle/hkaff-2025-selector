@@ -487,29 +487,29 @@ function App() {
         <header className="bg-white shadow-sm sticky top-0 z-40">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900">
+              <div className="flex flex-col">
+                <h1 className="text-lg font-semibold text-gray-900 leading-tight">
                   {isZh ? '香港亞洲電影節 2025' : 'HKAFF 2025'}
                 </h1>
-                <p className="text-sm text-gray-600">
+                <p className="text-xs text-gray-600 leading-tight">
                   {isZh ? '選片助手' : 'Screening Selector'}
                 </p>
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 {/* View Toggle */}
                 <nav role="navigation" aria-label={isZh ? '主要導航' : 'Main navigation'}>
-                  <div className="flex bg-gray-100 rounded-md p-1" role="tablist">
+                  <div className="flex bg-gray-100 rounded-lg p-1" role="tablist">
                     <button
                       onClick={() => setCurrentView('catalogue')}
                       role="tab"
                       aria-selected={currentView === 'catalogue'}
                       aria-label={isZh ? '影片目錄視圖' : 'Catalogue view'}
                       aria-controls="main-content"
-                      className={`min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                      className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                         currentView === 'catalogue'
                           ? 'bg-white text-gray-900 shadow-sm'
-                          : 'text-gray-600 hover:text-gray-900'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                       }`}
                     >
                       {isZh ? '影片目錄' : 'Catalogue'}
@@ -520,16 +520,16 @@ function App() {
                       aria-selected={currentView === 'schedule'}
                       aria-label={isZh ? `我的時間表，已選 ${selections.length} 場` : `My Schedule, ${selections.length} selected`}
                       aria-controls="main-content"
-                      className={`min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors relative ${
+                      className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 relative ${
                         currentView === 'schedule'
                           ? 'bg-white text-gray-900 shadow-sm'
-                          : 'text-gray-600 hover:text-gray-900'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                       }`}
                     >
                       {isZh ? '我的時間表' : 'My Schedule'}
                       {selections.length > 0 && (
                         <span
-                          className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full min-w-[20px] h-5 px-1 flex items-center justify-center"
+                          className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full min-w-[18px] h-4 px-1 flex items-center justify-center"
                           aria-hidden="true"
                         >
                           {selections.length}
