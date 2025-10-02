@@ -26,7 +26,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   onClearFilters,
 }) => {
   const { i18n } = useTranslation();
-  const isZh = i18n.language === 'zh';
+  const isZh = i18n.language === 'tc';
 
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isVenueOpen, setIsVenueOpen] = useState(false);
@@ -254,7 +254,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               aria-label={isZh ? '選擇類別' : 'Select category'}
               aria-expanded={isCategoryOpen}
               aria-haspopup="listbox"
-              className="w-full min-h-[44px] px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-left flex justify-between items-center hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full min-h-[44px] max-w-[300px] px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-left flex justify-between items-center hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <span className="text-gray-700">{selectedCategoryName}</span>
               <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -351,7 +351,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             aria-label={isZh ? '選擇場地' : 'Select venue'}
             aria-expanded={isVenueOpen}
             aria-haspopup="listbox"
-            className="w-full min-h-[44px] px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-left flex justify-between items-center hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full min-h-[44px] max-w-[300px] px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-left flex justify-between items-center hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <span className="text-gray-700">{selectedVenueName}</span>
             <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
