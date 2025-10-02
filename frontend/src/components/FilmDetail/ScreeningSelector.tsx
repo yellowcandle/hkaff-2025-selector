@@ -5,10 +5,6 @@ import { Screening, Venue } from '../../types';
 import type { UserSelection, Conflict } from '../../../../specs/001-given-this-film/contracts/service-interfaces';
 import { conflictDetector } from '../../services/conflictDetector';
 
-interface ConflictPreview {
-  severity: 'impossible' | 'warning';
-  message: string;
-}
 
 interface ScreeningSelectorProps {
   screenings: Screening[];
@@ -45,50 +41,6 @@ export const ScreeningSelector: React.FC<ScreeningSelectorProps> = ({
     };
   };
 
-  // Check for conflicts with existing selections
-  const getConflictPreview = (screening: Screening): ConflictPreview | null => {
-    if (!existingSelections.length) return null;
-
-    const screeningStart = new Date(screening.datetime).getTime();
-    const screeningEnd = screeningStart + screening.duration_minutes * 60000;
-    const venue = getVenueById(screening.venue_id);
-
-    for (const selection of existingSelections) {
-      const existingStart = new Date(selection.screening_snapshot.datetime).getTime();
-      const existingEnd = existingStart + selection.screening_snapshot.duration_minutes * 60000;
-
-      // Check for time overlap
-      const overlapStart = Math.max(screeningStart, existingStart);
-      const overlapEnd = Math.min(screeningEnd, existingEnd);
-      const overlapMinutes = Math.max(0, overlapEnd - overlapStart) / 60000;
-
-      if (overlapMinutes > 0) {
-        return {
-          severity: 'impossible',
-          message: isZh
-            ? `與 "${selection.film_snapshot.title_tc}" 重疊 ${Math.round(overlapMinutes)} 分鐘`
-            : `Overlaps ${Math.round(overlapMinutes)} minutes with "${selection.film_snapshot.title_en}"`
-        };
-      }
-
-      // Check for tight timing at different venues
-      const gap = Math.abs(screeningStart - existingEnd);
-      const gapMinutes = gap / 60000;
-      const existingVenueName = selection.screening_snapshot.venue_name_en;
-      const differentVenue = venue && existingVenueName && venue.name_en !== existingVenueName;
-
-      if (differentVenue && gapMinutes < 30) {
-        return {
-          severity: 'warning',
-          message: isZh
-            ? `與 "${selection.film_snapshot.title_tc}" 間隔少於30分鐘，且在不同場地`
-            : `Less than 30 minutes from "${selection.film_snapshot.title_en}" at different venue`
-        };
-      }
-    }
-
-    return null;
-  };
 
   // Check for conflicts using the conflictDetector service
   const checkConflictForScreening = (screening: Screening): Conflict[] => {
