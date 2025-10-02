@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Category, Venue } from '../../types';
 
@@ -30,6 +30,11 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isVenueOpen, setIsVenueOpen] = useState(false);
+  const [focusedCategoryIndex, setFocusedCategoryIndex] = useState(-1);
+  const [focusedVenueIndex, setFocusedVenueIndex] = useState(-1);
+
+  const categoryDropdownRef = useRef<HTMLDivElement>(null);
+  const venueDropdownRef = useRef<HTMLDivElement>(null);
 
   const selectedCategoryName = selectedCategory
     ? categories.find(c => c.id === selectedCategory)?.[isZh ? 'name_tc' : 'name_en'] || ''
@@ -40,6 +45,153 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
     : isZh ? '所有場地' : 'All Venues';
 
   const hasActiveFilters = selectedCategory || selectedVenue || searchQuery;
+
+  // Auto-scroll focused category option into view
+  useEffect(() => {
+    if (isCategoryOpen && focusedCategoryIndex >= 0 && categoryDropdownRef.current) {
+      const options = categoryDropdownRef.current.querySelectorAll('[role="option"]');
+      const focusedOption = options[focusedCategoryIndex] as HTMLElement;
+      if (focusedOption) {
+        focusedOption.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+  }, [focusedCategoryIndex, isCategoryOpen]);
+
+  // Auto-scroll focused venue option into view
+  useEffect(() => {
+    if (isVenueOpen && focusedVenueIndex >= 0 && venueDropdownRef.current) {
+      const options = venueDropdownRef.current.querySelectorAll('[role="option"]');
+      const focusedOption = options[focusedVenueIndex] as HTMLElement;
+      if (focusedOption) {
+        focusedOption.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+  }, [focusedVenueIndex, isVenueOpen]);
+
+  // Handle category button keyboard navigation
+  const handleCategoryButtonKeyDown = (e: React.KeyboardEvent) => {
+    const totalOptions = categories.length + 1; // +1 for "All Categories"
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!isCategoryOpen) {
+        setIsCategoryOpen(true);
+        setIsVenueOpen(false);
+        // Set focus to selected item or first item
+        const selectedIndex = selectedCategory
+          ? categories.findIndex(c => c.id === selectedCategory) + 1
+          : 0;
+        setFocusedCategoryIndex(selectedIndex);
+      } else {
+        // Move to next option, wrap to first
+        setFocusedCategoryIndex((prev) => (prev + 1) % totalOptions);
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!isCategoryOpen) {
+        setIsCategoryOpen(true);
+        setIsVenueOpen(false);
+        // Set focus to selected item or first item
+        const selectedIndex = selectedCategory
+          ? categories.findIndex(c => c.id === selectedCategory) + 1
+          : 0;
+        setFocusedCategoryIndex(selectedIndex);
+      } else {
+        // Move to previous option, wrap to last
+        setFocusedCategoryIndex((prev) => (prev - 1 + totalOptions) % totalOptions);
+      }
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      if (isCategoryOpen) {
+        setFocusedCategoryIndex(0);
+      }
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      if (isCategoryOpen) {
+        setFocusedCategoryIndex(totalOptions - 1);
+      }
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (isCategoryOpen && focusedCategoryIndex >= 0) {
+        // Select the focused option
+        if (focusedCategoryIndex === 0) {
+          onCategoryChange(null);
+        } else {
+          const sortedCategories = [...categories].sort((a, b) => a.sort_order - b.sort_order);
+          onCategoryChange(sortedCategories[focusedCategoryIndex - 1].id);
+        }
+        setIsCategoryOpen(false);
+        setFocusedCategoryIndex(-1);
+      }
+    } else if (e.key === 'Escape') {
+      if (isCategoryOpen) {
+        setIsCategoryOpen(false);
+        setFocusedCategoryIndex(-1);
+      }
+    }
+  };
+
+  // Handle venue button keyboard navigation
+  const handleVenueButtonKeyDown = (e: React.KeyboardEvent) => {
+    const totalOptions = venues.length + 1; // +1 for "All Venues"
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!isVenueOpen) {
+        setIsVenueOpen(true);
+        setIsCategoryOpen(false);
+        // Set focus to selected item or first item
+        const selectedIndex = selectedVenue
+          ? venues.findIndex(v => v.id === selectedVenue) + 1
+          : 0;
+        setFocusedVenueIndex(selectedIndex);
+      } else {
+        // Move to next option, wrap to first
+        setFocusedVenueIndex((prev) => (prev + 1) % totalOptions);
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!isVenueOpen) {
+        setIsVenueOpen(true);
+        setIsCategoryOpen(false);
+        // Set focus to selected item or first item
+        const selectedIndex = selectedVenue
+          ? venues.findIndex(v => v.id === selectedVenue) + 1
+          : 0;
+        setFocusedVenueIndex(selectedIndex);
+      } else {
+        // Move to previous option, wrap to last
+        setFocusedVenueIndex((prev) => (prev - 1 + totalOptions) % totalOptions);
+      }
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      if (isVenueOpen) {
+        setFocusedVenueIndex(0);
+      }
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      if (isVenueOpen) {
+        setFocusedVenueIndex(totalOptions - 1);
+      }
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (isVenueOpen && focusedVenueIndex >= 0) {
+        // Select the focused option
+        if (focusedVenueIndex === 0) {
+          onVenueChange(null);
+        } else {
+          onVenueChange(venues[focusedVenueIndex - 1].id);
+        }
+        setIsVenueOpen(false);
+        setFocusedVenueIndex(-1);
+      }
+    } else if (e.key === 'Escape') {
+      if (isVenueOpen) {
+        setIsVenueOpen(false);
+        setFocusedVenueIndex(-1);
+      }
+    }
+  };
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-md mb-6">
@@ -85,9 +237,20 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             <button
               data-testid="category-filter"
               onClick={() => {
-                setIsCategoryOpen(!isCategoryOpen);
+                const newOpen = !isCategoryOpen;
+                setIsCategoryOpen(newOpen);
                 setIsVenueOpen(false);
+                if (newOpen) {
+                  // Set focus to selected item or first item when opening
+                  const selectedIndex = selectedCategory
+                    ? categories.findIndex(c => c.id === selectedCategory) + 1
+                    : 0;
+                  setFocusedCategoryIndex(selectedIndex);
+                } else {
+                  setFocusedCategoryIndex(-1);
+                }
               }}
+              onKeyDown={handleCategoryButtonKeyDown}
               aria-label={isZh ? '選擇類別' : 'Select category'}
               aria-expanded={isCategoryOpen}
               aria-haspopup="listbox"
@@ -101,6 +264,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
           {isCategoryOpen && (
             <div
+              ref={categoryDropdownRef}
               role="listbox"
               aria-label={isZh ? '類別選項' : 'Category options'}
               className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
@@ -112,46 +276,55 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 onClick={() => {
                   onCategoryChange(null);
                   setIsCategoryOpen(false);
+                  setFocusedCategoryIndex(-1);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     onCategoryChange(null);
                     setIsCategoryOpen(false);
+                    setFocusedCategoryIndex(-1);
                   }
                 }}
                 tabIndex={0}
-                className="min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center"
+                className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center ${
+                  focusedCategoryIndex === 0 ? 'bg-blue-100 ring-2 ring-inset ring-blue-500' : ''
+                }`}
               >
                 {isZh ? '所有類別' : 'All Categories'}
               </div>
               {categories
                 .sort((a, b) => a.sort_order - b.sort_order)
-                .map((category) => (
-                  <div
-                    key={category.id}
-                    role="option"
-                    aria-selected={selectedCategory === category.id}
-                    data-testid="category-option"
-                    onClick={() => {
-                      onCategoryChange(category.id);
-                      setIsCategoryOpen(false);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
+                .map((category, index) => {
+                  const optionIndex = index + 1; // +1 because "All Categories" is at index 0
+                  return (
+                    <div
+                      key={category.id}
+                      role="option"
+                      aria-selected={selectedCategory === category.id}
+                      data-testid="category-option"
+                      onClick={() => {
                         onCategoryChange(category.id);
                         setIsCategoryOpen(false);
-                      }
-                    }}
-                    tabIndex={0}
-                    className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center ${
-                      selectedCategory === category.id ? 'bg-blue-100 font-semibold' : ''
-                    }`}
-                  >
-                    {isZh ? category.name_tc : category.name_en}
-                  </div>
-                ))}
+                        setFocusedCategoryIndex(-1);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          onCategoryChange(category.id);
+                          setIsCategoryOpen(false);
+                          setFocusedCategoryIndex(-1);
+                        }
+                      }}
+                      tabIndex={0}
+                      className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center ${
+                        selectedCategory === category.id ? 'bg-blue-100 font-semibold' : ''
+                      } ${focusedCategoryIndex === optionIndex ? 'ring-2 ring-inset ring-blue-500' : ''}`}
+                    >
+                      {isZh ? category.name_tc : category.name_en}
+                    </div>
+                  );
+                })}
             </div>
           )}
         </div>
@@ -161,9 +334,20 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           <button
             data-testid="venue-filter"
             onClick={() => {
-              setIsVenueOpen(!isVenueOpen);
+              const newOpen = !isVenueOpen;
+              setIsVenueOpen(newOpen);
               setIsCategoryOpen(false);
+              if (newOpen) {
+                // Set focus to selected item or first item when opening
+                const selectedIndex = selectedVenue
+                  ? venues.findIndex(v => v.id === selectedVenue) + 1
+                  : 0;
+                setFocusedVenueIndex(selectedIndex);
+              } else {
+                setFocusedVenueIndex(-1);
+              }
             }}
+            onKeyDown={handleVenueButtonKeyDown}
             aria-label={isZh ? '選擇場地' : 'Select venue'}
             aria-expanded={isVenueOpen}
             aria-haspopup="listbox"
@@ -177,6 +361,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
           {isVenueOpen && (
             <div
+              ref={venueDropdownRef}
               role="listbox"
               aria-label={isZh ? '場地選項' : 'Venue options'}
               className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
@@ -188,44 +373,53 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 onClick={() => {
                   onVenueChange(null);
                   setIsVenueOpen(false);
+                  setFocusedVenueIndex(-1);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     onVenueChange(null);
                     setIsVenueOpen(false);
+                    setFocusedVenueIndex(-1);
                   }
                 }}
                 tabIndex={0}
-                className="min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center"
+                className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center ${
+                  focusedVenueIndex === 0 ? 'bg-blue-100 ring-2 ring-inset ring-blue-500' : ''
+                }`}
               >
                 {isZh ? '所有場地' : 'All Venues'}
               </div>
-              {venues.map((venue) => (
-                <div
-                  key={venue.id}
-                  role="option"
-                  aria-selected={selectedVenue === venue.id}
-                  data-testid="venue-option"
-                  onClick={() => {
-                    onVenueChange(venue.id);
-                    setIsVenueOpen(false);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
+              {venues.map((venue, index) => {
+                const optionIndex = index + 1; // +1 because "All Venues" is at index 0
+                return (
+                  <div
+                    key={venue.id}
+                    role="option"
+                    aria-selected={selectedVenue === venue.id}
+                    data-testid="venue-option"
+                    onClick={() => {
                       onVenueChange(venue.id);
                       setIsVenueOpen(false);
-                    }
-                  }}
-                  tabIndex={0}
-                  className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center ${
-                    selectedVenue === venue.id ? 'bg-blue-100 font-semibold' : ''
-                  }`}
-                >
-                  {isZh ? venue.name_tc : venue.name_en}
-                </div>
-              ))}
+                      setFocusedVenueIndex(-1);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onVenueChange(venue.id);
+                        setIsVenueOpen(false);
+                        setFocusedVenueIndex(-1);
+                      }
+                    }}
+                    tabIndex={0}
+                    className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center ${
+                      selectedVenue === venue.id ? 'bg-blue-100 font-semibold' : ''
+                    } ${focusedVenueIndex === optionIndex ? 'ring-2 ring-inset ring-blue-500' : ''}`}
+                  >
+                    {isZh ? venue.name_tc : venue.name_en}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -251,6 +445,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           onClick={() => {
             setIsCategoryOpen(false);
             setIsVenueOpen(false);
+            setFocusedCategoryIndex(-1);
+            setFocusedVenueIndex(-1);
           }}
         />
       )}

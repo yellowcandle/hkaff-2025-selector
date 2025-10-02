@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import { Screening, Venue } from '../../types';
-import type { UserSelection } from '../../../../specs/001-given-this-film/contracts/service-interfaces';
+import type { UserSelection, Conflict } from '../../../../specs/001-given-this-film/contracts/service-interfaces';
+import { conflictDetector } from '../../services/conflictDetector';
 
 interface ConflictPreview {
   severity: 'impossible' | 'warning';
@@ -26,6 +27,7 @@ export const ScreeningSelector: React.FC<ScreeningSelectorProps> = ({
 }) => {
   const { i18n } = useTranslation();
   const isZh = i18n.language === 'zh';
+  const [previewedScreeningId, setPreviewedScreeningId] = useState<string | null>(null);
 
   const getVenueById = (venueId: string): Venue | null => {
     return venues.find(v => v.id === venueId) || null;
@@ -88,6 +90,32 @@ export const ScreeningSelector: React.FC<ScreeningSelectorProps> = ({
     return null;
   };
 
+  // Check for conflicts using the conflictDetector service
+  const checkConflictForScreening = (screening: Screening): Conflict[] => {
+    if (!existingSelections.length) return [];
+    
+    // Use the conflictDetector service's wouldConflict method
+    return conflictDetector.wouldConflict(existingSelections, screening);
+  };
+
+  // Format conflict messages based on Conflict objects
+  const formatConflictMessage = (conflict: Conflict): string => {
+    const otherSelection = conflict.screening_a.screening_id === previewedScreeningId 
+      ? conflict.screening_b 
+      : conflict.screening_a;
+    
+    if (conflict.severity === 'impossible') {
+      const minutes = Math.round(conflict.overlap_minutes);
+      return isZh
+        ? `與 "${otherSelection.film_snapshot.title_tc}" 重疊 ${minutes} 分鐘`
+        : `Overlaps ${minutes} minutes with "${otherSelection.film_snapshot.title_en}"`;
+    } else {
+      return isZh
+        ? `與 "${otherSelection.film_snapshot.title_tc}" 間隔少於30分鐘，且在不同場地`
+        : `Less than 30 minutes from "${otherSelection.film_snapshot.title_en}" at different venue`;
+    }
+  };
+
   if (screenings.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
@@ -102,34 +130,33 @@ export const ScreeningSelector: React.FC<ScreeningSelectorProps> = ({
         const venue = getVenueById(screening.venue_id);
         const { date, time, dayOfWeek } = formatDateTime(screening.datetime);
         const isSelected = selectedScreeningIds.includes(screening.id);
-        const conflict = !isSelected ? getConflictPreview(screening) : null;
+        const isPreviewed = previewedScreeningId === screening.id;
+        const conflicts = isPreviewed && !isSelected ? checkConflictForScreening(screening) : [];
+        const hasConflict = conflicts.length > 0;
+        const severity = hasConflict ? conflicts[0].severity : null;
 
         return (
           <div
             key={screening.id}
             data-testid="screening-item"
-            className={`border rounded-lg p-4 transition-colors ${
-              conflict?.severity === 'impossible'
-                ? 'border-red-300 bg-red-50'
-                : conflict?.severity === 'warning'
-                ? 'border-yellow-300 bg-yellow-50'
-                : 'border-gray-200 hover:bg-gray-50'
-            }`}
+            className="border rounded-lg transition-colors border-gray-200 hover:bg-gray-50"
           >
-            <div className="flex flex-col gap-3">
-              {/* Conflict Warning Banner */}
-              {conflict && (
-                <div
-                  role="alert"
-                  aria-live="polite"
-                  className={`flex items-start gap-2 p-3 rounded-md ${
-                    conflict.severity === 'impossible'
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}
-                >
+            {/* Conflict Warning Banner - shown only on hover/focus */}
+            {hasConflict && (
+              <div
+                role="alert"
+                aria-live="polite"
+                className={`mx-4 mt-4 mb-2 p-3 rounded-md border-l-4 ${
+                  severity === 'impossible'
+                    ? 'bg-red-50 border-red-400'
+                    : 'bg-yellow-50 border-yellow-400'
+                }`}
+              >
+                <div className="flex items-start">
                   <svg
-                    className="w-5 h-5 mt-0.5 flex-shrink-0"
+                    className={`h-5 w-5 mr-2 flex-shrink-0 ${
+                      severity === 'impossible' ? 'text-red-400' : 'text-yellow-400'
+                    }`}
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     aria-hidden="true"
@@ -140,17 +167,28 @@ export const ScreeningSelector: React.FC<ScreeningSelectorProps> = ({
                       clipRule="evenodd"
                     />
                   </svg>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">
-                      {conflict.severity === 'impossible'
-                        ? (isZh ? '時間衝突' : 'Schedule Conflict')
-                        : (isZh ? '注意事項' : 'Warning')}
+                  <div>
+                    <p className={`text-sm font-medium ${
+                      severity === 'impossible' ? 'text-red-800' : 'text-yellow-800'
+                    }`}>
+                      {isZh ? '選擇此場次將產生衝突：' : 'Selecting this will create conflicts:'}
                     </p>
-                    <p className="text-sm mt-1">{conflict.message}</p>
+                    {conflicts.map((conflict, idx) => (
+                      <p
+                        key={idx}
+                        className={`text-xs mt-1 ${
+                          severity === 'impossible' ? 'text-red-700' : 'text-yellow-700'
+                        }`}
+                      >
+                        {formatConflictMessage(conflict)}
+                      </p>
+                    ))}
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
+            <div className="p-4 flex flex-col gap-3">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 {/* Screening Info */}
                 <div className="flex-1">
@@ -171,21 +209,19 @@ export const ScreeningSelector: React.FC<ScreeningSelectorProps> = ({
                 <button
                   data-testid="select-screening-btn"
                   onClick={() => onSelectScreening(screening)}
+                  onMouseEnter={() => setPreviewedScreeningId(screening.id)}
+                  onMouseLeave={() => setPreviewedScreeningId(null)}
+                  onFocus={() => setPreviewedScreeningId(screening.id)}
+                  onBlur={() => setPreviewedScreeningId(null)}
                   disabled={isSelected}
                   aria-label={
                     isSelected
                       ? (isZh ? '已選擇此場次' : 'Screening already selected')
-                      : conflict?.severity === 'impossible'
-                      ? (isZh ? '選擇此場次（有時間衝突）' : 'Select screening (has conflict)')
                       : (isZh ? '選擇此場次' : 'Select this screening')
                   }
                   className={`min-h-[44px] px-6 py-2 rounded-md font-medium transition-colors whitespace-nowrap ${
                     isSelected
                       ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                      : conflict?.severity === 'impossible'
-                      ? 'bg-red-600 text-white hover:bg-red-700'
-                      : conflict?.severity === 'warning'
-                      ? 'bg-yellow-600 text-white hover:bg-yellow-700'
                       : 'bg-blue-600 text-white hover:bg-blue-700'
                   }`}
                 >

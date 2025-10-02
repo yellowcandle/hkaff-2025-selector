@@ -28,6 +28,8 @@ export const FilmCard: React.FC<FilmCardProps> = ({ film, category, onClick }) =
           data-testid="film-poster"
           src={film.poster_url}
           alt={`${title} poster`}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover"
           onError={(e) => {
             // Fallback for missing images

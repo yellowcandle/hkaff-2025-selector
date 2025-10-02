@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 
 // Service imports
@@ -6,13 +6,15 @@ import { dataLoader } from './services/dataLoader';
 import { storageService } from './services/storageService';
 import { markdownExporter } from './services/markdownExporter';
 
-// Component imports
+// Component imports - Keep critical components as static imports
 import { FilmList } from './components/FilmList/FilmList';
 import { FilterPanel } from './components/FilterPanel/FilterPanel';
-import { FilmDetail } from './components/FilmDetail/FilmDetail';
-import { ScheduleView } from './components/ScheduleView/ScheduleView';
 import { LanguageToggle } from './components/LanguageToggle/LanguageToggle';
-import { MarkdownExportModal } from './components/MarkdownExportModal/MarkdownExportModal';
+
+// Lazy-loaded components for code splitting
+const FilmDetail = lazy(() => import('./components/FilmDetail/FilmDetail').then(module => ({ default: module.FilmDetail })));
+const ScheduleView = lazy(() => import('./components/ScheduleView/ScheduleView').then(module => ({ default: module.ScheduleView })));
+const MarkdownExportModal = lazy(() => import('./components/MarkdownExportModal/MarkdownExportModal').then(module => ({ default: module.MarkdownExportModal })));
 
 // Type imports
 import type { Film, Category, Venue, Screening, Selection } from './types';
@@ -146,6 +148,51 @@ function App() {
   // Selection states
   const [userSelections, setUserSelections] = useState<UserSelection[]>([]);
 
+  // Track if film was opened via URL for proper back button handling
+  const [filmOpenedViaURL, setFilmOpenedViaURL] = useState(false);
+
+  // URL sync utility functions
+  const getStateFromURL = (): {
+    view: 'catalogue' | 'schedule' | null;
+    filmId: string | null;
+    category: string | null;
+    venue: string | null;
+    search: string;
+  } => {
+    const params = new URLSearchParams(window.location.search);
+    const view = params.get('view');
+    return {
+      view: view === 'catalogue' || view === 'schedule' ? view : null,
+      filmId: params.get('film'),
+      category: params.get('category'),
+      venue: params.get('venue'),
+      search: params.get('q') || ''
+    };
+  };
+
+  const updateURL = (updates: {
+    view?: 'catalogue' | 'schedule' | null;
+    film?: string | null;
+    category?: string | null;
+    venue?: string | null;
+    q?: string | null;
+  }) => {
+    const params = new URLSearchParams(window.location.search);
+    
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value !== undefined) {
+        if (value) {
+          params.set(key, value);
+        } else {
+          params.delete(key);
+        }
+      }
+    });
+    
+    const newURL = params.toString() ? `?${params.toString()}` : window.location.pathname;
+    window.history.pushState({}, '', newURL);
+  };
+
   // T053: Wire dataLoader to App initialization
   useEffect(() => {
     const loadData = async () => {
@@ -174,6 +221,104 @@ function App() {
 
     loadData();
   }, []);
+
+  // Initialize state from URL on mount (after data loads)
+  useEffect(() => {
+    if (!isLoading && films.length > 0) {
+      const urlState = getStateFromURL();
+      
+      // Set view from URL
+      if (urlState.view) {
+        setCurrentView(urlState.view);
+      }
+      
+      // Set film from URL
+      if (urlState.filmId) {
+        const film = films.find(f => f.id === urlState.filmId);
+        if (film) {
+          setSelectedFilm(film);
+          setFilmOpenedViaURL(true);
+        }
+      }
+      
+      // Set filters from URL
+      if (urlState.category) {
+        setSelectedCategory(urlState.category);
+      }
+      if (urlState.venue) {
+        setSelectedVenue(urlState.venue);
+      }
+      if (urlState.search) {
+        setSearchQuery(urlState.search);
+      }
+    }
+  }, [isLoading, films]);
+
+  // Sync view changes to URL
+  useEffect(() => {
+    if (!isLoading) {
+      updateURL({ view: currentView === 'catalogue' ? null : currentView });
+    }
+  }, [currentView, isLoading]);
+
+  // Sync film selection to URL
+  useEffect(() => {
+    if (!isLoading) {
+      updateURL({ film: selectedFilm?.id || null });
+    }
+  }, [selectedFilm, isLoading]);
+
+  // Sync category filter to URL
+  useEffect(() => {
+    if (!isLoading) {
+      updateURL({ category: selectedCategory });
+    }
+  }, [selectedCategory, isLoading]);
+
+  // Sync venue filter to URL
+  useEffect(() => {
+    if (!isLoading) {
+      updateURL({ venue: selectedVenue });
+    }
+  }, [selectedVenue, isLoading]);
+
+  // Sync search query to URL with debouncing
+  useEffect(() => {
+    if (!isLoading) {
+      const timeoutId = setTimeout(() => {
+        updateURL({ q: searchQuery || null });
+      }, 300);
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [searchQuery, isLoading]);
+
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      const urlState = getStateFromURL();
+      
+      setCurrentView(urlState.view || 'catalogue');
+      
+      if (urlState.filmId) {
+        const film = films.find(f => f.id === urlState.filmId);
+        if (film) {
+          setSelectedFilm(film);
+          setFilmOpenedViaURL(true);
+        }
+      } else {
+        setSelectedFilm(null);
+        setFilmOpenedViaURL(false);
+      }
+      
+      setSelectedCategory(urlState.category);
+      setSelectedVenue(urlState.venue);
+      setSearchQuery(urlState.search);
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [films]);
 
   // T054: Derived filtered films state
   const filteredFilms = useMemo(() => {
@@ -223,7 +368,14 @@ function App() {
   };
 
   const handleCloseFilmDetail = () => {
-    setSelectedFilm(null);
+    // If film was opened via URL, use browser back
+    if (filmOpenedViaURL) {
+      window.history.back();
+    } else {
+      // Otherwise just clear the state (URL will update via useEffect)
+      setSelectedFilm(null);
+    }
+    setFilmOpenedViaURL(false);
   };
 
   // Get screenings for selected film
@@ -432,34 +584,52 @@ function App() {
             </>
           ) : (
             /* Schedule View */
-            <ScheduleView
-              selections={selections}
-              onRemoveScreening={handleRemoveSelection}
-              onExport={handleExport}
-            />
+            <Suspense fallback={
+              <div className="flex items-center justify-center p-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+            }>
+              <ScheduleView
+                selections={selections}
+                onRemoveScreening={handleRemoveSelection}
+                onExport={handleExport}
+              />
+            </Suspense>
           )}
         </main>
 
         {/* Film Detail Modal */}
         {selectedFilm && (
-          <FilmDetail
-            film={selectedFilm}
-            category={categories.find(c => c.id === selectedFilm.category_id) || null}
-            screenings={filmScreenings}
-            venues={venues}
-            selectedScreeningIds={selectedScreeningIds}
-            existingSelections={userSelections}
-            onSelectScreening={handleSelectScreening}
-            onClose={handleCloseFilmDetail}
-          />
+          <Suspense fallback={
+            <div className="flex items-center justify-center p-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+          }>
+            <FilmDetail
+              film={selectedFilm}
+              category={categories.find(c => c.id === selectedFilm.category_id) || null}
+              screenings={filmScreenings}
+              venues={venues}
+              selectedScreeningIds={selectedScreeningIds}
+              existingSelections={userSelections}
+              onSelectScreening={handleSelectScreening}
+              onClose={handleCloseFilmDetail}
+            />
+          </Suspense>
         )}
 
         {/* Markdown Export Modal */}
-        <MarkdownExportModal
-          isOpen={showExportModal}
-          onClose={() => setShowExportModal(false)}
-          markdownContent={markdownContent}
-        />
+        <Suspense fallback={
+          <div className="flex items-center justify-center p-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+        }>
+          <MarkdownExportModal
+            isOpen={showExportModal}
+            onClose={() => setShowExportModal(false)}
+            markdownContent={markdownContent}
+          />
+        </Suspense>
       </div>
     </ErrorBoundary>
   );
