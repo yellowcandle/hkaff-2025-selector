@@ -10,6 +10,8 @@ import { markdownExporter } from './services/markdownExporter';
 import { FilmList } from './components/FilmList/FilmList';
 import { FilterPanel } from './components/FilterPanel/FilterPanel';
 import { LanguageToggle } from './components/LanguageToggle/LanguageToggle';
+import { ToastProvider, useToast } from './components/Toast/Toast';
+import { LoadingSpinner } from './components/Loading/LoadingSpinner';
 
 // Lazy-loaded components for code splitting
 const FilmDetail = lazy(() => import('./components/FilmDetail/FilmDetail').then(module => ({ default: module.FilmDetail })));
@@ -124,6 +126,7 @@ class ErrorBoundary extends React.Component<
 function App() {
   const { i18n } = useTranslation();
   const isZh = i18n.language === 'tc';
+  const { showToast } = useToast();
 
   // Loading and error states
   const [isLoading, setIsLoading] = useState(true);
@@ -397,6 +400,10 @@ function App() {
 
       if (!film || !venue) {
         console.error('Film or venue not found');
+        showToast(
+          isZh ? '找不到電影或場地資訊' : 'Film or venue not found',
+          'error'
+        );
         return;
       }
 
@@ -404,9 +411,17 @@ function App() {
       if (storageService.isSelected(screening.id)) {
         // Remove selection
         storageService.removeSelection(screening.id);
+        showToast(
+          isZh ? '已移除場次' : 'Screening removed',
+          'info'
+        );
       } else {
         // Add selection
         storageService.addSelection(screening, film, venue);
+        showToast(
+          isZh ? '已加入場次' : 'Screening added',
+          'success'
+        );
       }
 
       // Refresh selections
@@ -414,6 +429,10 @@ function App() {
       setUserSelections(updatedSelections);
     } catch (err) {
       console.error('Failed to toggle screening:', err);
+      showToast(
+        isZh ? '操作失敗，請重試' : 'Operation failed, please try again',
+        'error'
+      );
     }
   };
 
@@ -441,12 +460,10 @@ function App() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-          <p className="text-gray-600">
-            {isZh ? '載入中...' : 'Loading...'}
-          </p>
-        </div>
+        <LoadingSpinner 
+          size="lg" 
+          text={isZh ? '載入中...' : 'Loading...'} 
+        />
       </div>
     );
   }
@@ -473,8 +490,9 @@ function App() {
   }
 
   return (
-    <ErrorBoundary>
-      <div className="min-h-screen bg-gray-50">
+    <ToastProvider>
+      <ErrorBoundary>
+        <div className="min-h-screen bg-gray-50">
         {/* Skip to main content link for keyboard users */}
         <a
           href="#main-content"
@@ -579,6 +597,7 @@ function App() {
                   films={filteredFilms}
                   categories={categories}
                   onFilmClick={handleFilmClick}
+                  isLoading={false}
                 />
               )}
             </>
@@ -632,6 +651,7 @@ function App() {
         </Suspense>
       </div>
     </ErrorBoundary>
+    </ToastProvider>
   );
 }
 

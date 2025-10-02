@@ -30,7 +30,10 @@ export const FilmCard: React.FC<FilmCardProps> = ({ film, category, onClick }) =
           alt={`${title} poster`}
           loading="lazy"
           decoding="async"
+          width="300"
+          height="450"
           className="w-full h-full object-cover"
+          style={{ aspectRatio: '2/3' }}
           onError={(e) => {
             // Fallback for missing images
             e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="300" viewBox="0 0 200 300"%3E%3Crect fill="%23e5e7eb" width="200" height="300"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="16" fill="%239ca3af" text-anchor="middle" dominant-baseline="middle"%3ENo Image%3C/text%3E%3C/svg%3E';

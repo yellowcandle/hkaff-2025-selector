@@ -32,15 +32,32 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
   const synopsis = isZh ? film.synopsis_tc : film.synopsis_en;
   const categoryName = category ? (isZh ? category.name_tc : category.name_en) : '';
 
-  // Handle ESC key to close modal
+  // Handle ESC key to close modal and arrow key navigation
   useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
       }
+      // Arrow key navigation for accessibility
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const focusableElements = document.querySelectorAll(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        const currentIndex = Array.from(focusableElements).indexOf(document.activeElement as Element);
+        
+        if (e.key === 'ArrowDown') {
+          const nextIndex = (currentIndex + 1) % focusableElements.length;
+          (focusableElements[nextIndex] as HTMLElement)?.focus();
+        } else {
+          const prevIndex = currentIndex === 0 ? focusableElements.length - 1 : currentIndex - 1;
+          (focusableElements[prevIndex] as HTMLElement)?.focus();
+        }
+      }
     };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
   // Prevent body scroll when modal is open and implement focus trap
