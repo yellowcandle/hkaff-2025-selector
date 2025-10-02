@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.specify/scripts/bash/check-prerequisites.sh:*)",
+      "Bash(node:*)",
+      "WebSearch",
+      "Bash([ -f package.json ])",
+      "Bash(cat:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm install)",
+      "Bash(npm run test:unit:*)",
+      "Bash(npx vitest run:*)",
+      "Bash(npm test:*)",
+      "Bash(awk:*)",
+      "Bash(npm run test:contract:*)",
+      "Bash(npx playwright test:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(xargs ls:*)",
+      "Bash(timeout 30 npx vitest run:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx tsc:*)",
+      "Bash(git config:*)",
+      "Bash(git remote add:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

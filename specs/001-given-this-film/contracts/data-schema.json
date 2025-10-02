@@ -1,0 +1,200 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HKAFF 2025 Static Data Schema",
+  "description": "JSON Schema for Hong Kong Asian Film Festival 2025 static data files",
+  
+  "definitions": {
+    "Film": {
+      "type": "object",
+      "required": ["id", "title_tc", "title_en", "category_id", "runtime_minutes"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^film-[0-9]+$",
+          "description": "Unique film identifier"
+        },
+        "title_tc": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Traditional Chinese title"
+        },
+        "title_en": {
+          "type": "string",
+          "minLength": 1,
+          "description": "English title"
+        },
+        "category_id": {
+          "type": "string",
+          "pattern": "^category-[0-9]+$",
+          "description": "Foreign key to Category"
+        },
+        "synopsis_tc": {
+          "type": "string",
+          "description": "Traditional Chinese synopsis"
+        },
+        "synopsis_en": {
+          "type": "string",
+          "description": "English synopsis"
+        },
+        "runtime_minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Film duration in minutes"
+        },
+        "director": {
+          "type": "string",
+          "description": "Director name"
+        },
+        "country": {
+          "type": "string",
+          "description": "Country of origin"
+        },
+        "poster_url": {
+          "type": "string",
+          "description": "URL or path to poster image"
+        },
+        "detail_url_tc": {
+          "type": "string",
+          "description": "Link to TC detail page"
+        },
+        "detail_url_en": {
+          "type": "string",
+          "description": "Link to EN detail page"
+        }
+      }
+    },
+    
+    "Screening": {
+      "type": "object",
+      "required": ["id", "film_id", "venue_id", "datetime", "duration_minutes"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^screening-[0-9]+$",
+          "description": "Unique screening identifier"
+        },
+        "film_id": {
+          "type": "string",
+          "pattern": "^film-[0-9]+$",
+          "description": "Foreign key to Film"
+        },
+        "venue_id": {
+          "type": "string",
+          "pattern": "^venue-[0-9]+$",
+          "description": "Foreign key to Venue"
+        },
+        "datetime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 datetime of screening start"
+        },
+        "duration_minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Screening duration in minutes"
+        },
+        "language": {
+          "type": "string",
+          "description": "Audio/subtitle information"
+        }
+      }
+    },
+    
+    "Venue": {
+      "type": "object",
+      "required": ["id", "name_tc", "name_en"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^venue-[0-9]+$",
+          "description": "Unique venue identifier"
+        },
+        "name_tc": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Traditional Chinese venue name"
+        },
+        "name_en": {
+          "type": "string",
+          "minLength": 1,
+          "description": "English venue name"
+        },
+        "address_tc": {
+          "type": "string",
+          "description": "Traditional Chinese address"
+        },
+        "address_en": {
+          "type": "string",
+          "description": "English address"
+        },
+        "map_url": {
+          "type": "string",
+          "description": "Google Maps or location URL"
+        }
+      }
+    },
+    
+    "Category": {
+      "type": "object",
+      "required": ["id", "name_tc", "name_en", "sort_order"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^category-[0-9]+$",
+          "description": "Unique category identifier"
+        },
+        "name_tc": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Traditional Chinese category name"
+        },
+        "name_en": {
+          "type": "string",
+          "minLength": 1,
+          "description": "English category name"
+        },
+        "sort_order": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Display order (ascending)"
+        },
+        "description_tc": {
+          "type": "string",
+          "description": "Traditional Chinese description"
+        },
+        "description_en": {
+          "type": "string",
+          "description": "English description"
+        }
+      }
+    }
+  },
+  
+  "type": "object",
+  "properties": {
+    "films": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Film" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "screenings": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Screening" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "venues": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Venue" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "categories": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Category" },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "hkaff-2025-selector",
+  "version": "1.0.0",
+  "description": "Hong Kong Asian Film Festival 2025 Screening Selector",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:contract": "vitest run tests/contract",
+    "test:unit": "vitest run tests/unit",
+    "test:e2e": "playwright test",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.1",
+    "@types/node": "^20.10.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "@vitest/ui": "^1.1.0",
+    "ajv": "^8.12.0",
+    "ajv-formats": "^2.1.1",
+    "autoprefixer": "^10.4.21",
+    "jsdom": "^27.0.0",
+    "playwright": "^1.55.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.14",
+    "typescript": "^5.3.3",
+    "vite": "^7.1.7",
+    "vitest": "^1.1.0"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "i18next": "^25.5.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-i18next": "^16.0.0"
+  }
+}
