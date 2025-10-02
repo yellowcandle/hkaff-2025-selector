@@ -1,0 +1,7 @@
+{
+  "name": "hkaff-2025-selector",
+  "compatibility_date": "2025-10-02",
+  "assets": {
+    "directory": "./dist"
+  }
+}
