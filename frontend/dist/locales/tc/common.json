@@ -1,0 +1,40 @@
+{
+  "app": {
+    "title": "香港亞洲電影節 2025",
+    "subtitle": "選片助手"
+  },
+  "navigation": {
+    "catalogue": "影片目錄",
+    "schedule": "我的時間表",
+    "export": "匯出"
+  },
+  "filter": {
+    "category": "類別",
+    "venue": "場地",
+    "all": "全部",
+    "clear": "清除篩選"
+  },
+  "screening": {
+    "select": "選擇",
+    "selected": "已選",
+    "remove": "移除",
+    "duration": "片長",
+    "minutes": "分鐘"
+  },
+  "schedule": {
+    "title": "我的時間表",
+    "empty": "尚未選擇任何場次",
+    "conflicts": "時間衝突",
+    "export": "匯出為 Markdown",
+    "clear_all": "清除全部"
+  },
+  "conflict": {
+    "impossible": "時間重疊",
+    "warning": "換場時間緊迫",
+    "overlap": "重疊 {{minutes}} 分鐘"
+  },
+  "language": {
+    "tc": "繁",
+    "en": "EN"
+  }
+}

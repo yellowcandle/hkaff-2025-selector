@@ -1,0 +1,114 @@
+[
+  {
+    "id": "category-67",
+    "name_tc": "開幕電影",
+    "name_en": "Opening Film",
+    "sort_order": 0,
+    "description_tc": "",
+    "description_en": ""
+  },
+  {
+    "id": "category-68",
+    "name_tc": "神秘場",
+    "name_en": "Mystery Screening",
+    "sort_order": 1,
+    "description_tc": "",
+    "description_en": ""
+  },
+  {
+    "id": "category-69",
+    "name_tc": "閉幕電影",
+    "name_en": "Closing Film",
+    "sort_order": 2,
+    "description_tc": "",
+    "description_en": ""
+  },
+  {
+    "id": "category-70",
+    "name_tc": "隆重呈獻",
+    "name_en": "Special Presentations",
+    "sort_order": 3,
+    "description_tc": "",
+    "description_en": ""
+  },
+  {
+    "id": "category-71",
+    "name_tc": "特別推介",
+    "name_en": "Special Recommendations",
+    "sort_order": 4,
+    "description_tc": "",
+    "description_en": ""
+  },
+  {
+    "id": "category-72",
+    "name_tc": "香港Short Short地",
+    "name_en": "Hong Kong Short Short",
+    "sort_order": 5,
+    "description_tc": "",
+    "description_en": ""
+  },
+  {
+    "id": "category-73",
+    "name_tc": "亞洲新導演獎",
+    "name_en": "Asian New Talent Award",
+    "sort_order": 6,
+    "description_tc": "",
+    "description_en": ""
+  },
+  {
+    "id": "category-74",
+    "name_tc": "影迷別注",
+    "name_en": "Fan Favorites",
+    "sort_order": 7,
+    "description_tc": "",
+    "description_en": ""
+  },
+  {
+    "id": "category-75",
+    "name_tc": "焦點導演",
+    "name_en": "Focus Director",
+    "sort_order": 8,
+    "description_tc": "",
+    "description_en": ""
+  },
+  {
+    "id": "category-76",
+    "name_tc": "亞洲動畫愛與懼",
+    "name_en": "Asian Animation: Love & Fear",
+    "sort_order": 9,
+    "description_tc": "",
+    "description_en": ""
+  },
+  {
+    "id": "category-77",
+    "name_tc": "廣角視野",
+    "name_en": "Wide Angle",
+    "sort_order": 10,
+    "description_tc": "",
+    "description_en": ""
+  },
+  {
+    "id": "category-78",
+    "name_tc": "加沙日常",
+    "name_en": "Gaza Daily",
+    "sort_order": 11,
+    "description_tc": "",
+    "description_en": ""
+  },
+  {
+    "id": "category-79",
+    "name_tc": "紀錄之眼",
+    "name_en": "Documentary Eye",
+    "sort_order": 12,
+    "description_tc": "",
+    "description_en": ""
+  },
+  {
+    "id": "category-80",
+    "name_tc": "森之聲",
+    "name_en": "Forest Voices",
+    "sort_order": 13,
+    "description_tc": "",
+    "description_en": ""
+  }
+]
