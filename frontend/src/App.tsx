@@ -105,7 +105,8 @@ class ErrorBoundary extends React.Component<
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              aria-label="Reload page"
+              className="w-full min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Reload Page
             </button>
@@ -135,6 +136,7 @@ function App() {
   // Filter states
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedVenue, setSelectedVenue] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // UI states
   const [selectedFilm, setSelectedFilm] = useState<Film | null>(null);
@@ -177,6 +179,22 @@ function App() {
   const filteredFilms = useMemo(() => {
     let filtered = films;
 
+    // Search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(film => {
+        const matchesTitle = film.title_tc.toLowerCase().includes(query) ||
+                            film.title_en.toLowerCase().includes(query);
+        const matchesDirector = film.director.toLowerCase().includes(query);
+        const category = categories.find(c => c.id === film.category_id);
+        const matchesCategory = category && (
+          category.name_tc.toLowerCase().includes(query) ||
+          category.name_en.toLowerCase().includes(query)
+        );
+        return matchesTitle || matchesDirector || matchesCategory;
+      });
+    }
+
     if (selectedCategory) {
       filtered = filtered.filter(film => film.category_id === selectedCategory);
     }
@@ -192,7 +210,7 @@ function App() {
     }
 
     return filtered;
-  }, [films, screenings, selectedCategory, selectedVenue]);
+  }, [films, screenings, categories, selectedCategory, selectedVenue, searchQuery]);
 
   // Convert user selections to frontend Selection type for components
   const selections = useMemo(() => {
@@ -292,7 +310,8 @@ function App() {
           <p className="text-gray-700 mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            aria-label={isZh ? '重新載入頁面' : 'Reload page'}
+            className="w-full min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             {isZh ? '重新載入' : 'Reload'}
           </button>
@@ -304,6 +323,14 @@ function App() {
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gray-50">
+        {/* Skip to main content link for keyboard users */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-md focus:shadow-lg"
+        >
+          {isZh ? '跳至主要內容' : 'Skip to main content'}
+        </a>
+
         {/* Header */}
         <header className="bg-white shadow-sm sticky top-0 z-40">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -317,35 +344,48 @@ function App() {
                 </p>
               </div>
 
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-4">
                 {/* View Toggle */}
-                <div className="flex bg-gray-100 rounded-md p-1">
-                  <button
-                    onClick={() => setCurrentView('catalogue')}
-                    className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                      currentView === 'catalogue'
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    {isZh ? '影片目錄' : 'Catalogue'}
-                  </button>
-                  <button
-                    onClick={() => setCurrentView('schedule')}
-                    className={`px-3 py-1 rounded-md text-sm font-medium transition-colors relative ${
-                      currentView === 'schedule'
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    {isZh ? '我的時間表' : 'My Schedule'}
-                    {selections.length > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                        {selections.length}
-                      </span>
-                    )}
-                  </button>
-                </div>
+                <nav role="navigation" aria-label={isZh ? '主要導航' : 'Main navigation'}>
+                  <div className="flex bg-gray-100 rounded-md p-1" role="tablist">
+                    <button
+                      onClick={() => setCurrentView('catalogue')}
+                      role="tab"
+                      aria-selected={currentView === 'catalogue'}
+                      aria-label={isZh ? '影片目錄視圖' : 'Catalogue view'}
+                      aria-controls="main-content"
+                      className={`min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                        currentView === 'catalogue'
+                          ? 'bg-white text-gray-900 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      {isZh ? '影片目錄' : 'Catalogue'}
+                    </button>
+                    <button
+                      onClick={() => setCurrentView('schedule')}
+                      role="tab"
+                      aria-selected={currentView === 'schedule'}
+                      aria-label={isZh ? `我的時間表，已選 ${selections.length} 場` : `My Schedule, ${selections.length} selected`}
+                      aria-controls="main-content"
+                      className={`min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors relative ${
+                        currentView === 'schedule'
+                          ? 'bg-white text-gray-900 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      {isZh ? '我的時間表' : 'My Schedule'}
+                      {selections.length > 0 && (
+                        <span
+                          className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full min-w-[20px] h-5 px-1 flex items-center justify-center"
+                          aria-hidden="true"
+                        >
+                          {selections.length}
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                </nav>
 
                 {/* T058: Language Toggle */}
                 <LanguageToggle />
@@ -355,7 +395,7 @@ function App() {
         </header>
 
         {/* Main Content */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main id="main-content" role="main" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {currentView === 'catalogue' ? (
             <>
               {/* Filter Panel */}
@@ -364,11 +404,14 @@ function App() {
                 venues={venues}
                 selectedCategory={selectedCategory}
                 selectedVenue={selectedVenue}
+                searchQuery={searchQuery}
                 onCategoryChange={setSelectedCategory}
                 onVenueChange={setSelectedVenue}
+                onSearchChange={setSearchQuery}
                 onClearFilters={() => {
                   setSelectedCategory(null);
                   setSelectedVenue(null);
+                  setSearchQuery('');
                 }}
               />
 
@@ -405,6 +448,7 @@ function App() {
             screenings={filmScreenings}
             venues={venues}
             selectedScreeningIds={selectedScreeningIds}
+            existingSelections={userSelections}
             onSelectScreening={handleSelectScreening}
             onClose={handleCloseFilmDetail}
           />

@@ -41,26 +41,32 @@ export const MarkdownExportModal: React.FC<MarkdownExportModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="export-modal-title"
+    >
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black bg-opacity-50"
         onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
+      <div className="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 id="export-modal-title" className="text-2xl font-bold text-gray-900">
             {isZh ? '匯出 Markdown' : 'Export Markdown'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-            aria-label="Close modal"
+            className="min-h-[44px] min-w-[44px] p-2 text-gray-400 hover:text-gray-600 transition-colors focus:ring-2 focus:ring-blue-500 rounded-md"
+            aria-label={isZh ? '關閉匯出視窗' : 'Close export modal'}
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -79,7 +85,8 @@ export const MarkdownExportModal: React.FC<MarkdownExportModalProps> = ({
         <div className="flex justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
           <button
             onClick={handleCopy}
-            className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+            aria-label={isZh ? '複製 Markdown 內容到剪貼簿' : 'Copy Markdown content to clipboard'}
+            className="min-h-[44px] px-6 py-2 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors focus:ring-2 focus:ring-blue-500"
           >
             {copied
               ? isZh
@@ -91,7 +98,8 @@ export const MarkdownExportModal: React.FC<MarkdownExportModalProps> = ({
           </button>
           <button
             onClick={handleDownload}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            aria-label={isZh ? '下載 Markdown 檔案' : 'Download Markdown file'}
+            className="min-h-[44px] px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             {isZh ? '下載 .md 檔案' : 'Download .md File'}
           </button>

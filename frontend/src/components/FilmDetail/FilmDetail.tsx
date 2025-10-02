@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Film, Category, Screening, Venue } from '../../types';
 import { ScreeningSelector } from './ScreeningSelector';
+import type { UserSelection } from '../../../../specs/001-given-this-film/contracts/service-interfaces';
 
 interface FilmDetailProps {
   film: Film;
@@ -9,6 +10,7 @@ interface FilmDetailProps {
   screenings: Screening[];
   venues: Venue[];
   selectedScreeningIds: string[];
+  existingSelections?: UserSelection[];
   onSelectScreening: (screening: Screening) => void;
   onClose: () => void;
 }
@@ -19,6 +21,7 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
   screenings,
   venues,
   selectedScreeningIds,
+  existingSelections = [],
   onSelectScreening,
   onClose,
 }) => {
@@ -40,34 +43,83 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
     return () => window.removeEventListener('keydown', handleEsc);
   }, [onClose]);
 
-  // Prevent body scroll when modal is open
+  // Prevent body scroll when modal is open and implement focus trap
   useEffect(() => {
+    const previouslyFocused = document.activeElement as HTMLElement;
     document.body.style.overflow = 'hidden';
+
+    // Focus the modal container
+    const modalElement = document.querySelector('[data-testid="film-detail-modal"]') as HTMLElement;
+    if (modalElement) {
+      modalElement.focus();
+    }
+
+    // Focus trap
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+
+      const focusableElements = modalElement?.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+
+      if (!focusableElements || focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus();
+          e.preventDefault();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleTabKey);
+
     return () => {
       document.body.style.overflow = 'unset';
+      document.removeEventListener('keydown', handleTabKey);
+      // Return focus to previously focused element
+      if (previouslyFocused) {
+        previouslyFocused.focus();
+      }
     };
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="film-detail-title"
+    >
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black bg-opacity-50"
         onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Modal Content */}
       <div
         data-testid="film-detail-modal"
-        className="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+        tabIndex={-1}
+        className="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto focus:outline-none"
       >
         {/* Close Button */}
         <button
           data-testid="close-modal-btn"
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white shadow-md hover:bg-gray-100"
+          aria-label={isZh ? '關閉電影詳情' : 'Close film details'}
+          className="absolute top-4 right-4 z-10 min-h-[44px] min-w-[44px] p-2 rounded-full bg-white shadow-md hover:bg-gray-100 focus:ring-2 focus:ring-blue-500"
         >
-          <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
@@ -89,7 +141,7 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
 
             {/* Film Info */}
             <div className="flex-1">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              <h2 id="film-detail-title" className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                 {title}
               </h2>
 
@@ -136,6 +188,7 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
             screenings={screenings}
             venues={venues}
             selectedScreeningIds={selectedScreeningIds}
+            existingSelections={existingSelections}
             onSelectScreening={onSelectScreening}
           />
         </div>

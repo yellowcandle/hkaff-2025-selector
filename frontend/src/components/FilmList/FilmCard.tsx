@@ -16,17 +16,18 @@ export const FilmCard: React.FC<FilmCardProps> = ({ film, category, onClick }) =
   const categoryName = category ? (isZh ? category.name_tc : category.name_en) : '';
 
   return (
-    <div
+    <button
       data-testid="film-card"
       onClick={() => onClick(film)}
-      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105 hover:shadow-lg"
+      aria-label={`${title}${categoryName ? ` - ${categoryName}` : ''}`}
+      className="w-full bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105 hover:shadow-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-left"
     >
       {/* Poster Image */}
       <div className="aspect-[2/3] bg-gray-200 relative">
         <img
           data-testid="film-poster"
           src={film.poster_url}
-          alt={title}
+          alt={`${title} poster`}
           className="w-full h-full object-cover"
           onError={(e) => {
             // Fallback for missing images
@@ -48,11 +49,12 @@ export const FilmCard: React.FC<FilmCardProps> = ({ film, category, onClick }) =
           <span
             data-testid="film-category"
             className="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-md"
+            aria-label={`Category: ${categoryName}`}
           >
             {categoryName}
           </span>
         )}
       </div>
-    </div>
+    </button>
   );
 };

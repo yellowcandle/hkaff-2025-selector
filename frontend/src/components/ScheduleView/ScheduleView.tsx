@@ -133,7 +133,8 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
         <button
           data-testid="export-btn"
           onClick={onExport}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          aria-label={isZh ? '匯出我的觀影時間表為 Markdown' : 'Export my schedule as Markdown'}
+          className="min-h-[44px] px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           {isZh ? '匯出 Markdown' : 'Export Markdown'}
         </button>
