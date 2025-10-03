@@ -159,13 +159,13 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
       {/* Header */}
-      <div className="bg-black bg-opacity-50 backdrop-blur-sm border-b border-purple-500">
+      <div className="bg-black bg-opacity-80 backdrop-blur-sm border-b border-red-600">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
                 HKAFF 2025
               </h1>
               <p className="text-sm text-gray-300 mt-1">
@@ -177,7 +177,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                 onClick={() => setView('browse')}
                 className={`px-6 py-2 rounded-lg font-medium transition-all ${
                   view === 'browse'
-                    ? 'bg-purple-600 shadow-lg shadow-purple-500/50'
+                    ? 'bg-red-600 shadow-lg shadow-red-500/50'
                     : 'bg-gray-700 hover:bg-gray-600'
                 }`}
               >
@@ -188,7 +188,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                 onClick={() => setView('schedule')}
                 className={`px-6 py-2 rounded-lg font-medium transition-all relative ${
                   view === 'schedule'
-                    ? 'bg-pink-600 shadow-lg shadow-pink-500/50'
+                    ? 'bg-orange-600 shadow-lg shadow-orange-500/50'
                     : 'bg-gray-700 hover:bg-gray-600'
                 }`}
               >
@@ -209,9 +209,9 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
         {view === 'browse' ? (
           <>
             {/* Filters */}
-            <div className="bg-black bg-opacity-30 backdrop-blur-sm rounded-xl p-6 mb-6 border border-purple-500/30">
+            <div className="bg-black bg-opacity-40 backdrop-blur-sm rounded-xl p-6 mb-6 border border-red-500/30">
               <h2 className="text-xl font-semibold mb-4 flex items-center">
-                <span className="bg-purple-600 w-1 h-6 mr-3"></span>
+                <span className="bg-red-600 w-1 h-6 mr-3"></span>
                 {isZh ? '篩選場次' : 'Filter Screenings'}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -222,7 +222,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                   <select
                     value={filterCategory}
                     onChange={(e) => setFilterCategory(e.target.value)}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-red-500"
                   >
                     <option value="all">{isZh ? '所有類別' : 'All Categories'}</option>
                     {uniqueCategories.map(cat => (
@@ -237,7 +237,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                   <select
                     value={filterVenue}
                     onChange={(e) => setFilterVenue(e.target.value)}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-red-500"
                   >
                     <option value="all">{isZh ? '所有場地' : 'All Venues'}</option>
                     {uniqueVenues.map(venue => (
@@ -252,7 +252,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                   <select
                     value={filterDate}
                     onChange={(e) => setFilterDate(e.target.value)}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-red-500"
                   >
                     <option value="all">{isZh ? '所有日期' : 'All Dates'}</option>
                     {uniqueDates.map(date => (
@@ -270,14 +270,14 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                 return (
                   <div
                     key={screening.id}
-                    className={`bg-black bg-opacity-40 backdrop-blur-sm rounded-xl overflow-hidden border-2 transition-all hover:shadow-xl hover:shadow-purple-500/30 cursor-pointer ${
-                      isSelected ? 'border-pink-500 shadow-lg shadow-pink-500/50' : 'border-purple-500/30'
+                    className={`bg-black bg-opacity-40 backdrop-blur-sm rounded-xl overflow-hidden border-2 transition-all hover:shadow-xl hover:shadow-red-500/30 cursor-pointer ${
+                      isSelected ? 'border-orange-500 shadow-lg shadow-orange-500/50' : 'border-red-500/30'
                     }`}
                     onClick={() => setSelectedFilm(screening)}
                   >
                     <div className="p-6">
                       <div className="flex items-start justify-between mb-3">
-                        <span className="text-xs font-semibold px-3 py-1 bg-purple-600 rounded-full">
+                        <span className="text-xs font-semibold px-3 py-1 bg-red-600 rounded-full">
                           {screening.category}
                         </span>
                         <button
@@ -286,7 +286,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                             toggleScreening(screening.id);
                           }}
                           className={`transition-all ${
-                            isSelected ? 'text-pink-500 scale-110' : 'text-gray-400 hover:text-pink-400'
+                            isSelected ? 'text-orange-500 scale-110' : 'text-gray-400 hover:text-orange-400'
                           }`}
                         >
                           <Heart className={`w-6 h-6 ${isSelected ? 'fill-current' : ''}`} />
@@ -298,15 +298,15 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                       
                       <div className="space-y-2 text-sm">
                         <div className="flex items-center text-gray-300">
-                          <Calendar className="w-4 h-4 mr-2 text-purple-400" />
+                          <Calendar className="w-4 h-4 mr-2 text-red-400" />
                           {formatDate(screening.date)} at {formatTime(screening.time)}
                         </div>
                         <div className="flex items-center text-gray-300">
-                          <MapPin className="w-4 h-4 mr-2 text-purple-400" />
+                          <MapPin className="w-4 h-4 mr-2 text-red-400" />
                           {screening.venue}
                         </div>
                         <div className="flex items-center text-gray-300">
-                          <Clock className="w-4 h-4 mr-2 text-purple-400" />
+                          <Clock className="w-4 h-4 mr-2 text-red-400" />
                           {screening.duration} min • {screening.country}
                         </div>
                       </div>
@@ -328,9 +328,9 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
         ) : (
           <>
             {/* My Schedule View */}
-            <div className="bg-black bg-opacity-30 backdrop-blur-sm rounded-xl p-6 border border-pink-500/30">
+            <div className="bg-black bg-opacity-40 backdrop-blur-sm rounded-xl p-6 border border-orange-500/30">
               <h2 className="text-2xl font-bold mb-6 flex items-center">
-                <span className="bg-pink-600 w-1 h-8 mr-3"></span>
+                <span className="bg-orange-600 w-1 h-8 mr-3"></span>
                 {isZh ? `我的電影節時間表 (${mySchedule.length} 場)` : `My Festival Schedule (${mySchedule.length} screenings)`}
               </h2>
 
@@ -345,7 +345,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                   </p>
                   <button
                     onClick={() => setView('browse')}
-                    className="mt-6 px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium transition-colors"
+                    className="mt-6 px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors"
                   >
                     {isZh ? '瀏覽電影' : 'Browse Films'}
                   </button>
@@ -358,19 +358,19 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
 
                     return (
                       <div key={date} className="mb-6">
-                        <h3 className="text-lg font-semibold mb-3 text-purple-300">
+                        <h3 className="text-lg font-semibold mb-3 text-red-300">
                           {formatDate(date)}
                         </h3>
                         <div className="space-y-3">
                           {screeningsOnDate.map(screening => (
                             <div
                               key={screening.id}
-                              className="bg-gray-800 bg-opacity-50 rounded-lg p-4 border border-gray-700 hover:border-purple-500 transition-all"
+                              className="bg-gray-800 bg-opacity-50 rounded-lg p-4 border border-gray-700 hover:border-red-500 transition-all"
                             >
                               <div className="flex items-start justify-between">
                                 <div className="flex-1">
                                   <div className="flex items-center gap-3 mb-2">
-                                    <span className="text-purple-400 font-mono font-bold">
+                                    <span className="text-red-400 font-mono font-bold">
                                       {formatTime(screening.time)}
                                     </span>
                                     <h4 className="text-lg font-semibold text-white">
@@ -391,7 +391,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                                 </div>
                                 <button
                                   onClick={() => toggleScreening(screening.id)}
-                                  className="text-pink-500 hover:text-pink-400 transition-colors ml-4"
+                                  className="text-orange-500 hover:text-orange-400 transition-colors ml-4"
                                 >
                                   <X className="w-5 h-5" />
                                 </button>
@@ -416,12 +416,12 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
           onClick={() => setSelectedFilm(null)}
         >
           <div
-            className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl max-w-2xl w-full p-8 border-2 border-purple-500 shadow-2xl shadow-purple-500/50"
+            className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl max-w-2xl w-full p-8 border-2 border-red-500 shadow-2xl shadow-red-500/50"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-start mb-6">
               <div>
-                <span className="text-xs font-semibold px-3 py-1 bg-purple-600 rounded-full">
+                <span className="text-xs font-semibold px-3 py-1 bg-red-600 rounded-full">
                   {selectedFilm.category}
                 </span>
                 <h2 className="text-3xl font-bold mt-3 text-white">{selectedFilm.title}</h2>
@@ -474,8 +474,8 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
               }}
               className={`w-full py-4 rounded-lg font-semibold text-lg transition-all ${
                 selectedScreenings.includes(selectedFilm.id)
-                  ? 'bg-pink-600 hover:bg-pink-700 shadow-lg shadow-pink-500/50'
-                  : 'bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-500/50'
+                  ? 'bg-orange-600 hover:bg-orange-700 shadow-lg shadow-orange-500/50'
+                  : 'bg-red-600 hover:bg-red-700 shadow-lg shadow-red-500/50'
               }`}
             >
               {selectedScreenings.includes(selectedFilm.id) ? (
