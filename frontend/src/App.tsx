@@ -124,7 +124,8 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-function App() {
+// Inner App component that can use useToast
+function AppContent() {
   const { i18n } = useTranslation();
   const isZh = i18n.language === 'tc';
   const { showToast } = useToast();
@@ -491,9 +492,7 @@ function App() {
   }
 
   return (
-    <ToastProvider>
-      <ErrorBoundary>
-        <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
         {/* Skip to main content link for keyboard users */}
         <a
           href="#main-content"
@@ -679,7 +678,16 @@ function App() {
           />
         </Suspense>
       </div>
-    </ErrorBoundary>
+  );
+}
+
+// Main App component that provides ToastProvider
+function App() {
+  return (
+    <ToastProvider>
+      <ErrorBoundary>
+        <AppContent />
+      </ErrorBoundary>
     </ToastProvider>
   );
 }
