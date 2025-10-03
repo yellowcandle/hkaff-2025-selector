@@ -63,7 +63,7 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
   // Prevent body scroll when modal is open and implement focus trap
   useEffect(() => {
     const previouslyFocused = document.activeElement as HTMLElement;
-    document.body.style.overflow = 'hidden';
+    document.body.classList.add('modal-open');
 
     // Focus the modal container
     const modalElement = document.querySelector('[data-testid="film-detail-modal"]') as HTMLElement;
@@ -100,7 +100,7 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
     document.addEventListener('keydown', handleTabKey);
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.classList.remove('modal-open');
       document.removeEventListener('keydown', handleTabKey);
       // Return focus to previously focused element
       if (previouslyFocused) {
@@ -111,7 +111,7 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop"
       role="dialog"
       aria-modal="true"
       aria-labelledby="film-detail-title"

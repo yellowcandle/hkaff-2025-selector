@@ -159,7 +159,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white overflow-auto">
       {/* Header */}
       <div className="bg-black bg-opacity-80 backdrop-blur-sm border-b border-red-600">
         <div className="max-w-7xl mx-auto px-4 py-6">
@@ -409,12 +409,12 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
         )}
       </div>
 
-      {/* Film Detail Modal */}
-      {selectedFilm && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50"
-          onClick={() => setSelectedFilm(null)}
-        >
+          {/* Film Detail Modal */}
+          {selectedFilm && (
+            <div
+              className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50 modal-backdrop"
+              onClick={() => setSelectedFilm(null)}
+            >
           <div
             className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl max-w-2xl w-full p-8 border-2 border-red-500 shadow-2xl shadow-red-500/50"
             onClick={(e) => e.stopPropagation()}
