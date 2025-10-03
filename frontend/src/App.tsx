@@ -17,6 +17,7 @@ import { LoadingSpinner } from './components/Loading/LoadingSpinner';
 const FilmDetail = lazy(() => import('./components/FilmDetail/FilmDetail').then(module => ({ default: module.FilmDetail })));
 const ScheduleView = lazy(() => import('./components/ScheduleView/ScheduleView').then(module => ({ default: module.ScheduleView })));
 const MarkdownExportModal = lazy(() => import('./components/MarkdownExportModal/MarkdownExportModal').then(module => ({ default: module.MarkdownExportModal })));
+const HKAFFScheduler = lazy(() => import('./components/HKAFFScheduler/HKAFFScheduler').then(module => ({ default: module.default })));
 
 // Type imports
 import type { Film, Category, Venue, Screening, Selection } from './types';
@@ -146,7 +147,7 @@ function App() {
   // UI states
   const [selectedFilm, setSelectedFilm] = useState<Film | null>(null);
   const [showExportModal, setShowExportModal] = useState(false);
-  const [currentView, setCurrentView] = useState<'catalogue' | 'schedule'>('catalogue');
+  const [currentView, setCurrentView] = useState<'catalogue' | 'schedule' | 'scheduler'>('catalogue');
 
   // Selection states
   const [userSelections, setUserSelections] = useState<UserSelection[]>([]);
@@ -156,7 +157,7 @@ function App() {
 
   // URL sync utility functions
   const getStateFromURL = (): {
-    view: 'catalogue' | 'schedule' | null;
+    view: 'catalogue' | 'schedule' | 'scheduler' | null;
     filmId: string | null;
     category: string | null;
     venue: string | null;
@@ -165,7 +166,7 @@ function App() {
     const params = new URLSearchParams(window.location.search);
     const view = params.get('view');
     return {
-      view: view === 'catalogue' || view === 'schedule' ? view : null,
+      view: view === 'catalogue' || view === 'schedule' || view === 'scheduler' ? view : null,
       filmId: params.get('film'),
       category: params.get('category'),
       venue: params.get('venue'),
@@ -174,7 +175,7 @@ function App() {
   };
 
   const updateURL = (updates: {
-    view?: 'catalogue' | 'schedule' | null;
+    view?: 'catalogue' | 'schedule' | 'scheduler' | null;
     film?: string | null;
     category?: string | null;
     venue?: string | null;
@@ -554,6 +555,20 @@ function App() {
                         </span>
                       )}
                     </button>
+                    <button
+                      onClick={() => setCurrentView('scheduler')}
+                      role="tab"
+                      aria-selected={currentView === 'scheduler'}
+                      aria-label={isZh ? '現代排程器視圖' : 'Modern Scheduler view'}
+                      aria-controls="main-content"
+                      className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                        currentView === 'scheduler'
+                          ? 'bg-white text-gray-900 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      }`}
+                    >
+                      {isZh ? '現代排程' : 'Scheduler'}
+                    </button>
                   </div>
                 </nav>
 
@@ -601,7 +616,7 @@ function App() {
                 />
               )}
             </>
-          ) : (
+          ) : currentView === 'schedule' ? (
             /* Schedule View */
             <Suspense fallback={
               <div className="flex items-center justify-center p-8">
@@ -612,6 +627,20 @@ function App() {
                 selections={selections}
                 onRemoveScreening={handleRemoveSelection}
                 onExport={handleExport}
+              />
+            </Suspense>
+          ) : (
+            /* Modern Scheduler View */
+            <Suspense fallback={
+              <div className="flex items-center justify-center p-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+            }>
+              <HKAFFScheduler
+                films={films}
+                screenings={screenings}
+                venues={venues}
+                categories={categories}
               />
             </Suspense>
           )}
