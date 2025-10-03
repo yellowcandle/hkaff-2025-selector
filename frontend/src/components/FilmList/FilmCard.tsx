@@ -8,22 +8,27 @@ interface FilmCardProps {
   onClick: (film: Film) => void;
 }
 
-// Category color mapping helper - maps category IDs to Tailwind color classes
-const getCategoryColorClass = (categoryId: string): string => {
-  const colorMap: Record<string, string> = {
-    // Match your actual category IDs from the database
-    'drama': 'bg-category-drama',
-    'comedy': 'bg-category-comedy',
-    'documentary': 'bg-category-documentary',
-    'animation': 'bg-category-animation',
-    'action': 'bg-category-action',
-    'romance': 'bg-category-romance',
-    'thriller': 'bg-category-thriller',
-    'horror': 'bg-category-horror',
-    'scifi': 'bg-category-scifi',
-    'fantasy': 'bg-category-fantasy',
-  };
-  return colorMap[categoryId.toLowerCase()] || 'bg-primary';
+// Category color mapping helper - maps category names/types to colors
+const getCategoryColorClass = (category: Category | null): string => {
+  if (!category) return 'bg-primary';
+  
+  const nameEn = category.name_en?.toLowerCase() || '';
+  const nameTc = category.name_tc || '';
+  
+  // Map based on category name/type
+  if (nameEn.includes('opening') || nameTc.includes('開幕')) return 'bg-[#C72E3A]'; // Primary red
+  if (nameEn.includes('closing') || nameTc.includes('閉幕')) return 'bg-[#E8B339]'; // Gold
+  if (nameEn.includes('special') || nameTc.includes('特別') || nameTc.includes('隆重')) return 'bg-[#5E35B1]'; // Purple
+  if (nameEn.includes('asian') || nameTc.includes('亞洲')) return 'bg-[#3B82F6]'; // Blue
+  if (nameEn.includes('fan') || nameTc.includes('影迷')) return 'bg-[#EC4899]'; // Pink
+  if (nameEn.includes('talent') || nameTc.includes('新秀')) return 'bg-[#10B981]'; // Green
+  if (nameEn.includes('short') || nameTc.includes('短片')) return 'bg-[#F59E0B]'; // Orange
+  if (nameEn.includes('documentary') || nameTc.includes('紀錄')) return 'bg-[#14B8A6]'; // Teal
+  if (nameEn.includes('animation') || nameTc.includes('動畫')) return 'bg-[#A855F7]'; // Purple variant
+  if (nameEn.includes('retrospective') || nameTc.includes('回顧')) return 'bg-[#6366F1]'; // Indigo
+  
+  // Default fallback
+  return 'bg-primary';
 };
 
 export const FilmCard: React.FC<FilmCardProps> = ({ film, category, onClick }) => {
@@ -68,7 +73,7 @@ export const FilmCard: React.FC<FilmCardProps> = ({ film, category, onClick }) =
           <div className="flex items-center gap-2">
             <span
               data-testid="film-category"
-              className={`inline-flex items-center px-3 py-1 text-xs font-semibold text-white rounded-full shadow-sm ${getCategoryColorClass(category?.id || '')}`}
+              className={`inline-flex items-center px-3 py-1 text-xs font-semibold text-white rounded-full shadow-sm ${getCategoryColorClass(category)}`}
               aria-label={`Category: ${categoryName}`}
             >
               {categoryName}
