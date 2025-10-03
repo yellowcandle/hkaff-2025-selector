@@ -1,0 +1,40 @@
+{
+  "app": {
+    "title": "Hong Kong Asian Film Festival 2025",
+    "subtitle": "Screening Selector"
+  },
+  "navigation": {
+    "catalogue": "Film Catalogue",
+    "schedule": "My Schedule",
+    "export": "Export"
+  },
+  "filter": {
+    "category": "Category",
+    "venue": "Venue",
+    "all": "All",
+    "clear": "Clear Filters"
+  },
+  "screening": {
+    "select": "Select",
+    "selected": "Selected",
+    "remove": "Remove",
+    "duration": "Duration",
+    "minutes": "minutes"
+  },
+  "schedule": {
+    "title": "My Schedule",
+    "empty": "No screenings selected yet",
+    "conflicts": "Schedule Conflicts",
+    "export": "Export as Markdown",
+    "clear_all": "Clear All"
+  },
+  "conflict": {
+    "impossible": "Time Overlap",
+    "warning": "Tight Timing",
+    "overlap": "Overlaps {{minutes}} minutes"
+  },
+  "language": {
+    "tc": "繁",
+    "en": "EN"
+  }
+}

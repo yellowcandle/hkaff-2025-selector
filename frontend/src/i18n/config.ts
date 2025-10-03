@@ -2,8 +2,8 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 
 // Import locale files
-import commonTC from '../../public/locales/tc/common.json'
-import commonEN from '../../public/locales/en/common.json'
+import commonTC from '../locales/tc/common.json'
+import commonEN from '../locales/en/common.json'
 
 // Language detection from localStorage
 const getStoredLanguage = (): 'tc' | 'en' => {
