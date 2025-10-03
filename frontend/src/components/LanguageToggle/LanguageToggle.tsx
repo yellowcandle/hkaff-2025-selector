@@ -16,7 +16,7 @@ export const LanguageToggle: React.FC = () => {
     <button
       data-testid="language-toggle"
       onClick={toggleLanguage}
-      className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      className="px-3 py-2 rounded-md text-sm font-medium text-foreground hover:text-foreground hover:bg-muted transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:outline-none"
       aria-label={isZh ? '切換語言至英文' : 'Switch language to Traditional Chinese'}
       title={isZh ? '切換語言' : 'Switch language'}
     >

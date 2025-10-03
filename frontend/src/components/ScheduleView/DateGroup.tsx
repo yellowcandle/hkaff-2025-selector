@@ -43,7 +43,7 @@ export const DateGroup: React.FC<DateGroupProps> = ({
 
   return (
     <div data-testid="date-group" className="border-l-4 border-blue-500 pl-4">
-      <h3 data-testid="date-header" className="text-lg font-semibold text-gray-900 mb-4">
+      <h3 data-testid="date-header" className="text-lg font-semibold text-foreground mb-4">
         {formatDateHeader(date)}
       </h3>
 

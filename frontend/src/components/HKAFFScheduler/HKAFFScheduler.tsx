@@ -162,16 +162,16 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 shadow-sm">
+      <div className="bg-white border-b border-border shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-foreground">
                 {isZh ? '香港亞洲電影節 2025' : 'HKAFF 2025'}
               </h1>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 {isZh ? `${films.length} 部電影 • ${screenings.length} 場放映` : `${films.length} Films • ${screenings.length} Screenings`}
               </p>
             </div>
@@ -181,7 +181,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                 className={`px-6 py-2 rounded-lg font-medium transition-all ${
                   view === 'browse'
                     ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-muted text-card-foreground hover:bg-muted/80'
                 }`}
               >
                 <FilmIcon className="inline mr-2 w-4 h-4" />
@@ -192,7 +192,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                 className={`px-6 py-2 rounded-lg font-medium transition-all relative ${
                   view === 'schedule'
                     ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-muted text-card-foreground hover:bg-muted/80'
                 }`}
               >
                 <Calendar className="inline mr-2 w-4 h-4" />
@@ -213,12 +213,12 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
           <>
             {/* Filters */}
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h2 className="text-xl font-semibold mb-4 text-gray-900">
+              <h2 className="text-xl font-semibold mb-4 text-foreground">
                 {isZh ? '篩選場次' : 'Filter Screenings'}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
+                  <label className="block text-sm font-medium mb-2 text-card-foreground">
                     {isZh ? '類別' : 'Category'}
                   </label>
                   <select
@@ -233,7 +233,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
+                  <label className="block text-sm font-medium mb-2 text-card-foreground">
                     {isZh ? '場地' : 'Venue'}
                   </label>
                   <select
@@ -248,7 +248,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
+                  <label className="block text-sm font-medium mb-2 text-card-foreground">
                     {isZh ? '日期' : 'Date'}
                   </label>
                   <select
@@ -273,12 +273,12 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                   <div
                     key={screening.id}
                     className={`bg-white rounded-lg overflow-hidden border-2 transition-all hover:shadow-lg cursor-pointer ${
-                      isSelected ? 'border-blue-500 shadow-md' : 'border-gray-200'
+                      isSelected ? 'border-blue-500 shadow-md' : 'border-border'
                     }`}
                     onClick={() => setSelectedFilm(screening)}
                   >
                     {screening.film.poster_url && (
-                      <div className="h-48 overflow-hidden bg-gray-100">
+                      <div className="h-48 overflow-hidden bg-muted">
                         <img
                           src={screening.film.poster_url}
                           alt={screening.title}
@@ -298,26 +298,26 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                             toggleScreening(screening.id);
                           }}
                           className={`transition-all ${
-                            isSelected ? 'text-blue-600 scale-110' : 'text-gray-400 hover:text-blue-500'
+                            isSelected ? 'text-blue-600 scale-110' : 'text-muted-foreground hover:text-blue-500'
                           }`}
                         >
                           <Heart className={`w-6 h-6 ${isSelected ? 'fill-current' : ''}`} />
                         </button>
                       </div>
                       
-                      <h3 className="text-xl font-bold mb-2 text-gray-900">{screening.title}</h3>
-                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">{screening.description}</p>
+                      <h3 className="text-xl font-bold mb-2 text-foreground">{screening.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{screening.description}</p>
                       
                       <div className="space-y-2 text-sm">
-                        <div className="flex items-center text-gray-700">
+                        <div className="flex items-center text-card-foreground">
                           <Calendar className="w-4 h-4 mr-2 text-blue-600" />
                           {formatDate(screening.date)} at {formatTime(screening.time)}
                         </div>
-                        <div className="flex items-center text-gray-700">
+                        <div className="flex items-center text-card-foreground">
                           <MapPin className="w-4 h-4 mr-2 text-blue-600" />
                           {screening.venue}
                         </div>
-                        <div className="flex items-center text-gray-700">
+                        <div className="flex items-center text-card-foreground">
                           <Clock className="w-4 h-4 mr-2 text-blue-600" />
                           {screening.duration} min{screening.language && ` • ${screening.language}`}
                         </div>
@@ -330,8 +330,8 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
 
             {filteredScreenings.length === 0 && (
               <div className="text-center py-16 bg-white rounded-lg shadow-md">
-                <FilmIcon className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                <p className="text-xl text-gray-600">
+                <FilmIcon className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+                <p className="text-xl text-muted-foreground">
                   {isZh ? '沒有符合篩選條件的場次' : 'No screenings match your filters'}
                 </p>
               </div>
@@ -341,17 +341,17 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
           <>
             {/* My Schedule View */}
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900">
+              <h2 className="text-2xl font-bold mb-6 text-foreground">
                 {isZh ? `我的電影節時間表 (${mySchedule.length} 場)` : `My Festival Schedule (${mySchedule.length} screenings)`}
               </h2>
 
               {mySchedule.length === 0 ? (
                 <div className="text-center py-16">
-                  <Heart className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                  <p className="text-xl text-gray-600 mb-2">
+                  <Heart className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-xl text-muted-foreground mb-2">
                     {isZh ? '尚未選擇任何場次' : 'No screenings selected yet'}
                   </p>
-                  <p className="text-gray-500">
+                  <p className="text-muted-foreground">
                     {isZh ? '瀏覽電影並加入您的時間表！' : 'Browse films and add them to your schedule!'}
                   </p>
                   <button
@@ -376,7 +376,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                           {screeningsOnDate.map(screening => (
                             <div
                               key={screening.id}
-                              className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-blue-500 transition-all"
+                              className="bg-muted rounded-lg p-4 border border-border hover:border-blue-500 transition-all"
                             >
                               <div className="flex items-start justify-between">
                                 <div className="flex-1">
@@ -384,11 +384,11 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                                     <span className="text-blue-600 font-mono font-bold">
                                       {formatTime(screening.time)}
                                     </span>
-                                    <h4 className="text-lg font-semibold text-gray-900">
+                                    <h4 className="text-lg font-semibold text-foreground">
                                       {screening.title}
                                     </h4>
                                   </div>
-                                  <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                                     <span className="flex items-center">
                                       <MapPin className="w-3 h-3 mr-1" />
                                       {screening.venue}
@@ -446,48 +446,48 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
                 <span className="text-xs font-semibold px-3 py-1 bg-blue-100 text-blue-800 rounded-full">
                   {selectedFilm.category}
                 </span>
-                <h2 className="text-3xl font-bold mt-3 text-gray-900">{selectedFilm.title}</h2>
+                <h2 className="text-3xl font-bold mt-3 text-foreground">{selectedFilm.title}</h2>
                 {selectedFilm.director && (
-                  <p className="text-lg text-gray-600 mt-1">{selectedFilm.director}</p>
+                  <p className="text-lg text-muted-foreground mt-1">{selectedFilm.director}</p>
                 )}
               </div>
               <button
                 onClick={() => setSelectedFilm(null)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-muted-foreground hover:text-muted-foreground transition-colors"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
 
-            <p className="text-gray-700 mb-6 leading-relaxed">{selectedFilm.description}</p>
+            <p className="text-card-foreground mb-6 leading-relaxed">{selectedFilm.description}</p>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="text-sm text-gray-600 mb-1">
+              <div className="bg-muted rounded-lg p-4">
+                <div className="text-sm text-muted-foreground mb-1">
                   {isZh ? '日期與時間' : 'Date & Time'}
                 </div>
-                <div className="font-semibold text-gray-900">
+                <div className="font-semibold text-foreground">
                   {formatDate(selectedFilm.date)}<br />
                   {formatTime(selectedFilm.time)}
                 </div>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="text-sm text-gray-600 mb-1">
+              <div className="bg-muted rounded-lg p-4">
+                <div className="text-sm text-muted-foreground mb-1">
                   {isZh ? '場地' : 'Venue'}
                 </div>
-                <div className="font-semibold text-gray-900">{selectedFilm.venue}</div>
+                <div className="font-semibold text-foreground">{selectedFilm.venue}</div>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="text-sm text-gray-600 mb-1">
+              <div className="bg-muted rounded-lg p-4">
+                <div className="text-sm text-muted-foreground mb-1">
                   {isZh ? '片長' : 'Duration'}
                 </div>
-                <div className="font-semibold text-gray-900">{selectedFilm.duration} {isZh ? '分鐘' : 'minutes'}</div>
+                <div className="font-semibold text-foreground">{selectedFilm.duration} {isZh ? '分鐘' : 'minutes'}</div>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="text-sm text-gray-600 mb-1">
+              <div className="bg-muted rounded-lg p-4">
+                <div className="text-sm text-muted-foreground mb-1">
                   {isZh ? '語言' : 'Language'}
                 </div>
-                <div className="font-semibold text-gray-900">{selectedFilm.language || (isZh ? '未指定' : 'Not specified')}</div>
+                <div className="font-semibold text-foreground">{selectedFilm.language || (isZh ? '未指定' : 'Not specified')}</div>
               </div>
             </div>
 

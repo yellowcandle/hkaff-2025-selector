@@ -27,7 +27,7 @@ export const ScreeningItem: React.FC<ScreeningItemProps> = ({
   const hasConflicts = conflicts && conflicts.length > 0;
 
   return (
-    <div data-testid="schedule-item" className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+    <div data-testid="schedule-item" className="bg-card rounded-lg p-4 border border-border shadow-sm">
       <div className="flex items-start justify-between gap-4">
         {/* Screening Info */}
         <div className="flex-1">
@@ -44,19 +44,19 @@ export const ScreeningItem: React.FC<ScreeningItemProps> = ({
             {/* Details */}
             <div className="flex-1">
               <div className="flex items-baseline gap-2 mb-1">
-                <span data-testid="schedule-time" className="text-lg font-bold text-gray-900">
+                <span data-testid="schedule-time" className="text-lg font-bold text-foreground">
                   {time}
                 </span>
-                <span data-testid="schedule-film-title" className="text-gray-900 font-medium">
+                <span data-testid="schedule-film-title" className="text-foreground font-medium">
                   {filmTitle}
                 </span>
               </div>
 
-              <div data-testid="schedule-venue" className="text-gray-600 text-sm mb-1">
+              <div data-testid="schedule-venue" className="text-muted-foreground text-sm mb-1">
                 {venueName}
               </div>
 
-              <div className="text-gray-500 text-xs">
+              <div className="text-muted-foreground text-xs">
                 {screening_snapshot.duration_minutes} {isZh ? '分鐘' : 'minutes'}
               </div>
 

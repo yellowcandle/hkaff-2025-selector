@@ -102,10 +102,10 @@ class ErrorBoundary extends React.Component<
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+        <div className="min-h-screen bg-background flex items-center justify-center p-4">
+          <div className="bg-card rounded-lg shadow-lg p-8 max-w-md w-full">
             <h1 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h1>
-            <p className="text-gray-700 mb-4">
+            <p className="text-card-foreground mb-4">
               {this.state.error?.message || 'An unexpected error occurred'}
             </p>
             <button
@@ -461,7 +461,7 @@ function AppContent() {
   // T059: Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <LoadingSpinner 
           size="lg" 
           text={isZh ? '載入中...' : 'Loading...'} 
@@ -473,12 +473,12 @@ function AppContent() {
   // T059: Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="bg-card rounded-lg shadow-lg p-8 max-w-md w-full">
           <h1 className="text-2xl font-bold text-red-600 mb-4">
             {isZh ? '載入失敗' : 'Failed to Load'}
           </h1>
-          <p className="text-gray-700 mb-4">{error}</p>
+          <p className="text-card-foreground mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
             aria-label={isZh ? '重新載入頁面' : 'Reload page'}
@@ -492,7 +492,7 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
         {/* Skip to main content link for keyboard users */}
         <a
           href="#main-content"
@@ -610,8 +610,8 @@ function AppContent() {
 
               {/* Film List */}
               {filteredFilms.length === 0 ? (
-                <div className="text-center py-12 bg-white rounded-lg shadow-md">
-                  <p className="text-gray-600">
+                <div className="text-center py-12 bg-card rounded-lg shadow-md">
+                  <p className="text-muted-foreground">
                     {isZh ? '沒有符合條件的電影' : 'No films match the filters'}
                   </p>
                 </div>

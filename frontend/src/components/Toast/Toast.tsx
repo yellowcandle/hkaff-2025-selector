@@ -28,7 +28,7 @@ export const Toast: React.FC<ToastProps> = ({ message, type, duration = 3000, on
       case 'info':
         return 'bg-blue-500 text-white';
       default:
-        return 'bg-gray-500 text-white';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -47,7 +47,7 @@ export const Toast: React.FC<ToastProps> = ({ message, type, duration = 3000, on
             setIsVisible(false);
             setTimeout(onClose, 300);
           }}
-          className="ml-3 text-white hover:text-gray-200 focus:outline-none"
+          className="ml-3 text-current hover:opacity-80 focus:outline-none"
           aria-label="Close notification"
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">

@@ -134,9 +134,9 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
           data-testid="close-modal-btn"
           onClick={onClose}
           aria-label={isZh ? '關閉電影詳情' : 'Close film details'}
-          className="absolute top-4 right-4 z-10 min-h-[44px] min-w-[44px] p-2 rounded-full bg-white shadow-md hover:bg-gray-100 focus:ring-2 focus:ring-blue-500"
+          className="absolute top-4 right-4 z-10 min-h-[44px] min-w-[44px] p-2 rounded-full bg-card shadow-md hover:bg-muted focus:ring-2 focus:ring-blue-500"
         >
-          <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <svg className="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
@@ -160,7 +160,7 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
 
             {/* Film Info */}
             <div className="flex-1">
-              <h2 id="film-detail-title" className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              <h2 id="film-detail-title" className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                 {title}
               </h2>
 
@@ -170,7 +170,7 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
                 </span>
               )}
 
-              <div className="space-y-2 text-gray-700">
+              <div className="space-y-2 text-card-foreground">
                 <div data-testid="film-director" className="flex">
                   <span className="font-semibold w-24">{isZh ? '導演' : 'Director'}:</span>
                   <span>{film.director}</span>
@@ -188,10 +188,10 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
               </div>
 
               <div data-testid="film-synopsis" className="mt-4">
-                <h3 className="font-semibold text-gray-900 mb-2">
+                <h3 className="font-semibold text-foreground mb-2">
                   {isZh ? '劇情簡介' : 'Synopsis'}
                 </h3>
-                <p className="text-gray-700 leading-relaxed">{synopsis}</p>
+                <p className="text-card-foreground leading-relaxed">{synopsis}</p>
               </div>
             </div>
           </div>
@@ -199,7 +199,7 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
 
         {/* Screenings Section */}
         <div className="p-6">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">
+          <h3 className="text-xl font-semibold text-foreground mb-4">
             {isZh ? '放映場次' : 'Screenings'}
           </h3>
 

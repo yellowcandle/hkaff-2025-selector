@@ -70,7 +70,7 @@ export const ScreeningSelector: React.FC<ScreeningSelectorProps> = ({
 
   if (screenings.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 text-muted-foreground">
         {isZh ? '暫無放映場次' : 'No screenings available'}
       </div>
     );
@@ -91,7 +91,7 @@ export const ScreeningSelector: React.FC<ScreeningSelectorProps> = ({
           <div
             key={screening.id}
             data-testid="screening-item"
-            className="border rounded-lg transition-colors border-gray-200 hover:bg-gray-50"
+            className="border rounded-lg transition-colors border-border hover:bg-muted/50"
           >
             {/* Conflict Warning Banner - shown only on hover/focus */}
             {hasConflict && (
@@ -144,15 +144,15 @@ export const ScreeningSelector: React.FC<ScreeningSelectorProps> = ({
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 {/* Screening Info */}
                 <div className="flex-1">
-                  <div data-testid="screening-datetime" className="font-semibold text-gray-900 mb-1">
+                  <div data-testid="screening-datetime" className="font-semibold text-foreground mb-1">
                     {date} ({dayOfWeek}) {time}
                   </div>
 
-                  <div data-testid="screening-venue" className="text-gray-600 text-sm">
+                  <div data-testid="screening-venue" className="text-muted-foreground text-sm">
                     {venue ? (isZh ? venue.name_tc : venue.name_en) : screening.venue_id}
                   </div>
 
-                  <div className="text-gray-500 text-sm mt-1">
+                  <div className="text-muted-foreground text-sm mt-1">
                     {screening.duration_minutes} {isZh ? '分鐘' : 'minutes'} • {screening.language}
                   </div>
                 </div>
@@ -173,7 +173,7 @@ export const ScreeningSelector: React.FC<ScreeningSelectorProps> = ({
                   }
                   className={`min-h-[44px] px-6 py-2 rounded-md font-medium transition-colors whitespace-nowrap ${
                     isSelected
-                      ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                      ? 'bg-muted text-muted-foreground cursor-not-allowed'
                       : 'bg-blue-600 text-white hover:bg-blue-700'
                   }`}
                 >

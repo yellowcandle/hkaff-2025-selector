@@ -58,12 +58,12 @@ export const MarkdownExportModal: React.FC<MarkdownExportModalProps> = ({
       <div className="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
-          <h2 id="export-modal-title" className="text-2xl font-bold text-gray-900">
+          <h2 id="export-modal-title" className="text-2xl font-bold text-foreground">
             {isZh ? '匯出 Markdown' : 'Export Markdown'}
           </h2>
           <button
             onClick={onClose}
-            className="min-h-[44px] min-w-[44px] p-2 text-gray-400 hover:text-gray-600 transition-colors focus:ring-2 focus:ring-blue-500 rounded-md"
+            className="min-h-[44px] min-w-[44px] p-2 text-muted-foreground hover:text-foreground transition-colors focus:ring-2 focus:ring-blue-500 rounded-md"
             aria-label={isZh ? '關閉匯出視窗' : 'Close export modal'}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -74,19 +74,19 @@ export const MarkdownExportModal: React.FC<MarkdownExportModalProps> = ({
 
         {/* Content */}
         <div className="p-6 overflow-y-auto max-h-[60vh]">
-          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-            <pre className="whitespace-pre-wrap text-sm text-gray-800 font-mono">
+          <div className="bg-muted rounded-lg p-4 border border-border">
+            <pre className="whitespace-pre-wrap text-sm text-foreground font-mono">
               {markdownContent}
             </pre>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
+        <div className="flex justify-end gap-3 p-6 border-t border-border bg-muted">
           <button
             onClick={handleCopy}
             aria-label={isZh ? '複製 Markdown 內容到剪貼簿' : 'Copy Markdown content to clipboard'}
-            className="min-h-[44px] px-6 py-2 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors focus:ring-2 focus:ring-blue-500"
+            className="min-h-[44px] px-6 py-2 bg-card border border-border text-card-foreground rounded-md hover:bg-muted transition-colors focus:ring-2 focus:ring-blue-500"
           >
             {copied
               ? isZh
