@@ -12,6 +12,15 @@ export default {
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
+  		fontSize: {
+  			'4xl': ['2.5rem', { lineHeight: '1.2', letterSpacing: '-0.02em' }],
+  			'3xl': ['2rem', { lineHeight: '1.3', letterSpacing: '-0.01em' }],
+  			'2xl': ['1.5rem', { lineHeight: '1.4' }],
+  			'xl': ['1.25rem', { lineHeight: '1.4' }],
+  		},
+  		fontFamily: {
+  			sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Noto Sans TC', 'sans-serif'],
+  		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
@@ -52,6 +61,24 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
+  			},
+  			category: {
+  				drama: 'hsl(var(--category-drama))',
+  				comedy: 'hsl(var(--category-comedy))',
+  				documentary: 'hsl(var(--category-documentary))',
+  				animation: 'hsl(var(--category-animation))',
+  				action: 'hsl(var(--category-action))',
+  				romance: 'hsl(var(--category-romance))',
+  				thriller: 'hsl(var(--category-thriller))',
+  				horror: 'hsl(var(--category-horror))',
+  				scifi: 'hsl(var(--category-scifi))',
+  				fantasy: 'hsl(var(--category-fantasy))',
+  			},
+  			venue: {
+  				cultural: 'hsl(var(--venue-cultural))',
+  				cinema: 'hsl(var(--venue-cinema))',
+  				outdoor: 'hsl(var(--venue-outdoor))',
+  				special: 'hsl(var(--venue-special))',
   			}
   		}
   	}

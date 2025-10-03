@@ -6,22 +6,26 @@ interface SkeletonCardProps {
 
 export const SkeletonCard: React.FC<SkeletonCardProps> = ({ className = '' }) => {
   return (
-    <div className={`w-full bg-white rounded-lg shadow-md overflow-hidden animate-pulse ${className}`}>
+    <div className={`w-full bg-card rounded-xl shadow-md overflow-hidden animate-pulse ${className}`}>
       {/* Poster Skeleton */}
-      <div className="aspect-[2/3] bg-gray-200 relative">
-        <div className="w-full h-full bg-gray-300"></div>
+      <div className="aspect-[2/3] bg-muted relative">
+        <div className="w-full h-full bg-gradient-to-br from-muted to-muted-foreground/10"></div>
       </div>
 
       {/* Content Skeleton */}
-      <div className="p-4">
-        {/* Title Skeleton */}
-        <div className="space-y-2 mb-2">
-          <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-          <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+      <div className="p-4 space-y-3">
+        {/* Category Badge Skeleton */}
+        <div className="h-6 w-20 bg-muted rounded-full"></div>
+        
+        {/* Title Skeleton - Two lines */}
+        <div className="space-y-2">
+          <div className="h-5 bg-muted rounded w-3/4"></div>
+          <div className="h-5 bg-muted rounded w-1/2"></div>
         </div>
 
-        {/* Category Skeleton */}
-        <div className="h-6 bg-gray-300 rounded w-20"></div>
+        {/* Metadata Skeletons */}
+        <div className="h-4 bg-muted rounded w-2/3"></div>
+        <div className="h-4 bg-muted rounded w-1/2"></div>
       </div>
     </div>
   );

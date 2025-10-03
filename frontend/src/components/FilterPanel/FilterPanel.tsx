@@ -196,11 +196,11 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   return (
     <div className="bg-white p-4 rounded-lg shadow-md mb-6">
       <div className="flex flex-col gap-4">
-        {/* Search Bar */}
+        {/* Search Bar - Enhanced with better focus states */}
         <div className="relative w-full">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg
-              className="h-5 w-5 text-gray-400"
+              className="h-5 w-5 text-muted-foreground"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -213,15 +213,15 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder={isZh ? '搜尋電影名稱、導演或類別...' : 'Search by title, director, or category...'}
+            placeholder={isZh ? '搜尋電影...' : 'Search films...'}
             aria-label={isZh ? '搜尋電影' : 'Search films'}
-            className="w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
+            className="w-full pl-10 pr-10 py-3 border-2 border-input rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary text-foreground placeholder-muted-foreground transition-all duration-200 hover:border-primary/50"
           />
           {searchQuery && (
             <button
               onClick={() => onSearchChange('')}
               aria-label={isZh ? '清除搜尋' : 'Clear search'}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-gray-600 text-gray-400"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-foreground text-muted-foreground transition-colors"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -241,7 +241,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 setIsCategoryOpen(newOpen);
                 setIsVenueOpen(false);
                 if (newOpen) {
-                  // Set focus to selected item or first item when opening
                   const selectedIndex = selectedCategory
                     ? categories.findIndex(c => c.id === selectedCategory) + 1
                     : 0;
@@ -254,10 +253,20 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               aria-label={isZh ? '選擇類別' : 'Select category'}
               aria-expanded={isCategoryOpen}
               aria-haspopup="listbox"
-              className="w-full min-h-[44px] max-w-[300px] px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-left flex justify-between items-center hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className={`w-full min-h-[44px] max-w-[300px] px-4 py-3 rounded-xl shadow-sm text-left flex justify-between items-center transition-all duration-200 ${
+                isCategoryOpen 
+                  ? 'bg-primary text-primary-foreground ring-2 ring-primary shadow-md' 
+                  : 'bg-card border-2 border-input hover:border-primary/50 hover:shadow-md'
+              } focus:ring-2 focus:ring-primary focus:ring-offset-2`}
             >
-              <span className="text-gray-700">{selectedCategoryName}</span>
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <span className="font-medium">{selectedCategoryName}</span>
+              <svg 
+                className={`w-5 h-5 transition-transform duration-200 ${isCategoryOpen ? 'rotate-180' : ''}`}
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24" 
+                aria-hidden="true"
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
@@ -269,7 +278,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               aria-label={isZh ? '類別選項' : 'Category options'}
               className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-xl max-h-60 overflow-auto"
             >
-              <div
+               <div
                 role="option"
                 aria-selected={!selectedCategory}
                 data-testid="category-option"
@@ -287,11 +296,20 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   }
                 }}
                 tabIndex={0}
-                className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center text-gray-700 transition-colors duration-150 ${
-                  focusedCategoryIndex === 0 ? 'bg-blue-100 ring-2 ring-inset ring-blue-500' : ''
+                className={`min-h-[44px] px-4 py-3 cursor-pointer flex items-center justify-between transition-all duration-150 ${
+                  !selectedCategory 
+                    ? 'bg-primary/10 text-primary font-semibold border-l-4 border-primary' 
+                    : 'hover:bg-accent/50 text-foreground'
+                } ${
+                  focusedCategoryIndex === 0 ? 'ring-2 ring-inset ring-primary' : ''
                 }`}
               >
-                {isZh ? '所有類別' : 'All Categories'}
+                <span>{isZh ? '所有類別' : 'All Categories'}</span>
+                {!selectedCategory && (
+                  <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                )}
               </div>
               {categories
                 .sort((a, b) => a.sort_order - b.sort_order)
@@ -317,11 +335,18 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                         }
                       }}
                       tabIndex={0}
-                      className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center text-gray-700 transition-colors duration-150 ${
-                        selectedCategory === category.id ? 'bg-blue-100 font-semibold text-blue-900' : ''
-                      } ${focusedCategoryIndex === optionIndex ? 'ring-2 ring-inset ring-blue-500' : ''}`}
+                      className={`min-h-[44px] px-4 py-3 cursor-pointer flex items-center justify-between transition-all duration-150 ${
+                        selectedCategory === category.id 
+                          ? 'bg-primary/10 text-primary font-semibold border-l-4 border-primary' 
+                          : 'hover:bg-accent/50 text-foreground'
+                      } ${focusedCategoryIndex === optionIndex ? 'ring-2 ring-inset ring-primary' : ''}`}
                     >
-                      {isZh ? category.name_tc : category.name_en}
+                      <span>{isZh ? category.name_tc : category.name_en}</span>
+                      {selectedCategory === category.id && (
+                        <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
                     </div>
                   );
                 })}
@@ -338,7 +363,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               setIsVenueOpen(newOpen);
               setIsCategoryOpen(false);
               if (newOpen) {
-                // Set focus to selected item or first item when opening
                 const selectedIndex = selectedVenue
                   ? venues.findIndex(v => v.id === selectedVenue) + 1
                   : 0;
@@ -351,10 +375,20 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             aria-label={isZh ? '選擇場地' : 'Select venue'}
             aria-expanded={isVenueOpen}
             aria-haspopup="listbox"
-            className="w-full min-h-[44px] max-w-[300px] px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-left flex justify-between items-center hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className={`w-full min-h-[44px] max-w-[300px] px-4 py-3 rounded-xl shadow-sm text-left flex justify-between items-center transition-all duration-200 ${
+              isVenueOpen 
+                ? 'bg-primary text-primary-foreground ring-2 ring-primary shadow-md' 
+                : 'bg-card border-2 border-input hover:border-primary/50 hover:shadow-md'
+            } focus:ring-2 focus:ring-primary focus:ring-offset-2`}
           >
-            <span className="text-gray-700">{selectedVenueName}</span>
-            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <span className="font-medium">{selectedVenueName}</span>
+            <svg 
+              className={`w-5 h-5 transition-transform duration-200 ${isVenueOpen ? 'rotate-180' : ''}`}
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24" 
+              aria-hidden="true"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
@@ -384,11 +418,20 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   }
                 }}
                 tabIndex={0}
-                className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center text-gray-700 transition-colors duration-150 ${
-                  focusedVenueIndex === 0 ? 'bg-blue-100 ring-2 ring-inset ring-blue-500' : ''
+                className={`min-h-[44px] px-4 py-3 cursor-pointer flex items-center justify-between transition-all duration-150 ${
+                  !selectedVenue 
+                    ? 'bg-primary/10 text-primary font-semibold border-l-4 border-primary' 
+                    : 'hover:bg-accent/50 text-foreground'
+                } ${
+                  focusedVenueIndex === 0 ? 'ring-2 ring-inset ring-primary' : ''
                 }`}
               >
-                {isZh ? '所有場地' : 'All Venues'}
+                <span>{isZh ? '所有場地' : 'All Venues'}</span>
+                {!selectedVenue && (
+                  <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                )}
               </div>
               {venues.map((venue, index) => {
                 const optionIndex = index + 1; // +1 because "All Venues" is at index 0
@@ -412,11 +455,18 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                       }
                     }}
                     tabIndex={0}
-                    className={`min-h-[44px] px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center text-gray-700 transition-colors duration-150 ${
-                      selectedVenue === venue.id ? 'bg-blue-100 font-semibold text-blue-900' : ''
-                    } ${focusedVenueIndex === optionIndex ? 'ring-2 ring-inset ring-blue-500' : ''}`}
+                    className={`min-h-[44px] px-4 py-3 cursor-pointer flex items-center justify-between transition-all duration-150 ${
+                      selectedVenue === venue.id 
+                        ? 'bg-primary/10 text-primary font-semibold border-l-4 border-primary' 
+                        : 'hover:bg-accent/50 text-foreground'
+                    } ${focusedVenueIndex === optionIndex ? 'ring-2 ring-inset ring-primary' : ''}`}
                   >
-                    {isZh ? venue.name_tc : venue.name_en}
+                    <span>{isZh ? venue.name_tc : venue.name_en}</span>
+                    {selectedVenue === venue.id && (
+                      <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
                   </div>
                 );
               })}
@@ -430,7 +480,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             data-testid="clear-filters"
             onClick={onClearFilters}
             aria-label={isZh ? '清除所有篩選' : 'Clear all filters'}
-            className="min-h-[44px] px-4 py-2 text-sm text-blue-600 hover:text-blue-800 hover:underline whitespace-nowrap focus:ring-2 focus:ring-blue-500 rounded-md"
+            className="min-h-[44px] px-6 py-2 rounded-xl bg-secondary text-secondary-foreground font-semibold hover:bg-secondary/80 hover:shadow-md focus:ring-2 focus:ring-secondary focus:ring-offset-2 transition-all duration-200 whitespace-nowrap"
           >
             {isZh ? '清除篩選' : 'Clear Filters'}
           </button>

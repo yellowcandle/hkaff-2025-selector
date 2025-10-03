@@ -502,34 +502,37 @@ function AppContent() {
         </a>
 
         {/* Header */}
-        <header className="bg-white shadow-sm sticky top-0 z-40">
+        <header className="bg-card shadow-md sticky top-0 z-40 border-b border-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <div className="flex flex-col">
-                <h1 className="text-lg font-semibold text-gray-900 leading-tight">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent leading-tight">
                   {isZh ? '香港亞洲電影節 2025' : 'HKAFF 2025'}
                 </h1>
-                <p className="text-xs text-gray-600 leading-tight">
+                <p className="text-xs text-muted-foreground leading-tight">
                   {isZh ? '選片助手' : 'Screening Selector'}
                 </p>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 {/* View Toggle */}
                 <nav role="navigation" aria-label={isZh ? '主要導航' : 'Main navigation'}>
-                  <div className="flex bg-gray-100 rounded-lg p-1" role="tablist">
+                  <div className="flex bg-muted rounded-xl p-1 shadow-inner" role="tablist">
                     <button
                       onClick={() => setCurrentView('catalogue')}
                       role="tab"
                       aria-selected={currentView === 'catalogue'}
                       aria-label={isZh ? '影片目錄視圖' : 'Catalogue view'}
                       aria-controls="main-content"
-                      className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                      className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
                         currentView === 'catalogue'
-                          ? 'bg-white text-gray-900 shadow-sm'
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                          ? 'bg-primary text-primary-foreground shadow-md transform scale-105'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
                       }`}
                     >
+                      <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                      </svg>
                       {isZh ? '影片目錄' : 'Catalogue'}
                     </button>
                     <button
@@ -538,16 +541,19 @@ function AppContent() {
                       aria-selected={currentView === 'schedule'}
                       aria-label={isZh ? `我的時間表，已選 ${selections.length} 場` : `My Schedule, ${selections.length} selected`}
                       aria-controls="main-content"
-                      className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 relative ${
+                      className={`relative px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
                         currentView === 'schedule'
-                          ? 'bg-white text-gray-900 shadow-sm'
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                          ? 'bg-primary text-primary-foreground shadow-md transform scale-105'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
                       }`}
                     >
+                      <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
                       {isZh ? '我的時間表' : 'My Schedule'}
                       {selections.length > 0 && (
                         <span
-                          className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full min-w-[18px] h-4 px-1 flex items-center justify-center"
+                          className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 flex items-center justify-center text-xs font-bold bg-gradient-to-r from-secondary to-accent text-secondary-foreground rounded-full shadow-lg ring-2 ring-background"
                           aria-hidden="true"
                         >
                           {selections.length}
@@ -560,12 +566,15 @@ function AppContent() {
                       aria-selected={currentView === 'scheduler'}
                       aria-label={isZh ? '現代排程器視圖' : 'Modern Scheduler view'}
                       aria-controls="main-content"
-                      className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                      className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
                         currentView === 'scheduler'
-                          ? 'bg-white text-gray-900 shadow-sm'
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                          ? 'bg-primary text-primary-foreground shadow-md transform scale-105'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
                       }`}
                     >
+                      <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
                       {isZh ? '現代排程' : 'Scheduler'}
                     </button>
                   </div>

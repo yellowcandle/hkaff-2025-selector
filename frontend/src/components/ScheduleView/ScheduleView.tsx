@@ -107,16 +107,26 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
 
   if (selections.length === 0) {
     return (
-      <div data-testid="schedule-view" className="bg-white rounded-lg shadow-md p-8">
-        <div data-testid="schedule-empty-state" className="text-center py-12">
-          <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            {isZh ? '沒有已選場次' : 'No screenings selected'}
+      <div data-testid="schedule-view" className="bg-card rounded-xl shadow-lg p-12">
+        <div data-testid="schedule-empty-state" className="text-center max-w-md mx-auto space-y-6">
+          {/* Illustration - Larger, colorful icon with gradient background */}
+          <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+            <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          
+          {/* Heading */}
+          <h3 className="text-2xl font-bold text-foreground">
+            {isZh ? '開始規劃您的電影之旅' : 'Start Planning Your Film Journey'}
           </h3>
-          <p className="text-gray-500">
-            {isZh ? '選擇電影場次來建立您的觀影時間表' : 'Select film screenings to build your schedule'}
+          
+          {/* Description */}
+          <p className="text-muted-foreground leading-relaxed">
+            {isZh 
+              ? '瀏覽影片目錄，選擇您喜愛的場次，建立專屬的觀影時間表' 
+              : 'Browse the catalogue, select your favorite screenings, and build your personalized schedule'
+            }
           </p>
         </div>
       </div>
@@ -124,17 +134,17 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
   }
 
   return (
-    <div data-testid="schedule-view" className="bg-white rounded-lg shadow-md">
+    <div data-testid="schedule-view" className="bg-card rounded-xl shadow-md">
       {/* Header with Export Button */}
-      <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-900">
+      <div className="p-6 border-b border-border flex justify-between items-center">
+        <h2 className="text-3xl font-bold text-foreground">
           {isZh ? '我的觀影時間表' : 'My Schedule'}
         </h2>
         <button
           data-testid="export-btn"
           onClick={onExport}
           aria-label={isZh ? '匯出我的觀影時間表為 Markdown' : 'Export my schedule as Markdown'}
-          className="min-h-[44px] px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="min-h-[44px] px-6 py-2 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 hover:shadow-md transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-offset-2 font-semibold"
         >
           {isZh ? '匯出 Markdown' : 'Export Markdown'}
         </button>
