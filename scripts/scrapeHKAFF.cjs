@@ -219,13 +219,19 @@ async function scrapeScreenings(page, films, venues) {
   const allScreenings = [];
 
   // Scrape screenings from each film detail page
+  console.log(`Extracting screenings from ${films.length} films...`);
+  
   for (let i = 0; i < films.length; i++) {
     const film = films[i];
+    
+    if ((i + 1) % 10 === 0) {
+      console.log(`  Progress: ${i + 1}/${films.length} films processed...`);
+    }
     
     try {
       await page.goto(film.detail_url_tc, { waitUntil: 'domcontentloaded', timeout: 10000 });
 
-      const filmScreenings = await page.evaluate((filmId, filmRuntime) => {
+      const filmScreenings = await page.evaluate(({ filmId, filmRuntime }) => {
         const screeningTable = document.querySelector('.time-venue-table');
         if (!screeningTable) return [];
 
@@ -245,7 +251,7 @@ async function scrapeScreenings(page, films, venues) {
         });
 
         return screenings;
-      }, film.id, film.runtime_minutes);
+      }, { filmId: film.id, filmRuntime: film.runtime_minutes });
 
       // Convert to proper screening objects with ISO datetime
       filmScreenings.forEach(screening => {
@@ -281,8 +287,12 @@ async function scrapeScreenings(page, films, venues) {
           });
         }
       });
+      
+      if (filmScreenings.length > 0) {
+        console.log(`    Found ${filmScreenings.length} screenings for ${film.title_tc || film.id}`);
+      }
     } catch (err) {
-      // Silent fail for individual films
+      console.warn(`    Error processing ${film.id}: ${err.message}`);
     }
   }
 

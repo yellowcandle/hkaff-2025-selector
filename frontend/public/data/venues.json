@@ -1,1 +1,66 @@
-[]
+[
+  {
+    "id": "venue-1",
+    "name_tc": "百老匯電影中心",
+    "name_en": "Broadway Cinematheque",
+    "address_tc": "",
+    "address_en": "",
+    "map_url": ""
+  },
+  {
+    "id": "venue-2",
+    "name_tc": "PREMIERE ELEMENTS",
+    "name_en": "PREMIERE ELEMENTS",
+    "address_tc": "",
+    "address_en": "",
+    "map_url": ""
+  },
+  {
+    "id": "venue-3",
+    "name_tc": "MOViE MOViE Pacific Place",
+    "name_en": "MOViE MOViE Pacific Place",
+    "address_tc": "",
+    "address_en": "",
+    "map_url": ""
+  },
+  {
+    "id": "venue-4",
+    "name_tc": "MOViE MOViE Cityplaza",
+    "name_en": "MOViE MOViE Cityplaza",
+    "address_tc": "",
+    "address_en": "",
+    "map_url": ""
+  },
+  {
+    "id": "venue-5",
+    "name_tc": "GALA CINEMA",
+    "name_en": "GALA CINEMA",
+    "address_tc": "",
+    "address_en": "",
+    "map_url": ""
+  },
+  {
+    "id": "venue-6",
+    "name_tc": "PALACE ifc",
+    "name_en": "PALACE ifc",
+    "address_tc": "",
+    "address_en": "",
+    "map_url": ""
+  },
+  {
+    "id": "venue-7",
+    "name_tc": "MY CINEMA YOHO MALL",
+    "name_en": "MY CINEMA YOHO MALL",
+    "address_tc": "",
+    "address_en": "",
+    "map_url": ""
+  },
+  {
+    "id": "venue-8",
+    "name_tc": "B+ cinema apm",
+    "name_en": "B+ cinema apm",
+    "address_tc": "",
+    "address_en": "",
+    "map_url": ""
+  }
+]
