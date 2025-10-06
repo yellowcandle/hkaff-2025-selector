@@ -39,23 +39,23 @@ async function scrapeVenues(page) {
 async function scrapeCategories(page) {
   console.log('🎬 Scraping categories...');
 
-  // Hardcoded categories from HKAFF 2025
+  // Hardcoded categories from HKAFF 2025 with correct section IDs
   const categories = [
-    { id: 'category-1', name_tc: '開幕電影', name_en: 'Opening Film', sort_order: 0, description_tc: '', description_en: '' },
-    { id: 'category-2', name_tc: '神秘場', name_en: 'Surprise Screening', sort_order: 1, description_tc: '', description_en: '' },
-    { id: 'category-3', name_tc: '閉幕電影', name_en: 'Closing Film', sort_order: 2, description_tc: '', description_en: '' },
-    { id: 'category-4', name_tc: '隆重呈獻', name_en: 'Special Presentation', sort_order: 3, description_tc: '', description_en: '' },
-    { id: 'category-5', name_tc: '特別推介', name_en: 'Special Recommendation', sort_order: 4, description_tc: '', description_en: '' },
-    { id: 'category-6', name_tc: '香港Short Short地', name_en: 'Hong Kong Short Short', sort_order: 5, description_tc: '', description_en: '' },
-    { id: 'category-7', name_tc: '亞洲新導演獎', name_en: 'Asian New Director Award', sort_order: 6, description_tc: '', description_en: '' },
-    { id: 'category-8', name_tc: '影迷別注', name_en: 'Cinephile\'s Choice', sort_order: 7, description_tc: '', description_en: '' },
-    { id: 'category-9', name_tc: '焦點導演：納華普譚容格坦拿列', name_en: 'Focus Director: Nawapol Thamrongrattanarit', sort_order: 8, description_tc: '', description_en: '' },
-    { id: 'category-10', name_tc: '跅跅步柘植義春', name_en: 'Yoshiharu Tsuge', sort_order: 9, description_tc: '', description_en: '' },
-    { id: 'category-11', name_tc: '亞洲動畫愛與懼', name_en: 'Asian Animation: Love and Fear', sort_order: 10, description_tc: '', description_en: '' },
-    { id: 'category-12', name_tc: '廣角視野', name_en: 'Wide Angle', sort_order: 11, description_tc: '', description_en: '' },
-    { id: 'category-13', name_tc: '加沙日常', name_en: 'Gaza Daily', sort_order: 12, description_tc: '', description_en: '' },
-    { id: 'category-14', name_tc: '紀錄之眼', name_en: 'Documentary Eye', sort_order: 13, description_tc: '', description_en: '' },
-    { id: 'category-15', name_tc: '森之聲——HKAFF X 綠色和平電影精選', name_en: 'Voices of the Forest - HKAFF X Greenpeace Film Selection', sort_order: 14, description_tc: '', description_en: '' }
+    { id: 'section-1', name_tc: '開幕電影', name_en: 'Opening Film', sort_order: 0, description_tc: '', description_en: '' },
+    { id: 'section-2', name_tc: '神秘場', name_en: 'Surprise Screening', sort_order: 1, description_tc: '', description_en: '' },
+    { id: 'section-3', name_tc: '閉幕電影', name_en: 'Closing Film', sort_order: 2, description_tc: '', description_en: '' },
+    { id: 'section-4', name_tc: '隆重呈獻', name_en: 'Special Presentation', sort_order: 3, description_tc: '', description_en: '' },
+    { id: 'section-5', name_tc: '特別推介', name_en: 'Special Recommendation', sort_order: 4, description_tc: '', description_en: '' },
+    { id: 'section-6', name_tc: '香港Short Short地', name_en: 'Hong Kong Short Short', sort_order: 5, description_tc: '', description_en: '' },
+    { id: 'section-7', name_tc: '亞洲新導演獎', name_en: 'Asian New Director Award', sort_order: 6, description_tc: '', description_en: '' },
+    { id: 'section-8', name_tc: '影迷別注', name_en: 'Cinephile\'s Choice', sort_order: 7, description_tc: '', description_en: '' },
+    { id: 'section-9', name_tc: '焦點導演：納華普譚容格坦拿列', name_en: 'Focus Director: Nawapol Thamrongrattanarit', sort_order: 8, description_tc: '', description_en: '' },
+    { id: 'section-10', name_tc: '跅跅步柘植義春', name_en: 'Yoshiharu Tsuge', sort_order: 9, description_tc: '', description_en: '' },
+    { id: 'section-77', name_tc: '亞洲動畫愛與懼', name_en: 'Asian Animation: Love and Fear', sort_order: 10, description_tc: '', description_en: '' },
+    { id: 'section-11', name_tc: '廣角視野', name_en: 'Wide Angle', sort_order: 11, description_tc: '', description_en: '' },
+    { id: 'section-12', name_tc: '加沙日常', name_en: 'Gaza Daily', sort_order: 12, description_tc: '', description_en: '' },
+    { id: 'section-13', name_tc: '紀錄之眼', name_en: 'Documentary Eye', sort_order: 13, description_tc: '', description_en: '' },
+    { id: 'section-14', name_tc: '森之聲——HKAFF X 綠色和平電影精選', name_en: 'Voices of the Forest - HKAFF X Greenpeace Film Selection', sort_order: 14, description_tc: '', description_en: '' }
   ];
 
   console.log(`✅ Found ${categories.length} categories`);
@@ -142,7 +142,7 @@ async function scrapeFilms(page) {
           country,
           poster_url: poster,
           detail_url_tc: window.location.href,
-          category_id: 'category-67', // Will be updated when categories are properly scraped
+          category_id: 'section-77', // Default to Asian Animation category
           title_en: '',
           synopsis_en: '',
           detail_url_en: ''
