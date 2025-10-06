@@ -7,7 +7,7 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 
-const BASE_URL = 'https://www.hkaff.hk';
+const BASE_URL = 'https://www.hkaff.asia';
 const OUTPUT_DIR = path.join(__dirname, '../frontend/public/data');
 
 // Ensure output directory exists
@@ -130,14 +130,52 @@ async function scrapeFilms(page) {
       await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 10000 });
 
       const filmData = await page.evaluate((id) => {
-        const title = document.querySelector('h1')?.textContent.trim() || '';
-        const synopsis = document.querySelector('.synopsis, .description, p')?.textContent.trim() || '';
-        const runtimeText = document.body.textContent.match(/(\d+)\s*分鐘|(\d+)\s*mins/i);
-        const runtime = runtimeText ? parseInt(runtimeText[1] || runtimeText[2]) : 90;
-        const director = document.querySelector('.director')?.textContent.trim() || '';
-        const country = document.querySelector('.country')?.textContent.trim() || '';
-        const poster = document.querySelector('img[src*="poster"], img')?.src || '';
-        const categoryMatch = document.body.textContent.match(/category[=\-](\d+)/i);
+        // Get title - skip navigation items and find the film title
+        const allDivs = Array.from(document.querySelectorAll('div'));
+        const textDivs = allDivs.filter(el => 
+          el.children.length === 0 && 
+          el.textContent.trim().length > 0 && 
+          el.textContent.trim().length < 30 &&
+          !el.textContent.includes('/') &&
+          !el.textContent.includes(':') &&
+          el.textContent.trim() !== 'HKAFF2025' &&
+          el.textContent.trim() !== 'Menu' &&
+          el.textContent.trim() !== 'EN' &&
+          el.textContent.trim() !== '繁' &&
+          !el.textContent.includes('關於') &&
+          !el.textContent.includes('最新') &&
+          !el.textContent.includes('歷屆')
+        );
+        // The first valid text should be the film title
+        const title = textDivs.length > 0 ? textDivs[0].textContent.trim() : '';
+        
+        // Get country/year/runtime using regex on body text
+        const bodyText = document.body.textContent;
+        const infoMatch = bodyText.match(/([^\n\/]+?)\s*\/\s*(\d{4})\s*\/\s*(\d+)\s*min/);
+        
+        let country = '';
+        let runtime = 90;
+        if (infoMatch) {
+          country = infoMatch[1].trim();
+          runtime = parseInt(infoMatch[3]);
+        }
+        
+        // Get director - find div with "導演:" and get next sibling
+        const directorLabel = Array.from(document.querySelectorAll('div')).find(el => 
+          el.textContent.trim() === '導演:'
+        );
+        const director = directorLabel && directorLabel.nextElementSibling ? 
+          directorLabel.nextElementSibling.textContent.trim() : '';
+        
+        // Get synopsis from paragraph
+        const paragraphElement = document.querySelector('p');
+        const synopsis = paragraphElement ? paragraphElement.textContent.trim() : '';
+        
+        // Get poster - try to find actual poster image
+        const posterImg = Array.from(document.querySelectorAll('img')).find(img => 
+          img.src && !img.src.includes('logo') && !img.src.includes('icon')
+        );
+        const poster = posterImg ? posterImg.src : '';
 
         return {
           id: `film-${id}`,
@@ -148,7 +186,7 @@ async function scrapeFilms(page) {
           country,
           poster_url: poster,
           detail_url_tc: window.location.href,
-          category_id: categoryMatch ? `category-${categoryMatch[1]}` : 'category-67',
+          category_id: 'category-67', // Will be updated when categories are properly scraped
           title_en: '',
           synopsis_en: '',
           detail_url_en: ''
@@ -183,8 +221,32 @@ async function scrapeFilms(page) {
       await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 10000 });
 
       const filmDataEN = await page.evaluate(() => {
-        const title = document.querySelector('h1')?.textContent.trim() || '';
-        const synopsis = document.querySelector('.synopsis, .description, p')?.textContent.trim() || '';
+        // Get title - skip navigation items and find the film title
+        const allDivs = Array.from(document.querySelectorAll('div'));
+        const textDivs = allDivs.filter(el => 
+          el.children.length === 0 && 
+          el.textContent.trim().length > 0 && 
+          el.textContent.trim().length < 30 &&
+          !el.textContent.includes('/') &&
+          !el.textContent.includes(':') &&
+          el.textContent.trim() !== 'HKAFF2025' &&
+          el.textContent.trim() !== 'Menu' &&
+          el.textContent.trim() !== 'EN' &&
+          el.textContent.trim() !== '繁' &&
+          el.textContent.trim() !== 'About HKAFF' &&
+          el.textContent.trim() !== 'News' &&
+          el.textContent.trim() !== 'Previous Editions' &&
+          !el.textContent.includes('About') &&
+          !el.textContent.includes('What is') &&
+          !el.textContent.includes('Support') &&
+          !el.textContent.includes('Contact')
+        );
+        // The first valid text should be the film title
+        const title = textDivs.length > 0 ? textDivs[0].textContent.trim() : '';
+        
+        // Get synopsis from paragraph
+        const paragraphElement = document.querySelector('p');
+        const synopsis = paragraphElement ? paragraphElement.textContent.trim() : '';
 
         return {
           title_en: title,
