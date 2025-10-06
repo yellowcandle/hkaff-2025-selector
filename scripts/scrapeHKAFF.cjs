@@ -19,41 +19,17 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 async function scrapeVenues(page) {
   console.log('📍 Scraping venues...');
 
-  // TC venues
-  await page.goto(`${BASE_URL}/tc/film/2025`, { waitUntil: 'domcontentloaded' });
-  const venuesTC = await page.evaluate(() => {
-    const select = document.querySelector('select[name="venue"]');
-    if (!select) return [];
-    return Array.from(select.options)
-      .filter(opt => opt.value && opt.value !== '')
-      .map((opt, idx) => ({
-        id: `venue-${opt.value}`,
-        name_tc: opt.textContent.trim(),
-        name_en: '',
-        address_tc: '',
-        address_en: '',
-        map_url: ''
-      }));
-  });
-
-  // EN venues
-  await page.goto(`${BASE_URL}/en/film/2025`, { waitUntil: 'domcontentloaded' });
-  const venuesEN = await page.evaluate(() => {
-    const select = document.querySelector('select[name="venue"]');
-    if (!select) return [];
-    return Array.from(select.options)
-      .filter(opt => opt.value && opt.value !== '')
-      .map(opt => ({
-        id: `venue-${opt.value}`,
-        name_en: opt.textContent.trim()
-      }));
-  });
-
-  // Merge
-  const venues = venuesTC.map(v => {
-    const enVenue = venuesEN.find(en => en.id === v.id);
-    return { ...v, name_en: enVenue?.name_en || v.name_tc };
-  });
+  // Hardcoded venues from HKAFF 2025 (dropdown items don't have value attributes)
+  const venues = [
+    { id: 'venue-1', name_tc: '百老匯電影中心', name_en: 'Broadway Cinematheque', address_tc: '', address_en: '', map_url: '' },
+    { id: 'venue-2', name_tc: 'PREMIERE ELEMENTS', name_en: 'PREMIERE ELEMENTS', address_tc: '', address_en: '', map_url: '' },
+    { id: 'venue-3', name_tc: 'MOViE MOViE Pacific Place', name_en: 'MOViE MOViE Pacific Place', address_tc: '', address_en: '', map_url: '' },
+    { id: 'venue-4', name_tc: 'MOViE MOViE Cityplaza', name_en: 'MOViE MOViE Cityplaza', address_tc: '', address_en: '', map_url: '' },
+    { id: 'venue-5', name_tc: 'GALA CINEMA', name_en: 'GALA CINEMA', address_tc: '', address_en: '', map_url: '' },
+    { id: 'venue-6', name_tc: 'PALACE ifc', name_en: 'PALACE ifc', address_tc: '', address_en: '', map_url: '' },
+    { id: 'venue-7', name_tc: 'MY CINEMA YOHO MALL', name_en: 'MY CINEMA YOHO MALL', address_tc: '', address_en: '', map_url: '' },
+    { id: 'venue-8', name_tc: 'B+ cinema apm', name_en: 'B+ cinema apm', address_tc: '', address_en: '', map_url: '' }
+  ];
 
   console.log(`✅ Found ${venues.length} venues`);
   return venues;
@@ -63,41 +39,24 @@ async function scrapeVenues(page) {
 async function scrapeCategories(page) {
   console.log('🎬 Scraping categories...');
 
-  // TC categories
-  await page.goto(`${BASE_URL}/tc/film/2025`, { waitUntil: 'domcontentloaded' });
-  const categoriesTC = await page.evaluate(() => {
-    const select = document.querySelector('select[name="section"]');
-    if (!select) return [];
-    return Array.from(select.options)
-      .filter(opt => opt.value && opt.value !== '')
-      .map((opt, idx) => ({
-        id: `category-${opt.value}`,
-        name_tc: opt.textContent.trim(),
-        name_en: '',
-        sort_order: idx,
-        description_tc: '',
-        description_en: ''
-      }));
-  });
-
-  // EN categories
-  await page.goto(`${BASE_URL}/en/film/2025`, { waitUntil: 'domcontentloaded' });
-  const categoriesEN = await page.evaluate(() => {
-    const select = document.querySelector('select[name="section"]');
-    if (!select) return [];
-    return Array.from(select.options)
-      .filter(opt => opt.value && opt.value !== '')
-      .map(opt => ({
-        id: `category-${opt.value}`,
-        name_en: opt.textContent.trim()
-      }));
-  });
-
-  // Merge
-  const categories = categoriesTC.map(c => {
-    const enCat = categoriesEN.find(en => en.id === c.id);
-    return { ...c, name_en: enCat?.name_en || c.name_tc };
-  });
+  // Hardcoded categories from HKAFF 2025
+  const categories = [
+    { id: 'category-1', name_tc: '開幕電影', name_en: 'Opening Film', sort_order: 0, description_tc: '', description_en: '' },
+    { id: 'category-2', name_tc: '神秘場', name_en: 'Surprise Screening', sort_order: 1, description_tc: '', description_en: '' },
+    { id: 'category-3', name_tc: '閉幕電影', name_en: 'Closing Film', sort_order: 2, description_tc: '', description_en: '' },
+    { id: 'category-4', name_tc: '隆重呈獻', name_en: 'Special Presentation', sort_order: 3, description_tc: '', description_en: '' },
+    { id: 'category-5', name_tc: '特別推介', name_en: 'Special Recommendation', sort_order: 4, description_tc: '', description_en: '' },
+    { id: 'category-6', name_tc: '香港Short Short地', name_en: 'Hong Kong Short Short', sort_order: 5, description_tc: '', description_en: '' },
+    { id: 'category-7', name_tc: '亞洲新導演獎', name_en: 'Asian New Director Award', sort_order: 6, description_tc: '', description_en: '' },
+    { id: 'category-8', name_tc: '影迷別注', name_en: 'Cinephile\'s Choice', sort_order: 7, description_tc: '', description_en: '' },
+    { id: 'category-9', name_tc: '焦點導演：納華普譚容格坦拿列', name_en: 'Focus Director: Nawapol Thamrongrattanarit', sort_order: 8, description_tc: '', description_en: '' },
+    { id: 'category-10', name_tc: '跅跅步柘植義春', name_en: 'Yoshiharu Tsuge', sort_order: 9, description_tc: '', description_en: '' },
+    { id: 'category-11', name_tc: '亞洲動畫愛與懼', name_en: 'Asian Animation: Love and Fear', sort_order: 10, description_tc: '', description_en: '' },
+    { id: 'category-12', name_tc: '廣角視野', name_en: 'Wide Angle', sort_order: 11, description_tc: '', description_en: '' },
+    { id: 'category-13', name_tc: '加沙日常', name_en: 'Gaza Daily', sort_order: 12, description_tc: '', description_en: '' },
+    { id: 'category-14', name_tc: '紀錄之眼', name_en: 'Documentary Eye', sort_order: 13, description_tc: '', description_en: '' },
+    { id: 'category-15', name_tc: '森之聲——HKAFF X 綠色和平電影精選', name_en: 'Voices of the Forest - HKAFF X Greenpeace Film Selection', sort_order: 14, description_tc: '', description_en: '' }
+  ];
 
   console.log(`✅ Found ${categories.length} categories`);
   return categories;
@@ -107,73 +66,70 @@ async function scrapeCategories(page) {
 async function scrapeFilms(page) {
   console.log('🎞️ Scraping films...');
   const films = new Map();
+  const allFilmLinks = new Set();
 
-  // Get film list from catalogue page (TC)
-  await page.goto(`${BASE_URL}/tc/film/2025`, { waitUntil: 'domcontentloaded' });
+  // Get film list from all pages (TC) - pagination has 7 pages
+  for (let pageNum = 1; pageNum <= 7; pageNum++) {
+    console.log(`📄 Fetching film list from page ${pageNum}/7...`);
+    await page.goto(`${BASE_URL}/tc/film/2025?page=${pageNum}`, { waitUntil: 'domcontentloaded' });
 
-  const filmLinks = await page.evaluate(() => {
-    const links = Array.from(document.querySelectorAll('a[href*="/tc/film/2025/detail/"]'));
-    return [...new Set(links.map(a => a.href))]; // Unique URLs
-  });
+    const filmLinks = await page.evaluate(() => {
+      const links = Array.from(document.querySelectorAll('a[href*="/tc/film/2025/detail/"]'));
+      return links.map(a => a.href);
+    });
 
-  console.log(`Found ${filmLinks.length} film detail pages`);
+    filmLinks.forEach(link => allFilmLinks.add(link));
+  }
+
+  const filmLinksArray = Array.from(allFilmLinks);
+  console.log(`Found ${filmLinksArray.length} unique film detail pages`);
 
   // Scrape each film (TC)
-  for (let i = 0; i < filmLinks.length; i++) {
-    const url = filmLinks[i];
+  for (let i = 0; i < filmLinksArray.length; i++) {
+    const url = filmLinksArray[i];
     const filmId = url.match(/detail\/(\d+)/)?.[1];
     if (!filmId) continue;
 
-    console.log(`[${i + 1}/${filmLinks.length}] Scraping film ${filmId} (TC)...`);
+    console.log(`[${i + 1}/${filmLinksArray.length}] Scraping film ${filmId} (TC)...`);
 
     try {
       await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 10000 });
 
       const filmData = await page.evaluate((id) => {
-        // Get title - skip navigation items and find the film title
-        const allDivs = Array.from(document.querySelectorAll('div'));
-        const textDivs = allDivs.filter(el => 
-          el.children.length === 0 && 
-          el.textContent.trim().length > 0 && 
-          el.textContent.trim().length < 30 &&
-          !el.textContent.includes('/') &&
-          !el.textContent.includes(':') &&
-          el.textContent.trim() !== 'HKAFF2025' &&
-          el.textContent.trim() !== 'Menu' &&
-          el.textContent.trim() !== 'EN' &&
-          el.textContent.trim() !== '繁' &&
-          !el.textContent.includes('關於') &&
-          !el.textContent.includes('最新') &&
-          !el.textContent.includes('歷屆')
-        );
-        // The first valid text should be the film title
-        const title = textDivs.length > 0 ? textDivs[0].textContent.trim() : '';
+        // Get title from .detail-title
+        const titleElement = document.querySelector('.detail-title');
+        const title = titleElement ? titleElement.textContent.trim() : '';
         
-        // Get country/year/runtime using regex on body text
-        const bodyText = document.body.textContent;
-        const infoMatch = bodyText.match(/([^\n\/]+?)\s*\/\s*(\d{4})\s*\/\s*(\d+)\s*min/);
-        
+        // Get country/year/runtime from .detail-desc
+        const descElement = document.querySelector('.detail-desc');
         let country = '';
         let runtime = 90;
-        if (infoMatch) {
-          country = infoMatch[1].trim();
-          runtime = parseInt(infoMatch[3]);
+        
+        if (descElement) {
+          const descText = descElement.textContent.trim();
+          // Match "泰國 / 2012 / 68min"
+          const match = descText.match(/([^\n\/]+?)\s*\/\s*(\d{4})\s*\/\s*(\d+)\s*min/);
+          if (match) {
+            country = match[1].trim();
+            runtime = parseInt(match[3]);
+          }
         }
         
-        // Get director - find div with "導演:" and get next sibling
-        const directorLabel = Array.from(document.querySelectorAll('div')).find(el => 
-          el.textContent.trim() === '導演:'
-        );
-        const director = directorLabel && directorLabel.nextElementSibling ? 
-          directorLabel.nextElementSibling.textContent.trim() : '';
+        // Get director from .dir-desc
+        const directorElement = document.querySelector('.dir-desc');
+        const director = directorElement ? directorElement.textContent.trim() : '';
         
-        // Get synopsis from paragraph
-        const paragraphElement = document.querySelector('p');
-        const synopsis = paragraphElement ? paragraphElement.textContent.trim() : '';
+        // Get synopsis from .ck-box p
+        const synopsisElement = document.querySelector('.ck-box p');
+        const synopsis = synopsisElement ? synopsisElement.textContent.trim() : '';
         
-        // Get poster - try to find actual poster image
+        // Get poster - look for images in the page (excluding logos)
         const posterImg = Array.from(document.querySelectorAll('img')).find(img => 
-          img.src && !img.src.includes('logo') && !img.src.includes('icon')
+          img.src && 
+          !img.src.includes('logo') && 
+          !img.src.includes('icon') &&
+          !img.src.includes('header') &&
+          (img.src.includes('poster') || img.src.includes('film') || img.width > 100)
         );
         const poster = posterImg ? posterImg.src : '';
 
@@ -199,13 +155,21 @@ async function scrapeFilms(page) {
     }
   }
 
-  // Get EN film data
-  await page.goto(`${BASE_URL}/en/film/2025`, { waitUntil: 'domcontentloaded' });
+  // Get EN film data from all pages
+  const allFilmLinksEN = new Set();
+  for (let pageNum = 1; pageNum <= 7; pageNum++) {
+    console.log(`📄 Fetching EN film list from page ${pageNum}/7...`);
+    await page.goto(`${BASE_URL}/en/film/2025?page=${pageNum}`, { waitUntil: 'domcontentloaded' });
 
-  const filmLinksEN = await page.evaluate(() => {
-    const links = Array.from(document.querySelectorAll('a[href*="/en/film/2025/detail/"]'));
-    return [...new Set(links.map(a => a.href))];
-  });
+    const filmLinks = await page.evaluate(() => {
+      const links = Array.from(document.querySelectorAll('a[href*="/en/film/2025/detail/"]'));
+      return links.map(a => a.href);
+    });
+
+    filmLinks.forEach(link => allFilmLinksEN.add(link));
+  }
+
+  const filmLinksEN = Array.from(allFilmLinksEN);
 
   for (let i = 0; i < filmLinksEN.length; i++) {
     const url = filmLinksEN[i];
@@ -221,32 +185,13 @@ async function scrapeFilms(page) {
       await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 10000 });
 
       const filmDataEN = await page.evaluate(() => {
-        // Get title - skip navigation items and find the film title
-        const allDivs = Array.from(document.querySelectorAll('div'));
-        const textDivs = allDivs.filter(el => 
-          el.children.length === 0 && 
-          el.textContent.trim().length > 0 && 
-          el.textContent.trim().length < 30 &&
-          !el.textContent.includes('/') &&
-          !el.textContent.includes(':') &&
-          el.textContent.trim() !== 'HKAFF2025' &&
-          el.textContent.trim() !== 'Menu' &&
-          el.textContent.trim() !== 'EN' &&
-          el.textContent.trim() !== '繁' &&
-          el.textContent.trim() !== 'About HKAFF' &&
-          el.textContent.trim() !== 'News' &&
-          el.textContent.trim() !== 'Previous Editions' &&
-          !el.textContent.includes('About') &&
-          !el.textContent.includes('What is') &&
-          !el.textContent.includes('Support') &&
-          !el.textContent.includes('Contact')
-        );
-        // The first valid text should be the film title
-        const title = textDivs.length > 0 ? textDivs[0].textContent.trim() : '';
+        // Get title from .detail-title
+        const titleElement = document.querySelector('.detail-title');
+        const title = titleElement ? titleElement.textContent.trim() : '';
         
-        // Get synopsis from paragraph
-        const paragraphElement = document.querySelector('p');
-        const synopsis = paragraphElement ? paragraphElement.textContent.trim() : '';
+        // Get synopsis from .ck-box p
+        const synopsisElement = document.querySelector('.ck-box p');
+        const synopsis = synopsisElement ? synopsisElement.textContent.trim() : '';
 
         return {
           title_en: title,
@@ -270,39 +215,79 @@ async function scrapeFilms(page) {
 async function scrapeScreenings(page, films, venues) {
   console.log('🎫 Scraping screenings...');
 
-  await page.goto(`${BASE_URL}/tc/schedule/2025`, { waitUntil: 'domcontentloaded' });
+  let screeningCounter = 0;
+  const allScreenings = [];
 
-  const screenings = await page.evaluate(() => {
-    const items = document.querySelectorAll('.screening-item, tr[data-screening], .schedule-row');
-    return Array.from(items).map((el, idx) => {
-      const dateStr = el.querySelector('.date')?.textContent.trim() || '';
-      const timeStr = el.querySelector('.time')?.textContent.trim() || '';
-      const filmId = el.dataset?.film || el.querySelector('[data-film]')?.dataset?.film || '';
-      const venueId = el.dataset?.venue || el.querySelector('[data-venue]')?.dataset?.venue || '';
-      const language = el.querySelector('.language')?.textContent.trim() || '';
+  // Scrape screenings from each film detail page
+  for (let i = 0; i < films.length; i++) {
+    const film = films[i];
+    
+    try {
+      await page.goto(film.detail_url_tc, { waitUntil: 'domcontentloaded', timeout: 10000 });
 
-      return {
-        id: `screening-${1000 + idx}`,
-        film_id: filmId ? `film-${filmId}` : '',
-        venue_id: venueId ? `venue-${venueId}` : '',
-        datetime: `${dateStr} ${timeStr}`,
-        language
-      };
-    }).filter(s => s.film_id && s.venue_id);
-  });
+      const filmScreenings = await page.evaluate((filmId, filmRuntime) => {
+        const screeningTable = document.querySelector('.time-venue-table');
+        if (!screeningTable) return [];
 
-  console.log(`✅ Found ${screenings.length} screenings`);
+        const rows = screeningTable.querySelectorAll('tr');
+        const screenings = [];
 
-  // Enrich with duration from films
-  const enriched = screenings.map(s => {
-    const film = films.find(f => f.id === s.film_id);
-    return {
-      ...s,
-      duration_minutes: film?.runtime_minutes || 90
-    };
-  });
+        rows.forEach(row => {
+          const cells = row.querySelectorAll('td');
+          if (cells.length >= 2) {
+            screenings.push({
+              datetime: cells[0].textContent.trim(),
+              venue: cells[1].textContent.trim(),
+              film_id: filmId,
+              duration_minutes: filmRuntime
+            });
+          }
+        });
 
-  return enriched;
+        return screenings;
+      }, film.id, film.runtime_minutes);
+
+      // Convert to proper screening objects with ISO datetime
+      filmScreenings.forEach(screening => {
+        // Parse datetime "25/10 7:30PM" or "* 22/10 7:00PM"
+        const cleanDatetime = screening.datetime.replace(/^\*\s*/, ''); // Remove leading asterisk
+        const dateMatch = cleanDatetime.match(/(\d{1,2})\/(\d{1,2})\s+(\d{1,2}):(\d{2})(AM|PM)/i);
+        
+        if (dateMatch) {
+          const day = dateMatch[1].padStart(2, '0');
+          const month = dateMatch[2].padStart(2, '0');
+          let hour = parseInt(dateMatch[3]);
+          const minute = dateMatch[4];
+          const ampm = dateMatch[5].toUpperCase();
+
+          if (ampm === 'PM' && hour !== 12) hour += 12;
+          if (ampm === 'AM' && hour === 12) hour = 0;
+
+          const datetime = `2025-${month}-${day}T${hour.toString().padStart(2, '0')}:${minute}:00`;
+
+          // Find venue ID (match by name)
+          const venue = venues.find(v => 
+            v.name_tc === screening.venue || v.name_en === screening.venue
+          );
+          const venueId = venue ? venue.id : `venue-${screening.venue.replace(/\s+/g, '-')}`;
+
+          allScreenings.push({
+            id: `screening-${++screeningCounter}`,
+            film_id: screening.film_id,
+            venue_id: venueId,
+            datetime: datetime,
+            duration_minutes: screening.duration_minutes,
+            language: '' // Could be extracted from .detail-desc if needed
+          });
+        }
+      });
+    } catch (err) {
+      // Silent fail for individual films
+    }
+  }
+
+  console.log(`✅ Found ${allScreenings.length} screenings`);
+  return allScreenings;
 }
 
 // Main scraper
