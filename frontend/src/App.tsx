@@ -649,6 +649,7 @@ function AppContent() {
                 screenings={screenings}
                 venues={venues}
                 categories={categories}
+                onNavigateToCatalogue={() => setCurrentView('catalogue')}
               />
             </Suspense>
           )}

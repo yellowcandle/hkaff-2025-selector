@@ -44,21 +44,8 @@ class DataLoader implements IDataLoader {
    * @throws Error if file not found or invalid JSON
    */
   async loadFilms(): Promise<Film[]> {
-    // Load main films.json and also try to load optional HKAFF-specific films
-    const films = await fetchJSON<Film[]>('films.json');
-
-    try {
-      const hkaffFilms = await fetchJSON<Film[]>('hkaff-films.json');
-
-      // Merge without duplicating IDs from the main films list
-      const existingIds = new Set(films.map(f => f.id));
-      const merged = films.concat(hkaffFilms.filter(f => !existingIds.has(f.id)));
-      return merged;
-    } catch (err) {
-      // If the optional file is missing or fails to load, return the base films list
-      console.warn('Optional hkaff-films.json not found or failed to load:', err);
-      return films;
-    }
+    // Load films from the main films.json file
+    return await fetchJSON<Film[]>('films.json');
   }
 
   /**

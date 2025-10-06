@@ -12,6 +12,7 @@ interface HKAFFSchedulerProps {
   screenings: Screening[];
   venues: Venue[];
   categories: Category[];
+  onNavigateToCatalogue?: () => void;
 }
 
 interface ScreeningWithDetails {
@@ -30,7 +31,7 @@ interface ScreeningWithDetails {
   screening: Screening;
 }
 
-export default function HKAFFScheduler({ films, screenings, venues, categories }: HKAFFSchedulerProps) {
+export default function HKAFFScheduler({ films, screenings, venues, categories, onNavigateToCatalogue }: HKAFFSchedulerProps) {
   const { i18n } = useTranslation();
   const { showToast } = useToast();
   const isZh = i18n.language === 'tc';
@@ -50,7 +51,19 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
       const venue = venues.find(v => v.id === screening.venue_id);
       const category = categories.find(c => c.id === film?.category_id);
 
-      if (!film || !venue || !category) return null;
+      // Log missing data for debugging
+      if (!film) {
+        console.warn(`Film not found for screening ${screening.id}, film_id: ${screening.film_id}`);
+        return null;
+      }
+      if (!venue) {
+        console.warn(`Venue not found for screening ${screening.id}, venue_id: ${screening.venue_id}`);
+        return null;
+      }
+      if (!category) {
+        console.warn(`Category not found for film ${film.id}, category_id: ${film.category_id}`);
+        return null;
+      }
 
       const screeningDate = new Date(screening.datetime);
       const dateStr = screeningDate.toISOString().split('T')[0];
@@ -177,7 +190,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories }
             </div>
             <div className="flex gap-2">
               <button
-                onClick={() => setView('browse')}
+                onClick={() => onNavigateToCatalogue ? onNavigateToCatalogue() : setView('browse')}
                 className={`px-6 py-2 rounded-lg font-medium transition-all ${
                   view === 'browse'
                     ? 'bg-blue-600 text-white shadow-md'
