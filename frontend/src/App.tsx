@@ -502,14 +502,14 @@ function AppContent() {
         </a>
 
         {/* Header */}
-        <header className="bg-card shadow-md sticky top-0 z-40 border-b border-border">
+        <header className="bg-[#C72E3A] shadow-lg sticky top-0 z-40">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <div className="flex flex-col">
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent leading-tight">
+                <h1 className="text-2xl font-bold text-white leading-tight">
                   {isZh ? '香港亞洲電影節 2025' : 'HKAFF 2025'}
                 </h1>
-                <p className="text-xs text-muted-foreground leading-tight">
+                <p className="text-xs text-white/80 leading-tight">
                   {isZh ? '選片助手' : 'Screening Selector'}
                 </p>
               </div>
@@ -517,17 +517,17 @@ function AppContent() {
               <div className="flex items-center gap-4">
                 {/* View Toggle */}
                 <nav role="navigation" aria-label={isZh ? '主要導航' : 'Main navigation'}>
-                  <div className="flex bg-muted rounded-xl p-1 shadow-inner" role="tablist">
+                  <div className="flex gap-2" role="tablist">
                     <button
                       onClick={() => setCurrentView('catalogue')}
                       role="tab"
                       aria-selected={currentView === 'catalogue'}
                       aria-label={isZh ? '影片目錄視圖' : 'Catalogue view'}
                       aria-controls="main-content"
-                      className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                      className={`px-4 py-2 rounded text-sm font-medium transition-all duration-200 ${
                         currentView === 'catalogue'
-                          ? 'bg-primary text-primary-foreground shadow-md transform scale-105'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                          ? 'bg-white text-[#C72E3A] shadow'
+                          : 'text-white/90 hover:text-white hover:bg-white/10'
                       }`}
                     >
                       <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -541,10 +541,10 @@ function AppContent() {
                       aria-selected={currentView === 'schedule'}
                       aria-label={isZh ? `我的時間表，已選 ${selections.length} 場` : `My Schedule, ${selections.length} selected`}
                       aria-controls="main-content"
-                      className={`relative px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                      className={`relative px-4 py-2 rounded text-sm font-medium transition-all duration-200 ${
                         currentView === 'schedule'
-                          ? 'bg-primary text-primary-foreground shadow-md transform scale-105'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                          ? 'bg-white text-[#C72E3A] shadow'
+                          : 'text-white/90 hover:text-white hover:bg-white/10'
                       }`}
                     >
                       <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -553,7 +553,7 @@ function AppContent() {
                       {isZh ? '我的時間表' : 'My Schedule'}
                       {selections.length > 0 && (
                         <span
-                          className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 flex items-center justify-center text-xs font-bold bg-gradient-to-r from-secondary to-accent text-secondary-foreground rounded-full shadow-lg ring-2 ring-background"
+                          className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 flex items-center justify-center text-xs font-bold bg-[#FF9933] text-black rounded-full shadow"
                           aria-hidden="true"
                         >
                           {selections.length}
@@ -566,10 +566,10 @@ function AppContent() {
                       aria-selected={currentView === 'scheduler'}
                       aria-label={isZh ? '現代排程器視圖' : 'Modern Scheduler view'}
                       aria-controls="main-content"
-                      className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                      className={`px-4 py-2 rounded text-sm font-medium transition-all duration-200 ${
                         currentView === 'scheduler'
-                          ? 'bg-primary text-primary-foreground shadow-md transform scale-105'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                          ? 'bg-white text-[#C72E3A] shadow'
+                          : 'text-white/90 hover:text-white hover:bg-white/10'
                       }`}
                     >
                       <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
