@@ -26,7 +26,7 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
   onClose,
 }) => {
   const { i18n } = useTranslation();
-  const isZh = i18n.language === 'zh';
+  const isZh = i18n.language === 'tc';
 
   const title = isZh ? film.title_tc : film.title_en;
   const synopsis = isZh ? film.synopsis_tc : film.synopsis_en;
@@ -38,14 +38,17 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
       if (e.key === 'Escape') {
         onClose();
       }
-      // Arrow key navigation for accessibility
+      // Arrow key navigation for accessibility - scoped to modal only
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        const modalElement = document.querySelector('[data-testid="film-detail-modal"]');
+        if (!modalElement) return;
+
         e.preventDefault();
-        const focusableElements = document.querySelectorAll(
+        const focusableElements = modalElement.querySelectorAll(
           'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
         );
         const currentIndex = Array.from(focusableElements).indexOf(document.activeElement as Element);
-        
+
         if (e.key === 'ArrowDown') {
           const nextIndex = (currentIndex + 1) % focusableElements.length;
           (focusableElements[nextIndex] as HTMLElement)?.focus();
@@ -55,7 +58,7 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
         }
       }
     };
-    
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
@@ -134,10 +137,10 @@ export const FilmDetail: React.FC<FilmDetailProps> = ({
           data-testid="close-modal-btn"
           onClick={onClose}
           aria-label={isZh ? '關閉電影詳情' : 'Close film details'}
-          className="absolute top-4 right-4 z-10 min-h-[44px] min-w-[44px] p-2 rounded-full bg-card shadow-md hover:bg-muted focus:ring-2 focus:ring-blue-500"
+          className="group absolute top-4 right-4 z-10 min-h-[44px] min-w-[44px] p-2 rounded-full bg-gradient-to-br from-destructive/10 to-destructive/5 hover:from-destructive hover:to-primary shadow-lg hover:shadow-xl hover:scale-110 focus:ring-4 focus:ring-destructive/50 focus:ring-offset-2 transition-all duration-300"
         >
-          <svg className="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg className="w-6 h-6 text-destructive group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
 

@@ -253,22 +253,51 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               aria-label={isZh ? '選擇類別' : 'Select category'}
               aria-expanded={isCategoryOpen}
               aria-haspopup="listbox"
-              className={`w-full min-h-[44px] max-w-[300px] px-4 py-3 rounded-xl shadow-sm text-left flex justify-between items-center transition-all duration-200 ${
+              className={`group relative w-full min-h-[52px] max-w-[320px] px-6 py-3.5 rounded-2xl text-left flex justify-between items-center transition-all duration-300 ${
                 isCategoryOpen 
-                  ? 'bg-primary text-primary-foreground ring-2 ring-primary shadow-md' 
-                  : 'bg-card border-2 border-input hover:border-primary/50 hover:shadow-md'
-              } focus:ring-2 focus:ring-primary focus:ring-offset-2`}
+                  ? 'bg-gradient-to-br from-primary via-primary to-destructive text-white shadow-xl scale-105 ring-4 ring-primary/30' 
+                  : selectedCategory
+                  ? 'bg-gradient-to-br from-accent/10 via-card to-card border-2 border-accent/30 shadow-lg hover:shadow-xl hover:scale-102 hover:border-accent/50'
+                  : 'bg-gradient-to-br from-card via-card to-muted/30 border-2 border-input/50 shadow-md hover:shadow-xl hover:scale-102 hover:border-primary/40'
+              } focus:ring-4 focus:ring-primary/50 focus:ring-offset-2`}
             >
-              <span className="font-medium">{selectedCategoryName}</span>
-              <svg 
-                className={`w-5 h-5 transition-transform duration-200 ${isCategoryOpen ? 'rotate-180' : ''}`}
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24" 
-                aria-hidden="true"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
+              {/* Decorative gradient accent */}
+              {!isCategoryOpen && (
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              )}
+              
+              <div className="flex items-center gap-3 relative z-10">
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                  isCategoryOpen 
+                    ? 'bg-white/20 shadow-inner' 
+                    : selectedCategory
+                    ? 'bg-gradient-to-br from-accent/20 to-primary/20'
+                    : 'bg-gradient-to-br from-primary/10 to-accent/10 group-hover:from-primary/20 group-hover:to-accent/20'
+                }`}>
+                  <svg className={`w-5 h-5 ${isCategoryOpen ? 'text-white' : 'text-primary'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                  </svg>
+                </div>
+                <span className={`font-bold text-base ${isCategoryOpen ? 'text-white' : selectedCategory ? 'text-accent' : 'text-foreground'}`}>
+                  {selectedCategoryName}
+                </span>
+              </div>
+              
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                isCategoryOpen 
+                  ? 'bg-white/20 rotate-180' 
+                  : 'bg-muted/50 group-hover:bg-primary/10'
+              }`}>
+                <svg 
+                  className={`w-5 h-5 transition-transform duration-300 ${isCategoryOpen ? 'text-white' : 'text-muted-foreground group-hover:text-primary'}`}
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24" 
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </button>
 
           {isCategoryOpen && (
@@ -276,7 +305,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               ref={categoryDropdownRef}
               role="listbox"
               aria-label={isZh ? '類別選項' : 'Category options'}
-              className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-xl max-h-60 overflow-auto"
+              className="absolute z-[60] mt-2 w-full min-w-[320px] max-w-[400px] bg-gradient-to-b from-white to-muted/30 backdrop-blur-xl border-2 border-primary/20 rounded-2xl shadow-2xl max-h-72 overflow-auto ring-1 ring-primary/10"
             >
                <div
                 role="option"
@@ -296,19 +325,21 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   }
                 }}
                 tabIndex={0}
-                className={`min-h-[44px] px-4 py-3 cursor-pointer flex items-center justify-between transition-all duration-150 ${
+                className={`group min-h-[48px] px-5 py-3.5 mx-1.5 my-1 rounded-xl cursor-pointer flex items-center justify-between transition-all duration-200 ${
                   !selectedCategory 
-                    ? 'bg-primary/10 text-primary font-semibold border-l-4 border-primary' 
-                    : 'hover:bg-accent/50 text-foreground'
+                    ? 'bg-gradient-to-r from-primary/15 via-primary/10 to-primary/5 text-primary font-bold border-l-4 border-primary shadow-sm' 
+                    : 'hover:bg-gradient-to-r hover:from-primary/5 hover:to-transparent text-foreground hover:text-primary hover:translate-x-1'
                 } ${
-                  focusedCategoryIndex === 0 ? 'ring-2 ring-inset ring-primary' : ''
+                  focusedCategoryIndex === 0 ? 'ring-2 ring-inset ring-primary shadow-md' : ''
                 }`}
               >
-                <span>{isZh ? '所有類別' : 'All Categories'}</span>
+                <span className="font-semibold">{isZh ? '所有類別' : 'All Categories'}</span>
                 {!selectedCategory && (
-                  <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
+                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                    <svg className="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 )}
               </div>
               {categories
@@ -335,17 +366,19 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                         }
                       }}
                       tabIndex={0}
-                      className={`min-h-[44px] px-4 py-3 cursor-pointer flex items-center justify-between transition-all duration-150 ${
+                      className={`group min-h-[48px] px-5 py-3.5 mx-1.5 my-1 rounded-xl cursor-pointer flex items-center justify-between transition-all duration-200 ${
                         selectedCategory === category.id 
-                          ? 'bg-primary/10 text-primary font-semibold border-l-4 border-primary' 
-                          : 'hover:bg-accent/50 text-foreground'
-                      } ${focusedCategoryIndex === optionIndex ? 'ring-2 ring-inset ring-primary' : ''}`}
+                          ? 'bg-gradient-to-r from-primary/15 via-primary/10 to-primary/5 text-primary font-bold border-l-4 border-primary shadow-sm' 
+                          : 'hover:bg-gradient-to-r hover:from-accent/10 hover:to-transparent text-foreground hover:text-accent hover:translate-x-1 hover:shadow-sm'
+                      } ${focusedCategoryIndex === optionIndex ? 'ring-2 ring-inset ring-primary shadow-md' : ''}`}
                     >
-                      <span>{isZh ? category.name_tc : category.name_en}</span>
+                      <span className="font-semibold">{isZh ? category.name_tc : category.name_en}</span>
                       {selectedCategory === category.id && (
-                        <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
+                        <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                          <svg className="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
                       )}
                     </div>
                   );
@@ -375,22 +408,51 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             aria-label={isZh ? '選擇場地' : 'Select venue'}
             aria-expanded={isVenueOpen}
             aria-haspopup="listbox"
-            className={`w-full min-h-[44px] max-w-[300px] px-4 py-3 rounded-xl shadow-sm text-left flex justify-between items-center transition-all duration-200 ${
+            className={`group relative w-full min-h-[52px] max-w-[320px] px-6 py-3.5 rounded-2xl text-left flex justify-between items-center transition-all duration-300 ${
               isVenueOpen 
-                ? 'bg-primary text-primary-foreground ring-2 ring-primary shadow-md' 
-                : 'bg-card border-2 border-input hover:border-primary/50 hover:shadow-md'
-            } focus:ring-2 focus:ring-primary focus:ring-offset-2`}
+                ? 'bg-gradient-to-br from-secondary via-secondary to-accent text-white shadow-xl scale-105 ring-4 ring-secondary/30' 
+                : selectedVenue
+                ? 'bg-gradient-to-br from-secondary/10 via-card to-card border-2 border-secondary/30 shadow-lg hover:shadow-xl hover:scale-102 hover:border-secondary/50'
+                : 'bg-gradient-to-br from-card via-card to-muted/30 border-2 border-input/50 shadow-md hover:shadow-xl hover:scale-102 hover:border-secondary/40'
+            } focus:ring-4 focus:ring-secondary/50 focus:ring-offset-2`}
           >
-            <span className="font-medium">{selectedVenueName}</span>
-            <svg 
-              className={`w-5 h-5 transition-transform duration-200 ${isVenueOpen ? 'rotate-180' : ''}`}
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24" 
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
+            {/* Decorative gradient accent */}
+            {!isVenueOpen && (
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-secondary/0 via-secondary/5 to-secondary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+            )}
+            
+            <div className="flex items-center gap-3 relative z-10">
+              <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                isVenueOpen 
+                  ? 'bg-white/20 shadow-inner' 
+                  : selectedVenue
+                  ? 'bg-gradient-to-br from-secondary/20 to-accent/20'
+                  : 'bg-gradient-to-br from-secondary/10 to-accent/10 group-hover:from-secondary/20 group-hover:to-accent/20'
+              }`}>
+                <svg className={`w-5 h-5 ${isVenueOpen ? 'text-white' : 'text-secondary'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <span className={`font-bold text-base ${isVenueOpen ? 'text-white' : selectedVenue ? 'text-secondary' : 'text-foreground'}`}>
+                {selectedVenueName}
+              </span>
+            </div>
+            
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${
+              isVenueOpen 
+                ? 'bg-white/20 rotate-180' 
+                : 'bg-muted/50 group-hover:bg-secondary/10'
+            }`}>
+              <svg 
+                className={`w-5 h-5 transition-transform duration-300 ${isVenueOpen ? 'text-white' : 'text-muted-foreground group-hover:text-secondary'}`}
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24" 
+                aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
           </button>
 
           {isVenueOpen && (
@@ -398,7 +460,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               ref={venueDropdownRef}
               role="listbox"
               aria-label={isZh ? '場地選項' : 'Venue options'}
-              className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-xl max-h-60 overflow-auto"
+              className="absolute z-[60] mt-2 w-full min-w-[320px] max-w-[400px] bg-gradient-to-b from-white to-muted/30 backdrop-blur-xl border-2 border-secondary/20 rounded-2xl shadow-2xl max-h-72 overflow-auto ring-1 ring-secondary/10"
             >
               <div
                 role="option"
@@ -418,19 +480,21 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   }
                 }}
                 tabIndex={0}
-                className={`min-h-[44px] px-4 py-3 cursor-pointer flex items-center justify-between transition-all duration-150 ${
+                className={`group min-h-[48px] px-5 py-3.5 mx-1.5 my-1 rounded-xl cursor-pointer flex items-center justify-between transition-all duration-200 ${
                   !selectedVenue 
-                    ? 'bg-primary/10 text-primary font-semibold border-l-4 border-primary' 
-                    : 'hover:bg-accent/50 text-foreground'
+                    ? 'bg-gradient-to-r from-secondary/15 via-secondary/10 to-secondary/5 text-secondary font-bold border-l-4 border-secondary shadow-sm' 
+                    : 'hover:bg-gradient-to-r hover:from-secondary/5 hover:to-transparent text-foreground hover:text-secondary hover:translate-x-1 hover:shadow-sm'
                 } ${
-                  focusedVenueIndex === 0 ? 'ring-2 ring-inset ring-primary' : ''
+                  focusedVenueIndex === 0 ? 'ring-2 ring-inset ring-secondary shadow-md' : ''
                 }`}
               >
-                <span>{isZh ? '所有場地' : 'All Venues'}</span>
+                <span className="font-semibold">{isZh ? '所有場地' : 'All Venues'}</span>
                 {!selectedVenue && (
-                  <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
+                  <div className="w-6 h-6 rounded-full bg-secondary/20 flex items-center justify-center">
+                    <svg className="w-4 h-4 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 )}
               </div>
               {venues.map((venue, index) => {
@@ -455,17 +519,19 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                       }
                     }}
                     tabIndex={0}
-                    className={`min-h-[44px] px-4 py-3 cursor-pointer flex items-center justify-between transition-all duration-150 ${
+                    className={`group min-h-[48px] px-5 py-3.5 mx-1.5 my-1 rounded-xl cursor-pointer flex items-center justify-between transition-all duration-200 ${
                       selectedVenue === venue.id 
-                        ? 'bg-primary/10 text-primary font-semibold border-l-4 border-primary' 
-                        : 'hover:bg-accent/50 text-foreground'
-                    } ${focusedVenueIndex === optionIndex ? 'ring-2 ring-inset ring-primary' : ''}`}
+                        ? 'bg-gradient-to-r from-secondary/15 via-secondary/10 to-secondary/5 text-secondary font-bold border-l-4 border-secondary shadow-sm' 
+                        : 'hover:bg-gradient-to-r hover:from-accent/10 hover:to-transparent text-foreground hover:text-accent hover:translate-x-1 hover:shadow-sm'
+                    } ${focusedVenueIndex === optionIndex ? 'ring-2 ring-inset ring-secondary shadow-md' : ''}`}
                   >
-                    <span>{isZh ? venue.name_tc : venue.name_en}</span>
+                    <span className="font-semibold">{isZh ? venue.name_tc : venue.name_en}</span>
                     {selectedVenue === venue.id && (
-                      <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
+                      <div className="w-6 h-6 rounded-full bg-secondary/20 flex items-center justify-center">
+                        <svg className="w-4 h-4 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
                     )}
                   </div>
                 );
@@ -480,18 +546,27 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             data-testid="clear-filters"
             onClick={onClearFilters}
             aria-label={isZh ? '清除所有篩選' : 'Clear all filters'}
-            className="min-h-[44px] px-6 py-2 rounded-xl bg-secondary text-secondary-foreground font-semibold hover:bg-secondary/80 hover:shadow-md focus:ring-2 focus:ring-secondary focus:ring-offset-2 transition-all duration-200 whitespace-nowrap"
+            className="group relative min-h-[52px] px-7 py-3.5 rounded-2xl bg-gradient-to-br from-destructive via-destructive to-primary text-white font-bold shadow-lg hover:shadow-2xl hover:scale-105 focus:ring-4 focus:ring-destructive/50 focus:ring-offset-2 transition-all duration-300 whitespace-nowrap overflow-hidden"
           >
-            {isZh ? '清除篩選' : 'Clear Filters'}
+            {/* Shimmer effect */}
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+            
+            <div className="relative z-10 flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+              <span>{isZh ? '清除篩選' : 'Clear Filters'}</span>
+            </div>
           </button>
         )}
-      </div>
       </div>
 
       {/* Close dropdowns when clicking outside */}
       {(isCategoryOpen || isVenueOpen) && (
         <div
-          className="fixed inset-0 z-0"
+          className="fixed inset-0 z-[55]"
           onClick={() => {
             setIsCategoryOpen(false);
             setIsVenueOpen(false);
@@ -500,6 +575,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           }}
         />
       )}
+      </div>
     </div>
   );
 };

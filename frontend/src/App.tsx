@@ -46,10 +46,12 @@ const convertServiceCategory = (category: import('../../specs/001-given-this-fil
   description_en: category.description_en || '',
 });
 
-const convertUserSelectionToSelection = (userSelection: UserSelection, venues: Venue[]): Selection => {
+const convertUserSelectionToSelection = (userSelection: UserSelection, venues: Venue[]): Selection | null => {
   const venue = venues.find(v => v.name_tc === userSelection.screening_snapshot.venue_name_tc || v.name_en === userSelection.screening_snapshot.venue_name_en);
   if (!venue) {
-    throw new Error(`Venue not found for selection: ${userSelection.screening_id}`);
+    console.warn(`Venue not found for selection: ${userSelection.screening_id}, using fallback`);
+    // Return null to filter out invalid selections
+    return null;
   }
 
   return {
@@ -364,7 +366,9 @@ function AppContent() {
 
   // Convert user selections to frontend Selection type for components
   const selections = useMemo(() => {
-    return userSelections.map(us => convertUserSelectionToSelection(us, venues));
+    return userSelections
+      .map(us => convertUserSelectionToSelection(us, venues))
+      .filter((selection): selection is Selection => selection !== null);
   }, [userSelections, venues]);
 
   // T055: Handle film card click to open detail modal
@@ -502,32 +506,40 @@ function AppContent() {
         </a>
 
         {/* Header */}
-        <header className="bg-[#C72E3A] shadow-lg sticky top-0 z-40">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex flex-col">
-                <h1 className="text-2xl font-bold text-white leading-tight">
-                  {isZh ? '香港亞洲電影節 2025' : 'HKAFF 2025'}
+        <header className="bg-gradient-to-r from-primary via-[#D63447] to-destructive shadow-2xl sticky top-0 z-40 border-b-2 border-secondary/30 backdrop-blur-sm">
+          {/* Decorative gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-secondary/50 to-transparent" />
+          
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div className="flex justify-between items-center h-20">
+              <div className="flex flex-col gap-1">
+                <h1 className="text-3xl font-black text-white leading-tight tracking-tight drop-shadow-lg">
+                  <span className="bg-gradient-to-r from-white via-secondary/90 to-white bg-clip-text text-transparent animate-pulse">
+                    {isZh ? '香港亞洲電影節' : 'HKAFF'}
+                  </span>
+                  {' '}
+                  <span className="text-white/95">2025</span>
                 </h1>
-                <p className="text-xs text-white/80 leading-tight">
-                  {isZh ? '選片助手' : 'Screening Selector'}
+                <p className="text-xs text-white/90 leading-tight font-semibold tracking-wide">
+                  ✨ {isZh ? '選片助手' : 'Screening Selector'}
                 </p>
               </div>
 
               <div className="flex items-center gap-4">
                 {/* View Toggle */}
                 <nav role="navigation" aria-label={isZh ? '主要導航' : 'Main navigation'}>
-                  <div className="flex gap-2" role="tablist">
+                  <div className="flex gap-3 bg-white/10 backdrop-blur-md p-1.5 rounded-2xl shadow-inner" role="tablist">
                     <button
                       onClick={() => setCurrentView('catalogue')}
                       role="tab"
                       aria-selected={currentView === 'catalogue'}
                       aria-label={isZh ? '影片目錄視圖' : 'Catalogue view'}
                       aria-controls="main-content"
-                      className={`px-4 py-2 rounded text-sm font-medium transition-all duration-200 ${
+                      className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
                         currentView === 'catalogue'
-                          ? 'bg-white text-[#C72E3A] shadow'
-                          : 'text-white/90 hover:text-white hover:bg-white/10'
+                          ? 'bg-white text-primary shadow-lg scale-105 ring-2 ring-white/50'
+                          : 'text-white/90 hover:text-white hover:bg-white/20 hover:scale-105'
                       }`}
                     >
                       <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -541,10 +553,10 @@ function AppContent() {
                       aria-selected={currentView === 'schedule'}
                       aria-label={isZh ? `我的時間表，已選 ${selections.length} 場` : `My Schedule, ${selections.length} selected`}
                       aria-controls="main-content"
-                      className={`relative px-4 py-2 rounded text-sm font-medium transition-all duration-200 ${
+                      className={`relative px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
                         currentView === 'schedule'
-                          ? 'bg-white text-[#C72E3A] shadow'
-                          : 'text-white/90 hover:text-white hover:bg-white/10'
+                          ? 'bg-white text-primary shadow-lg scale-105 ring-2 ring-white/50'
+                          : 'text-white/90 hover:text-white hover:bg-white/20 hover:scale-105'
                       }`}
                     >
                       <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -553,7 +565,7 @@ function AppContent() {
                       {isZh ? '我的時間表' : 'My Schedule'}
                       {selections.length > 0 && (
                         <span
-                          className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 flex items-center justify-center text-xs font-bold bg-[#FF9933] text-black rounded-full shadow"
+                          className="absolute -top-2 -right-2 min-w-[22px] h-6 px-2 flex items-center justify-center text-xs font-black bg-gradient-to-br from-secondary to-accent text-white rounded-full shadow-lg ring-2 ring-white/30 animate-pulse"
                           aria-hidden="true"
                         >
                           {selections.length}
@@ -566,10 +578,10 @@ function AppContent() {
                       aria-selected={currentView === 'scheduler'}
                       aria-label={isZh ? '現代排程器視圖' : 'Modern Scheduler view'}
                       aria-controls="main-content"
-                      className={`px-4 py-2 rounded text-sm font-medium transition-all duration-200 ${
+                      className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
                         currentView === 'scheduler'
-                          ? 'bg-white text-[#C72E3A] shadow'
-                          : 'text-white/90 hover:text-white hover:bg-white/10'
+                          ? 'bg-white text-primary shadow-lg scale-105 ring-2 ring-white/50'
+                          : 'text-white/90 hover:text-white hover:bg-white/20 hover:scale-105'
                       }`}
                     >
                       <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -588,7 +600,8 @@ function AppContent() {
         </header>
 
         {/* Main Content */}
-        <main id="main-content" role="main" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main id="main-content" role="main" className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {currentView === 'catalogue' ? (
             <>
               {/* Filter Panel */}
@@ -609,20 +622,17 @@ function AppContent() {
               />
 
               {/* Film List */}
-              {filteredFilms.length === 0 ? (
-                <div className="text-center py-12 bg-card rounded-lg shadow-md">
-                  <p className="text-muted-foreground">
-                    {isZh ? '沒有符合條件的電影' : 'No films match the filters'}
-                  </p>
-                </div>
-              ) : (
-                <FilmList
-                  films={filteredFilms}
-                  categories={categories}
-                  onFilmClick={handleFilmClick}
-                  isLoading={false}
-                />
-              )}
+              <FilmList
+                films={filteredFilms}
+                categories={categories}
+                onFilmClick={handleFilmClick}
+                isLoading={false}
+                onClearFilters={() => {
+                  setSelectedCategory(null);
+                  setSelectedVenue(null);
+                  setSearchQuery('');
+                }}
+              />
             </>
           ) : currentView === 'schedule' ? (
             /* Schedule View */
@@ -653,6 +663,7 @@ function AppContent() {
               />
             </Suspense>
           )}
+          </div>
         </main>
 
         {/* Film Detail Modal */}

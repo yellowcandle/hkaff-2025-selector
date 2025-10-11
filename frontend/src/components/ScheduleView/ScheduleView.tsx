@@ -21,7 +21,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
   onExport,
 }) => {
   const { i18n } = useTranslation();
-  const isZh = i18n.language === 'zh';
+  const isZh = i18n.language === 'tc';
 
   // Group selections by date and detect conflicts
   const dateGroups: DateGroupData[] = useMemo(() => {
@@ -76,9 +76,9 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
           } else {
             // Check for tight timing between different venues
             const gap = Math.abs(startTime.getTime() - otherEndTime.getTime()) / 60000;
-            const samevenue = screening.venue_snapshot.id === otherScreening.venue_snapshot.id;
+            const sameVenue = screening.venue_snapshot.id === otherScreening.venue_snapshot.id;
 
-            if (!samevenue && gap < 30) {
+            if (!sameVenue && gap < 30) {
               conflicts.push({
                 severity: 'warning',
                 screening_ids: [screening.screening_id, otherScreening.screening_id],
@@ -128,6 +128,23 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
               : 'Browse the catalogue, select your favorite screenings, and build your personalized schedule'
             }
           </p>
+          
+          {/* CTA Button */}
+          <div className="pt-2">
+            <button
+              onClick={() => window.history.back()}
+              className="px-8 py-3 bg-gradient-to-r from-primary to-secondary 
+                         text-white font-semibold rounded-xl shadow-lg
+                         hover:shadow-xl hover:scale-105
+                         transition-all duration-200
+                         focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              <svg className="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+              </svg>
+              {isZh ? '探索電影' : 'Explore Films'}
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -144,9 +161,15 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
           data-testid="export-btn"
           onClick={onExport}
           aria-label={isZh ? '匯出我的觀影時間表為 Markdown' : 'Export my schedule as Markdown'}
-          className="min-h-[44px] px-6 py-2 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 hover:shadow-md transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-offset-2 font-semibold"
+          className="group relative min-h-[48px] px-7 py-3 bg-gradient-to-br from-secondary via-secondary to-accent text-white rounded-xl font-bold shadow-lg hover:shadow-2xl hover:scale-105 focus:ring-4 focus:ring-secondary/50 focus:ring-offset-2 transition-all duration-300 overflow-hidden"
         >
-          {isZh ? '匯出 Markdown' : 'Export Markdown'}
+          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          <div className="relative z-10 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            {isZh ? '匯出 Markdown' : 'Export Markdown'}
+          </div>
         </button>
       </div>
 
