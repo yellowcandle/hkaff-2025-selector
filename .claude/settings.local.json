@@ -29,7 +29,11 @@
       "Bash(git push:*)",
       "Bash(git commit:*)",
       "WebFetch(domain:hkaff-2025-selector.herballemon.workers.dev)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "mcp__figma-dev-mode-mcp-server__get_screenshot",
+      "mcp__figma-dev-mode-mcp-server__get_design_context",
+      "Bash(npm run dev:*)",
+      "Bash(/dev/null)"
     ],
     "deny": [],
     "ask": []
