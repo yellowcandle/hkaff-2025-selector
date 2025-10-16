@@ -107,81 +107,140 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
 
   if (selections.length === 0) {
     return (
-      <div data-testid="schedule-view" className="bg-card rounded-xl shadow-lg p-12">
-        <div data-testid="schedule-empty-state" className="text-center max-w-md mx-auto space-y-6">
-          {/* Illustration - Larger, colorful icon with gradient background */}
-          <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-            <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      <div data-testid="schedule-view" className="bg-gradient-to-br from-card via-card to-muted/20 rounded-2xl shadow-lg p-12">
+        <div data-testid="schedule-empty-state" className="text-center max-w-md mx-auto space-y-8">
+          <div className="flex flex-col items-center gap-6">
+            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 flex items-center justify-center shadow-lg">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/30 to-secondary/30 flex items-center justify-center">
+                <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h3 className="text-3xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                {isZh ? '開始規劃您的電影之旅' : 'Start Planning Your Film Journey'}
+              </h3>
+
+              <p className="text-muted-foreground leading-relaxed text-lg">
+                {isZh
+                  ? '瀏覽影片目錄，選擇您喜愛的場次，建立專屬的觀影時間表'
+                  : 'Browse the catalogue, select your favorite screenings, and build your personalized schedule'
+                }
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent to-muted-foreground" />
+            <span>{isZh ? '或' : 'or'}</span>
+            <div className="flex-1 h-px bg-gradient-to-l from-transparent to-muted-foreground" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="p-4 rounded-lg bg-primary/5 border border-primary/10">
+              <div className="font-semibold text-primary mb-1">
+                {isZh ? '🎬 探索' : '🎬 Explore'}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {isZh ? '瀏覽豐富的電影選擇' : 'Browse film selection'}
+              </p>
+            </div>
+            <div className="p-4 rounded-lg bg-secondary/5 border border-secondary/10">
+              <div className="font-semibold text-secondary mb-1">
+                {isZh ? '⏰ 安排' : '⏰ Schedule'}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {isZh ? '規劃您的觀影時間' : 'Plan your screenings'}
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => window.history.back()}
+            className="w-full px-8 py-4 bg-gradient-to-r from-primary via-secondary to-accent text-white font-bold rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 group"
+          >
+            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
             </svg>
-          </div>
-          
-          {/* Heading */}
-          <h3 className="text-2xl font-bold text-foreground">
-            {isZh ? '開始規劃您的電影之旅' : 'Start Planning Your Film Journey'}
-          </h3>
-          
-          {/* Description */}
-          <p className="text-muted-foreground leading-relaxed">
-            {isZh 
-              ? '瀏覽影片目錄，選擇您喜愛的場次，建立專屬的觀影時間表' 
-              : 'Browse the catalogue, select your favorite screenings, and build your personalized schedule'
-            }
-          </p>
-          
-          {/* CTA Button */}
-          <div className="pt-2">
-            <button
-              onClick={() => window.history.back()}
-              className="px-8 py-3 bg-gradient-to-r from-primary to-secondary 
-                         text-white font-semibold rounded-xl shadow-lg
-                         hover:shadow-xl hover:scale-105
-                         transition-all duration-200
-                         focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            >
-              <svg className="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-              </svg>
-              {isZh ? '探索電影' : 'Explore Films'}
-            </button>
-          </div>
+            {isZh ? '返回瀏覽電影' : 'Browse Films'}
+          </button>
         </div>
       </div>
     );
   }
 
+  const totalDays = dateGroups.length;
+  const totalScreenings = selections.length;
+  const conflicts = selections.filter(s => {
+    const group = dateGroups.find(g =>
+      g.screenings.find(sc => sc.screening_id === s.screening_id && sc.conflicts)
+    );
+    return !!group;
+  }).length;
+
   return (
-    <div data-testid="schedule-view" className="bg-card rounded-xl shadow-md">
-      {/* Header with Export Button */}
-      <div className="p-6 border-b border-border flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-foreground">
-          {isZh ? '我的觀影時間表' : 'My Schedule'}
-        </h2>
-        <button
-          data-testid="export-btn"
-          onClick={onExport}
-          aria-label={isZh ? '匯出我的觀影時間表為 Markdown' : 'Export my schedule as Markdown'}
-          className="group relative min-h-[48px] px-7 py-3 bg-gradient-to-br from-secondary via-secondary to-accent text-white rounded-xl font-bold shadow-lg hover:shadow-2xl hover:scale-105 focus:ring-4 focus:ring-secondary/50 focus:ring-offset-2 transition-all duration-300 overflow-hidden"
-        >
-          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-          <div className="relative z-10 flex items-center gap-2">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div data-testid="schedule-view" className="bg-card rounded-2xl shadow-lg overflow-hidden">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 p-8 border-b border-border">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+          <div>
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-3">
+              {isZh ? '我的觀影時間表' : 'My Schedule'}
+            </h2>
+            <div className="flex flex-wrap gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-primary" />
+                <span className="text-muted-foreground">
+                  {totalScreenings} {isZh ? '場次' : 'screenings'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-secondary" />
+                <span className="text-muted-foreground">
+                  {totalDays} {isZh ? '天' : 'days'}
+                </span>
+              </div>
+              {conflicts > 0 && (
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+                  <span className="text-muted-foreground">
+                    {conflicts} {isZh ? '個衝突' : 'conflicts'}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <button
+            data-testid="export-btn"
+            onClick={onExport}
+            aria-label={isZh ? '匯出我的觀影時間表為 Markdown' : 'Export my schedule as Markdown'}
+            className="group relative min-h-[52px] px-8 py-3 bg-gradient-to-br from-secondary via-secondary to-accent text-white rounded-xl font-bold shadow-lg hover:shadow-2xl hover:scale-105 focus:ring-4 focus:ring-secondary/50 focus:ring-offset-2 transition-all duration-300 overflow-hidden flex items-center gap-2 whitespace-nowrap"
+          >
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+            <svg className="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            {isZh ? '匯出 Markdown' : 'Export Markdown'}
-          </div>
-        </button>
+            <span className="relative z-10">{isZh ? '匯出 Markdown' : 'Export'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Date Groups */}
-      <div className="p-6 space-y-6">
-        {dateGroups.map((group) => (
-          <DateGroupComponent
-            key={group.date}
-            date={group.date}
-            screenings={group.screenings}
-            onRemoveScreening={onRemoveScreening}
-          />
+      <div className="p-8 space-y-8">
+        {dateGroups.map((group, index) => (
+          <div key={group.date}>
+            <DateGroupComponent
+              date={group.date}
+              screenings={group.screenings}
+              onRemoveScreening={onRemoveScreening}
+            />
+            {index < dateGroups.length - 1 && (
+              <div className="mt-8 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+            )}
+          </div>
         ))}
       </div>
     </div>
