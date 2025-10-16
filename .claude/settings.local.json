@@ -36,7 +36,10 @@
       "Bash(/dev/null)",
       "WebFetch(domain:hkaff2025.herballemon.dev)",
       "Bash(gh run list:*)",
-      "Bash(gh run view:*)"
+      "Bash(gh run view:*)",
+      "Bash(gh run watch:*)",
+      "WebFetch(domain:reactjs.org)",
+      "WebFetch(domain:legacy.reactjs.org)"
     ],
     "deny": [],
     "ask": []
