@@ -12,7 +12,27 @@
     "category": "Category",
     "venue": "Venue",
     "all": "All",
-    "clear": "Clear Filters"
+    "clear": "Clear Filters",
+    "searchPlaceholder": "Search films by title, director, or category...",
+    "searchLabel": "Search films",
+    "clearSearch": "Clear search",
+    "resultsCount": "{{count}} {{count, plural, one {result} other {results}}}",
+    "activeFilters": "Active filters",
+    "noActiveFilters": "No active filters",
+    "mobileToggle": "Filters",
+    "clearAll": "Clear all"
+  },
+  "filmCard": {
+    "posterAlt": "{{title}} poster",
+    "categoryLabel": "Category: {{category}}",
+    "runtime": "{{minutes}} min",
+    "director": "Director",
+    "country": "Country",
+    "expand": "Show more",
+    "collapse": "Show less",
+    "details": "View details",
+    "selected": "In schedule",
+    "conflict": "Conflict"
   },
   "screening": {
     "select": "Select",
@@ -24,14 +44,31 @@
   "schedule": {
     "title": "My Schedule",
     "empty": "No screenings selected yet",
-    "conflicts": "Schedule Conflicts",
+    "emptyDescription": "Browse the catalogue and add screenings to build your festival plan.",
+    "conflicts": "Schedule conflicts",
     "export": "Export as Markdown",
+    "summary": "{{count}} {{count, plural, one {screening} other {screenings}}} selected",
+    "dayHeader": "{{date, datetime}}",
+    "remove": "Remove",
     "clear_all": "Clear All"
   },
   "conflict": {
     "impossible": "Time Overlap",
     "warning": "Tight Timing",
-    "overlap": "Overlaps {{minutes}} minutes"
+    "overlap": "Overlaps {{minutes}} minutes",
+    "impossibleDescription": "This screening overlaps with another and cannot be attended simultaneously.",
+    "warningDescription": "Less than 30 minutes between screenings at different venues."
+  },
+  "scheduleView": {
+    "exploreFilms": "Explore films",
+    "cta": "Explore Films",
+    "emptyTitle": "Start planning your film journey",
+    "emptyDescription": "Browse the catalogue, select your favourite screenings, and build your personalised schedule.",
+    "export": "Export Markdown",
+    "dayHeader": "{{date, datetime}}",
+    "time": "{{time, time}}",
+    "duration": "{{minutes}} minutes",
+    "remove": "Remove"
   },
   "language": {
     "tc": "繁",

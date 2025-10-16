@@ -12,7 +12,27 @@
     "category": "類別",
     "venue": "場地",
     "all": "全部",
-    "clear": "清除篩選"
+    "clear": "清除篩選",
+    "searchPlaceholder": "搜尋片名、導演或類別...",
+    "searchLabel": "搜尋電影",
+    "clearSearch": "清除搜尋",
+    "resultsCount": "{{count}} 個結果",
+    "activeFilters": "使用中的篩選",
+    "noActiveFilters": "沒有使用中的篩選",
+    "mobileToggle": "篩選",
+    "clearAll": "清除全部"
+  },
+  "filmCard": {
+    "posterAlt": "{{title}} 海報",
+    "categoryLabel": "類別：{{category}}",
+    "runtime": "{{minutes}} 分鐘",
+    "director": "導演",
+    "country": "地區",
+    "expand": "顯示更多",
+    "collapse": "顯示較少",
+    "details": "查看詳情",
+    "selected": "已加入時間表",
+    "conflict": "衝突"
   },
   "screening": {
     "select": "選擇",
@@ -24,14 +44,31 @@
   "schedule": {
     "title": "我的時間表",
     "empty": "尚未選擇任何場次",
+    "emptyDescription": "瀏覽影片目錄，挑選您喜愛的場次，建立個人觀影計劃。",
     "conflicts": "時間衝突",
     "export": "匯出為 Markdown",
+    "summary": "已選 {{count}} 場",
+    "dayHeader": "{{date, datetime}}",
+    "remove": "移除",
     "clear_all": "清除全部"
   },
   "conflict": {
     "impossible": "時間重疊",
     "warning": "換場時間緊迫",
-    "overlap": "重疊 {{minutes}} 分鐘"
+    "overlap": "重疊 {{minutes}} 分鐘",
+    "impossibleDescription": "此場次與另一場次時間重疊，無法同時觀看。",
+    "warningDescription": "與另一場次相隔少於 30 分鐘，且場地不同，請預留交通時間。"
+  },
+  "scheduleView": {
+    "exploreFilms": "探索電影",
+    "cta": "探索電影",
+    "emptyTitle": "開始規劃您的電影旅程",
+    "emptyDescription": "瀏覽影片目錄，挑選您喜愛的場次，建立個人觀影計劃。",
+    "export": "匯出 Markdown",
+    "dayHeader": "{{date, datetime}}",
+    "time": "{{time, time}}",
+    "duration": "{{minutes}} 分鐘",
+    "remove": "移除"
   },
   "language": {
     "tc": "繁",
