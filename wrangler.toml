@@ -1,0 +1,21 @@
+name = "hkaff-2025-selector"
+main = "src/index.ts"
+compatibility_date = "2025-10-16"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = true
+
+[assets]
+directory = "dist"
+binding = "ASSETS"
+
+[[routes]]
+pattern = "hkaff2025.herballemon.dev/*"
+zone_name = "herballemon.dev"
+
+[build]
+command = "npm run build"
+
+[env.production]
+vars = { ENVIRONMENT = "production" }

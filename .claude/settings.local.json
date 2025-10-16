@@ -33,7 +33,10 @@
       "mcp__figma-dev-mode-mcp-server__get_screenshot",
       "mcp__figma-dev-mode-mcp-server__get_design_context",
       "Bash(npm run dev:*)",
-      "Bash(/dev/null)"
+      "Bash(/dev/null)",
+      "WebFetch(domain:hkaff2025.herballemon.dev)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)"
     ],
     "deny": [],
     "ask": []
