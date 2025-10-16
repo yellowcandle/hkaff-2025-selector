@@ -1,7 +1,40 @@
 {
   "name": "hkaff-2025-selector",
-  "compatibility_date": "2025-10-02",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-10-16",
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
-    "directory": "./dist"
+    "directory": "dist",
+    "binding": "ASSETS"
+  },
+  "routes": [
+    {
+      "pattern": "hkaff2025.herballemon.dev/*",
+      "zone_name": "herballemon.dev"
+    }
+  ],
+  "env": {
+    "production": {
+      "vars": {
+        "ENVIRONMENT": "production"
+      }
+    },
+    "staging": {
+      "vars": {
+        "ENVIRONMENT": "staging"
+      }
+    },
+    "development": {
+      "vars": {
+        "ENVIRONMENT": "development"
+      }
+    }
+  },
+  "build": {
+    "command": "npm run build",
+    "cwd": "."
+  },
+  "observability": {
+    "enabled": true
   }
 }
