@@ -621,18 +621,13 @@ function AppContent() {
                 }}
               />
 
-              {/* Film List */}
-              <FilmList
-                films={filteredFilms}
-                categories={categories}
-                onFilmClick={handleFilmClick}
-                isLoading={false}
-                onClearFilters={() => {
-                  setSelectedCategory(null);
-                  setSelectedVenue(null);
-                  setSearchQuery('');
-                }}
-              />
+               {/* Film List */}
+               <FilmList
+                 films={filteredFilms}
+                 categories={categories}
+                 onFilmClick={handleFilmClick}
+                 isLoading={false}
+               />
             </>
           ) : currentView === 'schedule' ? (
             /* Schedule View */
