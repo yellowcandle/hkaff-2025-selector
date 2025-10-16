@@ -39,7 +39,11 @@
       "Bash(gh run view:*)",
       "Bash(gh run watch:*)",
       "WebFetch(domain:reactjs.org)",
-      "WebFetch(domain:legacy.reactjs.org)"
+      "WebFetch(domain:legacy.reactjs.org)",
+      "Read(//private/tmp/**)",
+      "Bash(pkill:*)",
+      "Bash(wrangler deploy:*)",
+      "Bash(tee:*)"
     ],
     "deny": [],
     "ask": []
