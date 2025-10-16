@@ -16,11 +16,16 @@ export const LanguageToggle: React.FC = () => {
     <button
       data-testid="language-toggle"
       onClick={toggleLanguage}
-      className="px-3 py-2 rounded-md text-sm font-medium text-foreground hover:text-foreground hover:bg-muted transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      className="pill-button flex items-center gap-2 px-4 py-2 text-sm font-medium text-festival-black hover:text-festival-red transition-colors duration-200"
       aria-label={isZh ? '切換語言至英文' : 'Switch language to Traditional Chinese'}
       title={isZh ? '切換語言' : 'Switch language'}
     >
-      {isZh ? 'EN' : '繁'}
+      <span className="text-base">
+        {isZh ? '🇭🇰' : '🇬🇧'}
+      </span>
+      <span className="font-semibold">
+        {isZh ? '繁' : 'EN'}
+      </span>
     </button>
   );
 };

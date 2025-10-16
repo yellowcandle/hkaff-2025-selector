@@ -7,6 +7,7 @@ import { storageService } from './services/storageService';
 import { markdownExporter } from './services/markdownExporter';
 
 // Component imports - Keep critical components as static imports
+import { Hero } from './components/Hero/Hero';
 import { FilmList } from './components/FilmList/FilmList';
 import { FilterPanel } from './components/FilterPanel/FilterPanel';
 import { LanguageToggle } from './components/LanguageToggle/LanguageToggle';
@@ -496,33 +497,21 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
+    <div className="min-h-screen bg-background">
         {/* Skip to main content link for keyboard users */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-2 focus:py-1 focus:bg-blue-600 focus:text-white focus:rounded-md focus:shadow-lg focus:text-sm"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-2 focus:py-1 focus:bg-primary focus:text-white focus:rounded-md focus:shadow-lg focus:text-sm"
         >
           {isZh ? '跳至主要內容' : 'Skip to main content'}
         </a>
 
-        {/* Header - Clean Figma style */}
-        <header className="bg-white shadow-sm sticky top-0 z-40 border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {/* Title Section */}
-            <div className="text-center mb-8">
-              <div className="flex items-center justify-center gap-3 mb-2">
-                <svg className="w-10 h-10 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M18 3v2h-2V3H8v2H6V3H4v18h2v-2h2v2h8v-2h2v2h2V3h-2zM8 17H6v-2h2v2zm0-4H6v-2h2v2zm0-4H6V7h2v2zm10 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/>
-                </svg>
-                <h1 className="text-4xl font-bold text-purple-900">
-                  {isZh ? 'HKAFF' : 'HKAFF'} 2025
-                </h1>
-              </div>
-              <p className="text-gray-600">
-                {isZh ? '您的電影節選片指南' : 'Your personal film festival guide and scheduler'}
-              </p>
-            </div>
+        {/* Hero Section */}
+        <Hero />
 
+        {/* Header - Clean Figma style */}
+        <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             {/* Navigation Tabs */}
             <nav role="navigation" aria-label={isZh ? '主要導航' : 'Main navigation'}>
               <div className="flex justify-center gap-2 max-w-md mx-auto" role="tablist">
@@ -532,9 +521,9 @@ function AppContent() {
                   aria-selected={currentView === 'catalogue'}
                   aria-label={isZh ? '瀏覽影片' : 'Browse Films'}
                   aria-controls="main-content"
-                  className={`flex-1 px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                  className={`flex-1 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200 ${
                     currentView === 'catalogue'
-                      ? 'bg-gray-900 text-white shadow-md'
+                      ? 'bg-primary text-white shadow-lg'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -546,9 +535,9 @@ function AppContent() {
                   aria-selected={currentView === 'schedule'}
                   aria-label={isZh ? `我的時間表 (${selections.length})` : `Schedule (${selections.length})`}
                   aria-controls="main-content"
-                  className={`flex-1 px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                  className={`flex-1 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200 ${
                     currentView === 'schedule'
-                      ? 'bg-gray-900 text-white shadow-md'
+                      ? 'bg-primary text-white shadow-lg'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -560,9 +549,9 @@ function AppContent() {
                   aria-selected={currentView === 'scheduler'}
                   aria-label={isZh ? `我的選擇 (${selections.length})` : `My Selection (${selections.length})`}
                   aria-controls="main-content"
-                  className={`relative flex-1 px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                  className={`relative flex-1 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200 ${
                     currentView === 'scheduler'
-                      ? 'bg-gray-900 text-white shadow-md'
+                      ? 'bg-primary text-white shadow-lg'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
