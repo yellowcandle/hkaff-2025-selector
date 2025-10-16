@@ -1,0 +1,340 @@
+{
+  "scrapedAt": "2025-10-03T03:28:56.842Z",
+  "source": "https://www.hkaff.asia",
+  "knownFilmIds": [
+    "376",
+    "377",
+    "378",
+    "379",
+    "380",
+    "381",
+    "382",
+    "383",
+    "397",
+    "401",
+    "402",
+    "409"
+  ],
+  "totalFilms": 12,
+  "totalUniquePosters": 35,
+  "successfulDownloads": 35,
+  "failedDownloads": 0,
+  "totalSizeKB": 152613,
+  "posters": [
+    {
+      "filename": "known_6154da433f8472b7b24572968d1ef85f.png",
+      "success": true,
+      "size": 1801,
+      "url": "https://www.hkaff.asia/upload/film/6154da433f8472b7b24572968d1ef85f.png?v22",
+      "filmId": "known",
+      "source": "known-url",
+      "error": null
+    },
+    {
+      "filename": "known_Another-World.jpg",
+      "success": true,
+      "size": 156,
+      "url": "https://www.hkaff.asia/upload/film/Another-World.jpg?v22",
+      "filmId": "known",
+      "source": "known-url",
+      "error": null
+    },
+    {
+      "filename": "known_8bff3d4b44933e875217e5d7a8b89776.png",
+      "success": true,
+      "size": 1741,
+      "url": "https://www.hkaff.asia/upload/film/8bff3d4b44933e875217e5d7a8b89776.png?v22",
+      "filmId": "known",
+      "source": "known-url",
+      "error": null
+    },
+    {
+      "filename": "376_6154da433f8472b7b24572968d1ef85f.png",
+      "success": true,
+      "size": 1801,
+      "url": "https://www.hkaff.asia/upload/film/6154da433f8472b7b24572968d1ef85f.png?v22",
+      "filmId": "376",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "376_Another-World.jpg",
+      "success": true,
+      "size": 156,
+      "url": "https://www.hkaff.asia/upload/film/Another-World.jpg?v22",
+      "filmId": "376",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "376_8bff3d4b44933e875217e5d7a8b89776.png",
+      "success": true,
+      "size": 1741,
+      "url": "https://www.hkaff.asia/upload/film/8bff3d4b44933e875217e5d7a8b89776.png?v22",
+      "filmId": "376",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "377_48f05572bf95181019454df202bd7d4b.jpeg",
+      "success": true,
+      "size": 7028,
+      "url": "https://www.hkaff.asia/upload/film/48f05572bf95181019454df202bd7d4b.jpeg?v22",
+      "filmId": "377",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "378_Pass-and-goal.jpg",
+      "success": true,
+      "size": 239,
+      "url": "https://www.hkaff.asia/upload/film/Pass-and-goal.jpg?v22",
+      "filmId": "378",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "378_4d9180cd920735688646af87860dff47.jpeg",
+      "success": true,
+      "size": 4971,
+      "url": "https://www.hkaff.asia/upload/film/4d9180cd920735688646af87860dff47.jpeg?v22",
+      "filmId": "378",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "378_8f61cfb023bf5a9d3501422aaf767e75.jpeg",
+      "success": true,
+      "size": 4397,
+      "url": "https://www.hkaff.asia/upload/film/8f61cfb023bf5a9d3501422aaf767e75.jpeg?v22",
+      "filmId": "378",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "379_43d423cd5991b7a1fdd5f08a3b802bf1.jpeg",
+      "success": true,
+      "size": 19582,
+      "url": "https://www.hkaff.asia/upload/film/43d423cd5991b7a1fdd5f08a3b802bf1.jpeg?v22",
+      "filmId": "379",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "379_b186c848172b4bcc4eb2f37c837489b6.jpeg",
+      "success": true,
+      "size": 6962,
+      "url": "https://www.hkaff.asia/upload/film/b186c848172b4bcc4eb2f37c837489b6.jpeg?v22",
+      "filmId": "379",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "379_Road-to-Vendetta.jpg",
+      "success": true,
+      "size": 94,
+      "url": "https://www.hkaff.asia/upload/film/Road-to-Vendetta.jpg?v22",
+      "filmId": "379",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "380_Gamer-Girls-still_GG-in-game.jpg",
+      "success": true,
+      "size": 285,
+      "url": "https://www.hkaff.asia/upload/film/Gamer-Girls-still_GG-in-game.jpg?v22",
+      "filmId": "380",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "380_9275f844e530571d659dd796bd011aa9.png",
+      "success": true,
+      "size": 24690,
+      "url": "https://www.hkaff.asia/upload/film/9275f844e530571d659dd796bd011aa9.png?v22",
+      "filmId": "380",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "380_7e59fc52938206b6b05fa5cd854d1cc7.png",
+      "success": true,
+      "size": 4051,
+      "url": "https://www.hkaff.asia/upload/film/7e59fc52938206b6b05fa5cd854d1cc7.png?v22",
+      "filmId": "380",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "381_SomeoneLikeMe_MAIN.jpg",
+      "success": true,
+      "size": 222,
+      "url": "https://www.hkaff.asia/upload/film/SomeoneLikeMe_MAIN.jpg?v22",
+      "filmId": "381",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "382_Finch-and-Midland_still-(3).jpg",
+      "success": true,
+      "size": 127,
+      "url": "https://www.hkaff.asia/upload/film/Finch-and-Midland_still-(3).jpg?v22",
+      "filmId": "382",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "382_3169df2e862b6143c1d0e818b79bf555.png",
+      "success": true,
+      "size": 14399,
+      "url": "https://www.hkaff.asia/upload/film/3169df2e862b6143c1d0e818b79bf555.png?v22",
+      "filmId": "382",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "382_f2fe9f61aa313491b2cc10e398107762.png",
+      "success": true,
+      "size": 8582,
+      "url": "https://www.hkaff.asia/upload/film/f2fe9f61aa313491b2cc10e398107762.png?v22",
+      "filmId": "382",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "383_a2cade72a38eba8fead821131cc41429.jpeg",
+      "success": true,
+      "size": 176,
+      "url": "https://www.hkaff.asia/upload/film/a2cade72a38eba8fead821131cc41429.jpeg?v22",
+      "filmId": "383",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "383_f10a19d21c4b6eead65292f4326d855c.jpeg",
+      "success": true,
+      "size": 212,
+      "url": "https://www.hkaff.asia/upload/film/f10a19d21c4b6eead65292f4326d855c.jpeg?v22",
+      "filmId": "383",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "383_e0242d0e6cbc6fdb86148de2e1b48d93.jpeg",
+      "success": true,
+      "size": 345,
+      "url": "https://www.hkaff.asia/upload/film/e0242d0e6cbc6fdb86148de2e1b48d93.jpeg?v22",
+      "filmId": "383",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "397_dc89ce8fd908dac03b30a41435d22bf7.jpeg",
+      "success": true,
+      "size": 1426,
+      "url": "https://www.hkaff.asia/upload/film/dc89ce8fd908dac03b30a41435d22bf7.jpeg?v22",
+      "filmId": "397",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "397_A-Good-Child_still-(1).jpg",
+      "success": true,
+      "size": 74,
+      "url": "https://www.hkaff.asia/upload/film/A-Good-Child_still-(1).jpg?v22",
+      "filmId": "397",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "397_e7db1d52b57c53e2e8a8c982741f6aaf.jpeg",
+      "success": true,
+      "size": 1222,
+      "url": "https://www.hkaff.asia/upload/film/e7db1d52b57c53e2e8a8c982741f6aaf.jpeg?v22",
+      "filmId": "397",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "401_A-Pale-View-of-Hills_Suzu-Hirose.jpg",
+      "success": true,
+      "size": 117,
+      "url": "https://www.hkaff.asia/upload/film/A-Pale-View-of-Hills_Suzu-Hirose.jpg?v22",
+      "filmId": "401",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "401_abe80e940ff7c4708655a18e6c965c57.jpeg",
+      "success": true,
+      "size": 2295,
+      "url": "https://www.hkaff.asia/upload/film/abe80e940ff7c4708655a18e6c965c57.jpeg?v22",
+      "filmId": "401",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "401_d2c338e6aafb540973e272252a89d0a5.jpeg",
+      "success": true,
+      "size": 3155,
+      "url": "https://www.hkaff.asia/upload/film/d2c338e6aafb540973e272252a89d0a5.jpeg?v22",
+      "filmId": "401",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "402_A-Normal-Family_01-(main-still).jpg",
+      "success": true,
+      "size": 243,
+      "url": "https://www.hkaff.asia/upload/film/A-Normal-Family_01-(main-still).jpg?v22",
+      "filmId": "402",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "402_51f81aa6b5ba67e8295f63e72b648e50.jpeg",
+      "success": true,
+      "size": 21954,
+      "url": "https://www.hkaff.asia/upload/film/51f81aa6b5ba67e8295f63e72b648e50.jpeg?v22",
+      "filmId": "402",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "402_8a9dbebfb997e33412729f6f8c06eb89.jpeg",
+      "success": true,
+      "size": 16220,
+      "url": "https://www.hkaff.asia/upload/film/8a9dbebfb997e33412729f6f8c06eb89.jpeg?v22",
+      "filmId": "402",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "409_36.jpg",
+      "success": true,
+      "size": 152,
+      "url": "https://www.hkaff.asia/upload/film/36.jpg?v22",
+      "filmId": "409",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "409_0362f5d2fe60c9e5d5ac22e5245a02fb.png",
+      "success": true,
+      "size": 1432,
+      "url": "https://www.hkaff.asia/upload/film/0362f5d2fe60c9e5d5ac22e5245a02fb.png?v22",
+      "filmId": "409",
+      "source": "swiper-slide",
+      "error": null
+    },
+    {
+      "filename": "409_2cb7d28fdf3917ce8d636fb550f2e4cb.jpeg",
+      "success": true,
+      "size": 565,
+      "url": "https://www.hkaff.asia/upload/film/2cb7d28fdf3917ce8d636fb550f2e4cb.jpeg?v22",
+      "filmId": "409",
+      "source": "swiper-slide",
+      "error": null
+    }
+  ]
+}
