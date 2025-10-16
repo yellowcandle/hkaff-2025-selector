@@ -14,8 +14,5 @@ binding = "ASSETS"
 pattern = "hkaff2025.herballemon.dev/*"
 zone_name = "herballemon.dev"
 
-[build]
-command = "npm run build"
-
 [env.production]
 vars = { ENVIRONMENT = "production" }
