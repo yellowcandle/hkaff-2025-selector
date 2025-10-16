@@ -496,7 +496,7 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
         {/* Skip to main content link for keyboard users */}
         <a
           href="#main-content"
@@ -505,103 +505,82 @@ function AppContent() {
           {isZh ? '跳至主要內容' : 'Skip to main content'}
         </a>
 
-        {/* Header */}
-        <header className="bg-gradient-to-r from-primary via-[#D63447] to-destructive shadow-2xl sticky top-0 z-40 border-b-2 border-secondary/30 backdrop-blur-sm">
-          {/* Decorative gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent pointer-events-none" />
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-secondary/50 to-transparent" />
-          
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div className="flex justify-between items-center h-20">
-              <div className="flex flex-col gap-1">
-                <h1 className="text-3xl font-black text-white leading-tight tracking-tight drop-shadow-lg">
-                  <span className="bg-gradient-to-r from-white via-secondary/90 to-white bg-clip-text text-transparent animate-pulse">
-                    {isZh ? '香港亞洲電影節' : 'HKAFF'}
-                  </span>
-                  {' '}
-                  <span className="text-white/95">2025</span>
+        {/* Header - Clean Figma style */}
+        <header className="bg-white shadow-sm sticky top-0 z-40 border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Title Section */}
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <svg className="w-10 h-10 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18 3v2h-2V3H8v2H6V3H4v18h2v-2h2v2h8v-2h2v2h2V3h-2zM8 17H6v-2h2v2zm0-4H6v-2h2v2zm0-4H6V7h2v2zm10 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/>
+                </svg>
+                <h1 className="text-4xl font-bold text-purple-900">
+                  {isZh ? 'HKAFF' : 'HKAFF'} 2025
                 </h1>
-                <p className="text-xs text-white/90 leading-tight font-semibold tracking-wide">
-                  ✨ {isZh ? '選片助手' : 'Screening Selector'}
-                </p>
               </div>
+              <p className="text-gray-600">
+                {isZh ? '您的電影節選片指南' : 'Your personal film festival guide and scheduler'}
+              </p>
+            </div>
 
-              <div className="flex items-center gap-4">
-                {/* View Toggle */}
-                <nav role="navigation" aria-label={isZh ? '主要導航' : 'Main navigation'}>
-                  <div className="flex gap-3 bg-white/10 backdrop-blur-md p-1.5 rounded-2xl shadow-inner" role="tablist">
-                    <button
-                      onClick={() => setCurrentView('catalogue')}
-                      role="tab"
-                      aria-selected={currentView === 'catalogue'}
-                      aria-label={isZh ? '影片目錄視圖' : 'Catalogue view'}
-                      aria-controls="main-content"
-                      className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-                        currentView === 'catalogue'
-                          ? 'bg-white text-primary shadow-lg scale-105 ring-2 ring-white/50'
-                          : 'text-white/90 hover:text-white hover:bg-white/20 hover:scale-105'
-                      }`}
-                    >
-                      <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-                      </svg>
-                      {isZh ? '影片目錄' : 'Catalogue'}
-                    </button>
-                    <button
-                      onClick={() => setCurrentView('schedule')}
-                      role="tab"
-                      aria-selected={currentView === 'schedule'}
-                      aria-label={isZh ? `我的時間表，已選 ${selections.length} 場` : `My Schedule, ${selections.length} selected`}
-                      aria-controls="main-content"
-                      className={`relative px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-                        currentView === 'schedule'
-                          ? 'bg-white text-primary shadow-lg scale-105 ring-2 ring-white/50'
-                          : 'text-white/90 hover:text-white hover:bg-white/20 hover:scale-105'
-                      }`}
-                    >
-                      <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      {isZh ? '我的時間表' : 'My Schedule'}
-                      {selections.length > 0 && (
-                        <span
-                          className="absolute -top-2 -right-2 min-w-[22px] h-6 px-2 flex items-center justify-center text-xs font-black bg-gradient-to-br from-secondary to-accent text-white rounded-full shadow-lg ring-2 ring-white/30 animate-pulse"
-                          aria-hidden="true"
-                        >
-                          {selections.length}
-                        </span>
-                      )}
-                    </button>
-                    <button
-                      onClick={() => setCurrentView('scheduler')}
-                      role="tab"
-                      aria-selected={currentView === 'scheduler'}
-                      aria-label={isZh ? '現代排程器視圖' : 'Modern Scheduler view'}
-                      aria-controls="main-content"
-                      className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-                        currentView === 'scheduler'
-                          ? 'bg-white text-primary shadow-lg scale-105 ring-2 ring-white/50'
-                          : 'text-white/90 hover:text-white hover:bg-white/20 hover:scale-105'
-                      }`}
-                    >
-                      <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {isZh ? '現代排程' : 'Scheduler'}
-                    </button>
-                  </div>
-                </nav>
-
-                {/* T058: Language Toggle */}
-                <LanguageToggle />
+            {/* Navigation Tabs */}
+            <nav role="navigation" aria-label={isZh ? '主要導航' : 'Main navigation'}>
+              <div className="flex justify-center gap-2 max-w-md mx-auto" role="tablist">
+                <button
+                  onClick={() => setCurrentView('catalogue')}
+                  role="tab"
+                  aria-selected={currentView === 'catalogue'}
+                  aria-label={isZh ? '瀏覽影片' : 'Browse Films'}
+                  aria-controls="main-content"
+                  className={`flex-1 px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                    currentView === 'catalogue'
+                      ? 'bg-gray-900 text-white shadow-md'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {isZh ? '瀏覽影片' : 'Browse Films'}
+                </button>
+                <button
+                  onClick={() => setCurrentView('schedule')}
+                  role="tab"
+                  aria-selected={currentView === 'schedule'}
+                  aria-label={isZh ? `我的時間表 (${selections.length})` : `Schedule (${selections.length})`}
+                  aria-controls="main-content"
+                  className={`flex-1 px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                    currentView === 'schedule'
+                      ? 'bg-gray-900 text-white shadow-md'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {isZh ? '時間表' : 'Schedule'}
+                </button>
+                <button
+                  onClick={() => setCurrentView('scheduler')}
+                  role="tab"
+                  aria-selected={currentView === 'scheduler'}
+                  aria-label={isZh ? `我的選擇 (${selections.length})` : `My Selection (${selections.length})`}
+                  aria-controls="main-content"
+                  className={`relative flex-1 px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                    currentView === 'scheduler'
+                      ? 'bg-gray-900 text-white shadow-md'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {isZh ? `我的選擇 (${selections.length})` : `My Selection (${selections.length})`}
+                </button>
               </div>
+            </nav>
+
+            {/* Language Toggle in top right */}
+            <div className="absolute top-4 right-4">
+              <LanguageToggle />
             </div>
           </div>
         </header>
 
         {/* Main Content */}
-        <main id="main-content" role="main" className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <main id="main-content" role="main" className="min-h-screen">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {currentView === 'catalogue' ? (
             <>
               {/* Filter Panel */}
@@ -620,6 +599,13 @@ function AppContent() {
                   setSearchQuery('');
                 }}
               />
+
+              {/* Result Count */}
+              <div className="mb-6">
+                <p className="text-gray-600 text-sm">
+                  {isZh ? '顯示' : 'Showing'} {filteredFilms.length} {isZh ? '部電影，共' : 'of'} {films.length} {isZh ? '部' : 'films'}
+                </p>
+              </div>
 
                {/* Film List */}
                <FilmList
