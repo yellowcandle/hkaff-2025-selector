@@ -38,9 +38,10 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   const [isDateOpen, setIsDateOpen] = useState(false);
 
   const hasActiveFilters = !!(selectedCategory || selectedVenue || selectedDate || searchQuery);
+  const anyDropdownOpen = isCategoryOpen || isVenueOpen || isDateOpen;
 
   return (
-    <div className="bg-white border-b border-gray-200">
+    <div className="bg-white border-b border-gray-200 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Search Bar */}
         <div className="mb-6">
@@ -64,19 +65,20 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         </div>
 
         {/* Filter Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-3">
+        <div className={`flex flex-wrap items-center justify-center gap-3 relative ${anyDropdownOpen ? 'z-20' : ''}`}>
           {/* Category Dropdown */}
           <div className="relative">
             <button
               onClick={() => {
                 setIsCategoryOpen(!isCategoryOpen);
                 setIsVenueOpen(false);
+                setIsDateOpen(false);
               }}
               className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors font-inter ${
                 selectedCategory
                   ? 'bg-purple-600 text-white hover:bg-purple-700'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+              } ${isCategoryOpen ? 'relative z-30' : ''}`}
               aria-label={isZh ? '選擇類別' : 'Select category'}
             >
               <span>
@@ -91,7 +93,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             </button>
 
             {isCategoryOpen && (
-              <div className="absolute top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto animate-dropdown">
+              <div className="absolute top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-40 max-h-80 overflow-y-auto animate-dropdown">
                 <button
                   onClick={() => {
                     onCategoryChange(null);
@@ -129,7 +131,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 selectedVenue
                   ? 'bg-purple-600 text-white hover:bg-purple-700'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+              } ${isVenueOpen ? 'relative z-30' : ''}`}
               aria-label={isZh ? '選擇場地' : 'Select venue'}
             >
               <span>
@@ -144,7 +146,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             </button>
 
             {isVenueOpen && (
-              <div className="absolute top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto animate-dropdown">
+              <div className="absolute top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-40 max-h-80 overflow-y-auto animate-dropdown">
                 <button
                   onClick={() => {
                     onVenueChange(null);
@@ -183,7 +185,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   selectedDate
                     ? 'bg-purple-600 text-white hover:bg-purple-700'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                } ${isDateOpen ? 'relative z-30' : ''}`}
                 aria-label={isZh ? '選擇日期' : 'Select date'}
               >
                 <span>
@@ -195,7 +197,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               </button>
 
               {isDateOpen && (
-                <div className="absolute top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto animate-dropdown">
+                <div className="absolute top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-40 max-h-80 overflow-y-auto animate-dropdown">
                   <button
                     onClick={() => {
                       onDateChange(null);
@@ -235,9 +237,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
       </div>
 
       {/* Backdrop for dropdowns */}
-      {(isCategoryOpen || isVenueOpen || isDateOpen) && (
+      {anyDropdownOpen && (
         <div
-          className="fixed inset-0 z-40"
+          className="fixed inset-0 z-10"
           onClick={() => {
             setIsCategoryOpen(false);
             setIsVenueOpen(false);

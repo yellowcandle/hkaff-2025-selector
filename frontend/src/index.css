@@ -1,3 +1,6 @@
+/* Component styles */
+@import './components/FilmList/FilmList.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
