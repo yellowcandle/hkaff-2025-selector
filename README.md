@@ -111,7 +111,8 @@ hkaff-2025-selector/
 
 ## 🎯 Performance
 
-- **Bundle Size**: 91.3 KB gzipped (well under 180 KB target)
+- **Bundle Size**: 75.6 KB gzipped (well under 180 KB target)
+- **CSS Bundle**: 21.2 KB (4.45 KB gzipped)
 - **Test Coverage**: 124 tests passing
 - **TypeScript**: Zero errors
 - **Build Time**: <3 seconds
