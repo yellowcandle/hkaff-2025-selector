@@ -43,7 +43,11 @@
       "Read(//private/tmp/**)",
       "Bash(pkill:*)",
       "Bash(wrangler deploy:*)",
-      "Bash(tee:*)"
+      "Bash(tee:*)",
+      "Bash(export CLOUDFLARE_API_TOKEN=\"3_kxWDeh3R9NfGLiXyFnIAoClBq-qlK1ARyUvo6i\")",
+      "Bash(wrangler dev)",
+      "Bash(wrangler dev:*)",
+      "Bash(wrangler deployments list:*)"
     ],
     "deny": [],
     "ask": []
