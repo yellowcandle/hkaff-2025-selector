@@ -7,12 +7,13 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowJs": true,
+    "noEmit": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["vitest/globals", "@cloudflare/workers-types"]
   },
-  "include": ["tests/**/*", "specs/**/*", "frontend/**/*", "src/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["tests/**/*.ts", "specs/**/*.ts", "frontend/src/**/*", "src/**/*"],
+  "exclude": ["node_modules", "**/dist", "**/node_modules", "**/*.config.js", "**/*.config.ts"]
 }

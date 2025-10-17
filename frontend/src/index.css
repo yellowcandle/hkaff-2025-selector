@@ -6,36 +6,37 @@
   :root {
     color-scheme: light;
 
-    --festival-red: 196 75% 45%;
+    --festival-purple: 262 83% 58%;
+    --festival-purple-dark: 262 73% 48%;
     --festival-gold: 45 74% 53%;
     --festival-black: 220 28% 10%;
     --festival-midnight: 232 20% 14%;
     --festival-plum: 262 30% 35%;
     --festival-lilac: 256 54% 67%;
 
-    --background: 0 0% 100%;
-    --foreground: var(--festival-black);
+    --background: 0 0% 98%;
+    --foreground: 220 16% 22%;
     --card: 0 0% 100%;
-    --card-foreground: var(--festival-black);
+    --card-foreground: 220 16% 22%;
     --popover: 0 0% 100%;
-    --popover-foreground: var(--festival-black);
+    --popover-foreground: 220 16% 22%;
     --muted: 220 12% 94%;
     --muted-foreground: 220 12% 45%;
 
-    --primary: var(--festival-red);
+    --primary: var(--festival-purple);
     --primary-foreground: 0 0% 100%;
-    --secondary: var(--festival-plum);
-    --secondary-foreground: 0 0% 100%;
-    --accent: var(--festival-lilac);
-    --accent-foreground: var(--festival-black);
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 16% 22%;
+    --accent: var(--festival-purple);
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 14% 88%;
-    --input: 220 14% 88%;
-    --ring: var(--festival-red);
+    --border: 220 14% 91%;
+    --input: 220 14% 91%;
+    --ring: var(--festival-purple);
 
-    --radius: 1.25rem;
+    --radius: 0.5rem;
   }
 
   .dark {
@@ -50,7 +51,7 @@
     --muted: 222 24% 14%;
     --muted-foreground: 222 12% 70%;
 
-    --primary: var(--festival-red);
+    --primary: var(--festival-purple);
     --primary-foreground: 0 0% 100%;
     --secondary: 262 45% 55%;
     --secondary-foreground: 0 0% 100%;
@@ -61,7 +62,7 @@
 
     --border: 222 24% 18%;
     --input: 222 24% 18%;
-    --ring: var(--festival-gold);
+    --ring: var(--festival-purple);
   }
 
   html {
@@ -84,6 +85,7 @@
 
   #root {
     min-height: 100vh;
+    background-color: hsl(var(--background));
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -108,7 +110,7 @@
     outline: 3px solid hsl(var(--primary));
     outline-offset: 2px;
     border-radius: calc(var(--radius) * 0.4);
-    box-shadow: 0 0 0 6px rgba(196, 30, 58, 0.15);
+    box-shadow: 0 0 0 6px hsla(262, 83%, 58%, 0.15);
   }
 }
 
@@ -122,7 +124,7 @@
   }
 
   .hero-gradient {
-    background: linear-gradient(135deg, rgba(196, 30, 58, 0.95) 0%, rgba(31, 34, 51, 0.92) 50%, rgba(81, 58, 113, 0.9) 100%);
+    background: linear-gradient(135deg, hsl(262, 83%, 58%) 0%, hsl(262, 73%, 48%) 50%, hsl(262, 30%, 35%) 100%);
   }
 
   .pill-button {
@@ -172,7 +174,7 @@
   .segmented-control button.active {
     background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
     color: white;
-    box-shadow: 0 4px 12px rgba(196, 30, 58, 0.25);
+    box-shadow: 0 4px 12px hsla(262, 83%, 58%, 0.25);
   }
 }
 
@@ -193,6 +195,36 @@
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  .animate-dropdown {
+    animation: dropdownFade 0.2s ease-out;
+  }
+
+  @keyframes dropdownFade {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease-out;
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
     }
   }
 

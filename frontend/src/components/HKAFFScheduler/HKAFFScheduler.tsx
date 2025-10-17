@@ -389,12 +389,12 @@ export default function HKAFFScheduler({ films, screenings, venues, categories, 
                           {screeningsOnDate.map(screening => (
                             <div
                               key={screening.id}
-                              className="bg-muted rounded-lg p-4 border border-border hover:border-blue-500 transition-all"
+                              className="bg-gray-800 rounded-lg p-4 border border-gray-700 hover:border-red-500 transition-all"
                             >
                               <div className="flex items-start justify-between">
                                 <div className="flex-1">
                                   <div className="flex items-center gap-3 mb-2">
-                                    <span className="text-blue-600 font-mono font-bold">
+                                    <span className="text-red-400 font-mono font-bold">
                                       {formatTime(screening.time)}
                                     </span>
                                     <h4 className="text-lg font-semibold text-white">
@@ -415,7 +415,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories, 
                                 </div>
                                 <button
                                   onClick={() => toggleScreening(screening.id)}
-                                  className="text-blue-600 hover:text-blue-700 transition-colors ml-4"
+                                  className="text-gray-400 hover:text-red-400 transition-colors ml-4"
                                 >
                                   <X className="w-5 h-5" />
                                 </button>

@@ -146,6 +146,7 @@ function AppContent() {
   // Filter states
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedVenue, setSelectedVenue] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   // UI states
@@ -328,6 +329,12 @@ function AppContent() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [films]);
 
+  // Extract unique dates from screenings
+  const uniqueDates = useMemo(() => {
+    const dates = screenings.map(s => s.datetime.split('T')[0]);
+    return [...new Set(dates)].sort();
+  }, [screenings]);
+
   // T054: Derived filtered films state
   const filteredFilms = useMemo(() => {
     let filtered = films;
@@ -362,8 +369,18 @@ function AppContent() {
       filtered = filtered.filter(film => filmIdsWithVenue.has(film.id));
     }
 
+    if (selectedDate) {
+      // Filter films that have at least one screening on the selected date
+      const filmIdsOnDate = new Set(
+        screenings
+          .filter(s => s.datetime.startsWith(selectedDate))
+          .map(s => s.film_id)
+      );
+      filtered = filtered.filter(film => filmIdsOnDate.has(film.id));
+    }
+
     return filtered;
-  }, [films, screenings, categories, selectedCategory, selectedVenue, searchQuery]);
+  }, [films, screenings, categories, selectedCategory, selectedVenue, selectedDate, searchQuery]);
 
   // Convert user selections to frontend Selection type for components
   const selections = useMemo(() => {
@@ -551,11 +568,16 @@ function AppContent() {
                   aria-controls="main-content"
                   className={`relative flex-1 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200 ${
                     currentView === 'scheduler'
-                      ? 'bg-primary text-white shadow-lg'
+                      ? 'bg-purple-600 text-white shadow-lg'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  {isZh ? `我的選擇 (${selections.length})` : `My Selection (${selections.length})`}
+                  {isZh ? '我的選擇' : 'My Selection'}
+                  {selections.length > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1.5 bg-purple-600 text-white text-xs font-bold rounded-full flex items-center justify-center shadow-md ring-2 ring-white">
+                      {selections.length}
+                    </span>
+                  )}
                 </button>
               </div>
             </nav>
@@ -576,23 +598,31 @@ function AppContent() {
               <FilterPanel
                 categories={categories}
                 venues={venues}
+                dates={uniqueDates}
                 selectedCategory={selectedCategory}
                 selectedVenue={selectedVenue}
+                selectedDate={selectedDate}
                 searchQuery={searchQuery}
                 onCategoryChange={setSelectedCategory}
                 onVenueChange={setSelectedVenue}
+                onDateChange={setSelectedDate}
                 onSearchChange={setSearchQuery}
                 onClearFilters={() => {
                   setSelectedCategory(null);
                   setSelectedVenue(null);
+                  setSelectedDate(null);
                   setSearchQuery('');
                 }}
               />
 
               {/* Result Count */}
-              <div className="mb-6">
-                <p className="text-gray-600 text-sm">
-                  {isZh ? '顯示' : 'Showing'} {filteredFilms.length} {isZh ? '部電影，共' : 'of'} {films.length} {isZh ? '部' : 'films'}
+              <div className="mb-6" aria-live="polite" aria-atomic="true">
+                <p className="text-gray-700 text-sm font-medium">
+                  {isZh ? '顯示' : 'Showing'}
+                  <span className="text-purple-600 font-bold ml-1">{filteredFilms.length}</span>
+                  {isZh ? '部電影，共' : 'of'}
+                  <span className="font-bold ml-1">{films.length}</span>
+                  {isZh ? '部' : 'films'}
                 </p>
               </div>
 
@@ -600,6 +630,8 @@ function AppContent() {
                <FilmList
                  films={filteredFilms}
                  categories={categories}
+                 screenings={screenings}
+                 venues={venues}
                  onFilmClick={handleFilmClick}
                  isLoading={false}
                />

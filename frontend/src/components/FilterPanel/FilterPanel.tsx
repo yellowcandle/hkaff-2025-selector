@@ -5,11 +5,14 @@ import type { Category, Venue } from '../../types';
 interface FilterPanelProps {
   categories: Category[];
   venues: Venue[];
+  dates?: string[];
   selectedCategory: string | null;
   selectedVenue: string | null;
+  selectedDate: string | null;
   searchQuery: string;
   onCategoryChange: (categoryId: string | null) => void;
   onVenueChange: (venueId: string | null) => void;
+  onDateChange: (date: string | null) => void;
   onSearchChange: (query: string) => void;
   onClearFilters: () => void;
 }
@@ -17,228 +20,232 @@ interface FilterPanelProps {
 export const FilterPanel: React.FC<FilterPanelProps> = ({
   categories,
   venues,
+  dates = [],
   selectedCategory,
   selectedVenue,
+  selectedDate,
   searchQuery,
   onCategoryChange,
   onVenueChange,
+  onDateChange,
   onSearchChange,
   onClearFilters,
 }) => {
   const { i18n } = useTranslation();
   const isZh = i18n.language === 'tc';
-  const [activeTab, setActiveTab] = useState<'all' | 'category' | 'venue'>('all');
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isVenueOpen, setIsVenueOpen] = useState(false);
+  const [isDateOpen, setIsDateOpen] = useState(false);
 
-  const hasActiveFilters = !!(selectedCategory || selectedVenue || searchQuery);
+  const hasActiveFilters = !!(selectedCategory || selectedVenue || selectedDate || searchQuery);
 
   return (
-    <div className="glass-panel p-6 mb-8 animate-fade-in">
-      <div className="flex flex-col lg:flex-row gap-6">
+    <div className="bg-white border-b border-gray-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Search Bar */}
-        <div className="flex-1">
-          <div className="relative">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-festival-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="mb-6">
+          <div className="relative max-w-2xl mx-auto">
+            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder={isZh ? '搜尋電影、導演、類型...' : 'Search films, directors, genres...'}
-              className="w-full pl-10 pr-4 py-3 bg-festival-black/5 border border-festival-black/10 rounded-xl focus:ring-2 focus:ring-festival-red/20 focus:border-festival-red/50 outline-none transition-all placeholder:text-festival-black/40"
+              placeholder={isZh ? '搜尋電影、導演...' : 'Search films, directors...'}
+              className={`w-full pl-12 pr-4 py-3 bg-white border rounded-lg outline-none transition-all placeholder:text-gray-400 font-inter ${
+                searchQuery
+                  ? 'border-purple-400 ring-2 ring-purple-200 focus:ring-purple-300'
+                  : 'border-gray-300 focus:ring-2 focus:ring-purple-200 focus:border-transparent'
+              }`}
               aria-label={isZh ? '搜尋影片' : 'Search films'}
             />
           </div>
         </div>
 
-        {/* Filter Controls */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          {/* Segmented Control */}
-          <div className="segmented-control">
+        {/* Filter Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          {/* Category Dropdown */}
+          <div className="relative">
             <button
-              onClick={() => setActiveTab('all')}
-              className={`${activeTab === 'all' ? 'active' : ''} text-festival-black/70 hover:text-festival-black`}
+              onClick={() => {
+                setIsCategoryOpen(!isCategoryOpen);
+                setIsVenueOpen(false);
+              }}
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors font-inter ${
+                selectedCategory
+                  ? 'bg-purple-600 text-white hover:bg-purple-700'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+              aria-label={isZh ? '選擇類別' : 'Select category'}
             >
-              {isZh ? '全部' : 'All'}
+              <span>
+                {selectedCategory
+                  ? categories.find(c => c.id === selectedCategory)?.[isZh ? 'name_tc' : 'name_en']
+                  : (isZh ? '所有類別' : 'All Genres')
+                }
+              </span>
+              <svg className={`w-4 h-4 transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
             </button>
-            <button
-              onClick={() => setActiveTab('category')}
-              className={`${activeTab === 'category' ? 'active' : ''} text-festival-black/70 hover:text-festival-black`}
-            >
-              {isZh ? '類型' : 'Category'}
-            </button>
-            <button
-              onClick={() => setActiveTab('venue')}
-              className={`${activeTab === 'venue' ? 'active' : ''} text-festival-black/70 hover:text-festival-black`}
-            >
-              {isZh ? '場地' : 'Venue'}
-            </button>
-          </div>
 
-          {/* Dropdowns */}
-          <div className="flex gap-3">
-            {(activeTab === 'all' || activeTab === 'category') && (
-              <div className="relative">
+            {isCategoryOpen && (
+              <div className="absolute top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto animate-dropdown">
                 <button
                   onClick={() => {
-                    setIsCategoryOpen(!isCategoryOpen);
-                    setIsVenueOpen(false);
-                  }}
-                  className="pill-button px-4 py-2 text-sm font-medium text-festival-black hover:text-festival-red transition-colors flex items-center gap-2 min-w-[140px] justify-between"
-                  aria-label={isZh ? '選擇類別' : 'Select category'}
-                >
-                  <span className="truncate">
-                    {selectedCategory
-                      ? categories.find(c => c.id === selectedCategory)?.[isZh ? 'name_tc' : 'name_en']
-                      : (isZh ? '所有類別' : 'All Genres')
-                    }
-                  </span>
-                  <svg className={`w-4 h-4 transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-
-                {isCategoryOpen && (
-                  <div className="absolute top-full mt-2 w-full min-w-[200px] glass-panel z-50 max-h-60 overflow-y-auto">
-                    <button
-                      onClick={() => {
-                        onCategoryChange(null);
-                        setIsCategoryOpen(false);
-                      }}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-festival-red/10 transition-colors rounded-lg"
-                    >
-                      {isZh ? '所有類別' : 'All Genres'}
-                    </button>
-                    {categories.sort((a, b) => a.sort_order - b.sort_order).map((cat) => (
-                      <button
-                        key={cat.id}
-                        onClick={() => {
-                          onCategoryChange(cat.id);
-                          setIsCategoryOpen(false);
-                        }}
-                        className="w-full px-4 py-2 text-left text-sm hover:bg-festival-red/10 transition-colors rounded-lg"
-                      >
-                        {isZh ? cat.name_tc : cat.name_en}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {(activeTab === 'all' || activeTab === 'venue') && (
-              <div className="relative">
-                <button
-                  onClick={() => {
-                    setIsVenueOpen(!isVenueOpen);
+                    onCategoryChange(null);
                     setIsCategoryOpen(false);
                   }}
-                  className="pill-button px-4 py-2 text-sm font-medium text-festival-black hover:text-festival-red transition-colors flex items-center gap-2 min-w-[140px] justify-between"
-                  aria-label={isZh ? '選擇場地' : 'Select venue'}
+                  className="w-full px-4 py-2.5 text-left text-sm hover:bg-gray-50 transition-colors font-inter"
                 >
-                  <span className="truncate">
-                    {selectedVenue
-                      ? venues.find(v => v.id === selectedVenue)?.[isZh ? 'name_tc' : 'name_en']
-                      : (isZh ? '所有場地' : 'All Venues')
-                    }
-                  </span>
-                  <svg className={`w-4 h-4 transition-transform ${isVenueOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  {isZh ? '所有類別' : 'All Genres'}
                 </button>
-
-                {isVenueOpen && (
-                  <div className="absolute top-full mt-2 w-full min-w-[200px] glass-panel z-50 max-h-60 overflow-y-auto">
-                    <button
-                      onClick={() => {
-                        onVenueChange(null);
-                        setIsVenueOpen(false);
-                      }}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-festival-plum/10 transition-colors rounded-lg"
-                    >
-                      {isZh ? '所有場地' : 'All Venues'}
-                    </button>
-                    {venues.map((venue) => (
-                      <button
-                        key={venue.id}
-                        onClick={() => {
-                          onVenueChange(venue.id);
-                          setIsVenueOpen(false);
-                        }}
-                        className="w-full px-4 py-2 text-left text-sm hover:bg-festival-plum/10 transition-colors rounded-lg"
-                      >
-                        {isZh ? venue.name_tc : venue.name_en}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                {categories.sort((a, b) => a.sort_order - b.sort_order).map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                      onCategoryChange(cat.id);
+                      setIsCategoryOpen(false);
+                    }}
+                    className="w-full px-4 py-2.5 text-left text-sm hover:bg-gray-50 transition-colors font-inter"
+                  >
+                    {isZh ? cat.name_tc : cat.name_en}
+                  </button>
+                ))}
               </div>
             )}
           </div>
+
+          {/* Venue Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setIsVenueOpen(!isVenueOpen);
+                setIsCategoryOpen(false);
+                setIsDateOpen(false);
+              }}
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors font-inter ${
+                selectedVenue
+                  ? 'bg-purple-600 text-white hover:bg-purple-700'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+              aria-label={isZh ? '選擇場地' : 'Select venue'}
+            >
+              <span>
+                {selectedVenue
+                  ? venues.find(v => v.id === selectedVenue)?.[isZh ? 'name_tc' : 'name_en']
+                  : (isZh ? '所有場地' : 'All Venues')
+                }
+              </span>
+              <svg className={`w-4 h-4 transition-transform ${isVenueOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {isVenueOpen && (
+              <div className="absolute top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto animate-dropdown">
+                <button
+                  onClick={() => {
+                    onVenueChange(null);
+                    setIsVenueOpen(false);
+                  }}
+                  className="w-full px-4 py-2.5 text-left text-sm hover:bg-gray-50 transition-colors font-inter"
+                >
+                  {isZh ? '所有場地' : 'All Venues'}
+                </button>
+                {venues.map((venue) => (
+                  <button
+                    key={venue.id}
+                    onClick={() => {
+                      onVenueChange(venue.id);
+                      setIsVenueOpen(false);
+                    }}
+                    className="w-full px-4 py-2.5 text-left text-sm hover:bg-gray-50 transition-colors font-inter"
+                  >
+                    {isZh ? venue.name_tc : venue.name_en}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Date Dropdown */}
+          {dates.length > 0 && (
+            <div className="relative">
+              <button
+                onClick={() => {
+                  setIsDateOpen(!isDateOpen);
+                  setIsCategoryOpen(false);
+                  setIsVenueOpen(false);
+                }}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors font-inter ${
+                  selectedDate
+                    ? 'bg-purple-600 text-white hover:bg-purple-700'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+                aria-label={isZh ? '選擇日期' : 'Select date'}
+              >
+                <span>
+                  {selectedDate || (isZh ? '所有日期' : 'All Dates')}
+                </span>
+                <svg className={`w-4 h-4 transition-transform ${isDateOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {isDateOpen && (
+                <div className="absolute top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto animate-dropdown">
+                  <button
+                    onClick={() => {
+                      onDateChange(null);
+                      setIsDateOpen(false);
+                    }}
+                    className="w-full px-4 py-2.5 text-left text-sm hover:bg-gray-50 transition-colors font-inter"
+                  >
+                    {isZh ? '所有日期' : 'All Dates'}
+                  </button>
+                  {dates.map((date) => (
+                    <button
+                      key={date}
+                      onClick={() => {
+                        onDateChange(date);
+                        setIsDateOpen(false);
+                      }}
+                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-gray-50 transition-colors font-inter"
+                    >
+                      {date}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Clear Filters */}
           {hasActiveFilters && (
             <button
               onClick={onClearFilters}
-              className="pill-button px-4 py-2 text-sm font-medium text-festival-red hover:text-festival-black transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors font-inter"
             >
-              {isZh ? '清除篩選' : 'Clear'}
+              {isZh ? '清除' : 'Clear'}
             </button>
           )}
         </div>
       </div>
 
-      {/* Active Filters Display */}
-      {hasActiveFilters && (
-        <div className="mt-4 pt-4 border-t border-festival-black/10">
-          <div className="flex flex-wrap gap-2">
-            {selectedCategory && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-festival-red/10 text-festival-red rounded-full text-sm font-medium">
-                {categories.find(c => c.id === selectedCategory)?.[isZh ? 'name_tc' : 'name_en']}
-                <button
-                  onClick={() => onCategoryChange(null)}
-                  className="ml-1 hover:text-festival-black"
-                >
-                  ×
-                </button>
-              </span>
-            )}
-            {selectedVenue && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-festival-plum/10 text-festival-plum rounded-full text-sm font-medium">
-                {venues.find(v => v.id === selectedVenue)?.[isZh ? 'name_tc' : 'name_en']}
-                <button
-                  onClick={() => onVenueChange(null)}
-                  className="ml-1 hover:text-festival-black"
-                >
-                  ×
-                </button>
-              </span>
-            )}
-            {searchQuery && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-festival-lilac/10 text-festival-lilac rounded-full text-sm font-medium">
-                "{searchQuery}"
-                <button
-                  onClick={() => onSearchChange('')}
-                  className="ml-1 hover:text-festival-black"
-                >
-                  ×
-                </button>
-              </span>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Backdrop for dropdowns */}
-      {(isCategoryOpen || isVenueOpen) && (
+      {(isCategoryOpen || isVenueOpen || isDateOpen) && (
         <div
           className="fixed inset-0 z-40"
           onClick={() => {
             setIsCategoryOpen(false);
             setIsVenueOpen(false);
+            setIsDateOpen(false);
           }}
+          role="button"
+          aria-label={isZh ? '關閉選單' : 'Close menu'}
+          tabIndex={-1}
         />
       )}
     </div>
