@@ -289,6 +289,15 @@ export default function HKAFFScheduler({ films, screenings, venues, categories, 
                       isSelected ? 'border-red-500 shadow-md' : 'border-gray-700'
                     }`}
                     onClick={() => setSelectedFilm(screening)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedFilm(screening);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Select ${screening.film.title_en}`}
                   >
                     {screening.film.poster_url && (
                       <div className="h-48 overflow-hidden bg-gray-800">
@@ -438,10 +447,18 @@ export default function HKAFFScheduler({ films, screenings, venues, categories, 
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
           onClick={() => setSelectedFilm(null)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              setSelectedFilm(null);
+            }
+          }}
+          role="button"
+          tabIndex={-1}
         >
           <div
             className="bg-gray-900 rounded-2xl max-w-2xl w-full p-8 shadow-2xl max-h-[90vh] overflow-y-auto border border-gray-700"
-            onClick={(e) => e.stopPropagation()}
+
+
           >
             {selectedFilm.film.poster_url && (
               <div className="mb-6 rounded-lg overflow-hidden">

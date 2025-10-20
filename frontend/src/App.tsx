@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 
 // Service imports
-import { dataLoader } from './services/dataLoader';
+import { filmService } from './services/filmService';
+import { preferencesService } from './services/preferencesService';
 import { storageService } from './services/storageService';
 import { markdownExporter } from './services/markdownExporter';
 
@@ -202,14 +203,14 @@ function AppContent() {
     window.history.pushState({}, '', newURL);
   };
 
-  // T053: Wire dataLoader to App initialization
+  // T053: Wire filmService to App initialization
   useEffect(() => {
     const loadData = async () => {
       try {
         setIsLoading(true);
         setError(null);
 
-        const data = await dataLoader.loadAll();
+        const data = await filmService.loadAllData();
 
         setFilms(data.films.map(convertServiceFilm));
         setScreenings(data.screenings.map(convertServiceScreening));
@@ -220,6 +221,13 @@ function AppContent() {
         const storedSelections = storageService.getSelections();
         setUserSelections(storedSelections);
 
+        // Initialize language preference
+        const languagePreference = preferencesService.getPreference('language');
+        if (i18n.language !== languagePreference) {
+          i18n.changeLanguage(languagePreference);
+          document.documentElement.lang = languagePreference === 'tc' ? 'zh-HK' : 'en';
+        }
+
         setIsLoading(false);
       } catch (err) {
         console.error('Failed to load data:', err);
@@ -229,7 +237,7 @@ function AppContent() {
     };
 
     loadData();
-  }, []);
+  }, [i18n]);
 
   // Initialize state from URL on mount (after data loads)
   useEffect(() => {
@@ -615,27 +623,29 @@ function AppContent() {
                 }}
               />
 
-              {/* Result Count */}
-              <div className="mb-6" aria-live="polite" aria-atomic="true">
-                <p className="text-gray-700 text-sm font-medium">
-                  {isZh ? '顯示' : 'Showing'}
-                  <span className="text-purple-600 font-bold ml-1">{filteredFilms.length}</span>
-                  {isZh ? '部電影，共' : 'of'}
-                  <span className="font-bold ml-1">{films.length}</span>
-                  {isZh ? '部' : 'films'}
-                </p>
-              </div>
+               {/* Result Count */}
+               <div className="mb-6" aria-live="polite" aria-atomic="true">
+                 <p className="text-gray-700 text-sm font-medium">
+                   {isZh ? '顯示' : 'Showing'}
+                   <span className="text-purple-600 font-bold ml-1">{filteredFilms.length}</span>
+                   {isZh ? '部電影，共' : 'of'}
+                   <span className="font-bold ml-1">{films.length}</span>
+                   {isZh ? '部' : 'films'}
+                 </p>
+               </div>
 
                {/* Film List */}
-               <FilmList
+                <FilmList
                  films={filteredFilms}
                  categories={categories}
                  screenings={screenings}
                  venues={venues}
                  onFilmClick={handleFilmClick}
                  isLoading={false}
+                 regionLabelId="catalogue-heading"
                />
             </>
+
           ) : currentView === 'schedule' ? (
             /* Schedule View */
             <Suspense fallback={

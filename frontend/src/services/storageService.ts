@@ -61,15 +61,34 @@ class StorageService implements IStorageService {
   /**
    * Migrate data from old versions to current version
    */
-  private migrateData(data: any): LocalStorageSchema {
+  /**
+   * Type guard to check if data is a valid storage object
+   */
+  private isStorageData(data: unknown): data is Partial<LocalStorageSchema> {
+    return typeof data === 'object' && data !== null;
+  }
+
+  /**
+   * Safely get a property from unknown data
+   */
+  private getProperty<T>(data: unknown, property: string, defaultValue: T): T {
+    if (this.isStorageData(data) && property in data) {
+      const value = (data as any)[property];
+      return value ?? defaultValue;
+    }
+    return defaultValue;
+  }
+
+  private migrateData(data: unknown): LocalStorageSchema {
     // If no version or old version, migrate to v1
-    if (!data.version || data.version < CURRENT_VERSION) {
+    if (!this.getProperty(data, 'version', 0) || this.getProperty(data, 'version', 0) < CURRENT_VERSION) {
       const migrated: LocalStorageSchema = {
         version: CURRENT_VERSION,
         last_updated: new Date().toISOString(),
-        selections: data.selections || [],
+        selections: this.getProperty(data, 'selections', []),
         preferences: {
-          language: data.language_preference || data.preferences?.language || 'tc'
+          language: this.getProperty(data, 'language_preference',
+            this.getProperty(this.getProperty(data, 'preferences', {}), 'language', 'tc'))
         }
       };
 

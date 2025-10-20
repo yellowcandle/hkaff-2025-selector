@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { preferencesService } from '../../services/preferencesService';
 
 export const LanguageToggle: React.FC = () => {
   const { i18n } = useTranslation();
@@ -8,6 +9,8 @@ export const LanguageToggle: React.FC = () => {
   const toggleLanguage = () => {
     const newLang = isZh ? 'en' : 'tc';
     i18n.changeLanguage(newLang);
+    // Save preference using preferencesService
+    preferencesService.setPreference('language', newLang);
     // Update HTML lang attribute for accessibility
     document.documentElement.lang = newLang === 'tc' ? 'zh-HK' : 'en';
   };

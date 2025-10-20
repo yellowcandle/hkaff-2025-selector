@@ -3,6 +3,7 @@
  * Sets up test environment with mocks and polyfills
  */
 
+import '@testing-library/jest-dom';
 import { beforeEach, vi } from 'vitest';
 
 // Mock localStorage for testing
@@ -53,4 +54,4 @@ global.fetch = vi.fn((url: string) => {
       return [];
     }
   } as Response);
-}) as any;
+}) as typeof fetch;

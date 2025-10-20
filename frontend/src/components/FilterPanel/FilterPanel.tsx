@@ -245,6 +245,13 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             setIsVenueOpen(false);
             setIsDateOpen(false);
           }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              setIsCategoryOpen(false);
+              setIsVenueOpen(false);
+              setIsDateOpen(false);
+            }
+          }}
           role="button"
           aria-label={isZh ? '關閉選單' : 'Close menu'}
           tabIndex={-1}
@@ -253,3 +260,5 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
     </div>
   );
 };
+
+FilterPanel.displayName = 'FilterPanel';

@@ -75,6 +75,11 @@ test.describe('T032: Language Switching', () => {
     // At minimum, verify English title exists
     expect(englishTitle).toBeDefined();
     expect(englishTitle?.length).toBeGreaterThan(0);
+
+    // If we have both titles, they should be different
+    if (chineseTitle && englishTitle) {
+      expect(chineseTitle).not.toBe(englishTitle);
+    }
   });
 
   test('should switch UI labels to English', async ({ page }) => {
@@ -117,6 +122,11 @@ test.describe('T032: Language Switching', () => {
 
     // Should be different or contain English
     expect(englishName).toBeDefined();
+
+    // If we have both names, they should be different
+    if (chineseName && englishName) {
+      expect(chineseName).not.toBe(englishName);
+    }
   });
 
   test('should switch venue names to English', async ({ page }) => {
@@ -141,6 +151,11 @@ test.describe('T032: Language Switching', () => {
 
     // Verify English name
     expect(englishName).toBeDefined();
+
+    // If we have both names, they should be different
+    if (chineseName && englishName) {
+      expect(chineseName).not.toBe(englishName);
+    }
   });
 
   test('should switch language instantly (<100ms)', async ({ page }) => {
@@ -234,6 +249,11 @@ test.describe('T032: Language Switching', () => {
 
     // Formats should differ (e.g., "3月15日" vs "March 15" or "Fri, Mar 15")
     expect(englishDateText).toBeDefined();
+
+    // If we have both date texts, they should be different
+    if (chineseDateText && englishDateText) {
+      expect(chineseDateText).not.toBe(englishDateText);
+    }
   });
 
   test('should handle film detail modal in both languages', async ({ page }) => {
@@ -253,6 +273,12 @@ test.describe('T032: Language Switching', () => {
     const englishSynopsis = await synopsis.textContent();
 
     expect(englishSynopsis).toBeDefined();
+
+    // If we have both synopses, they should be different
+    if (chineseSynopsis && englishSynopsis) {
+      expect(chineseSynopsis).not.toBe(englishSynopsis);
+    }
+
     // Note: Actual content may or may not differ depending on data
   });
 });

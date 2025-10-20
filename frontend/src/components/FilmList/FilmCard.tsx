@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HeartIcon, ClockIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/outline';
-import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { Heart, Clock, MapPin, Calendar } from 'lucide-react';
 import type { Film, Category, Screening, Venue } from '../../types';
+import './FilmCard.css';
+
+type VenueLookup = Record<string, Venue>;
 
 interface FilmCardProps {
   film: Film;
   category: Category | null;
   screenings?: Screening[];
   venues?: Venue[];
+  venueLookup?: VenueLookup;
+  primaryVenueId?: string;
   onClick: (film: Film) => void;
   isInSchedule?: boolean;
   onToggleSchedule?: (film: Film) => void;
@@ -17,17 +21,37 @@ interface FilmCardProps {
   rating?: string;
 }
 
-export const FilmCard: React.FC<FilmCardProps> = ({
+/**
+ * FilmCard Component
+ *
+ * Displays a single film with poster, title, director, category, and screening information.
+ * Supports favorite toggling and accessibility features.
+ * Optimized with React.memo for performance in large lists.
+ *
+ * @param film - Film object containing title, director, runtime, etc.
+ * @param category - Category object for film classification
+ * @param screenings - Array of screening objects for this film
+ * @param venues - Array of venue objects (used if venueLookup not provided)
+ * @param venueLookup - Lookup map of venue objects by ID for performance
+ * @param primaryVenueId - ID of primary venue to highlight
+ * @param onClick - Callback when card is clicked
+ * @param isFavorite - Whether film is marked as favorite
+ * @param onToggleFavorite - Callback to toggle favorite status
+ * @param rating - Optional rating badge to display
+ */
+export const FilmCard: React.FC<FilmCardProps> = React.memo(({
   film,
   category,
   screenings = [],
   venues = [],
+  venueLookup,
+  primaryVenueId,
   onClick,
   isFavorite = false,
   onToggleFavorite,
   rating,
 }) => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const isZh = i18n.language === 'tc';
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -36,13 +60,29 @@ export const FilmCard: React.FC<FilmCardProps> = ({
   const categoryName = category ? (isZh ? category.name_tc : category.name_en) : '';
   const screeningsCount = screenings.length;
 
-  // Get unique venues for this film
-  const filmVenues = screenings
-    .map(s => venues.find(v => v.id === s.venue_id))
-    .filter((v, i, arr) => v && arr.findIndex(v2 => v2?.id === v.id) === i)
-    .slice(0, 2);
+  const filmVenues = useMemo(() => {
+    return screenings.reduce<Venue[]>((acc, screening) => {
+      const resolvedVenue = venueLookup?.[screening.venue_id] ?? venues.find(v => v.id === screening.venue_id);
+      if (resolvedVenue && !acc.some(existing => existing.id === resolvedVenue.id)) {
+        acc.push(resolvedVenue);
+      }
+      return acc;
+    }, []);
+  }, [screenings, venueLookup, venues]);
 
-  const primaryVenue = filmVenues[0];
+  const primaryVenue = useMemo(() => {
+    if (primaryVenueId) {
+      const fromLookup = venueLookup?.[primaryVenueId];
+      if (fromLookup) {
+        return fromLookup;
+      }
+      const fromVenues = filmVenues.find(v => v.id === primaryVenueId);
+      if (fromVenues) {
+        return fromVenues;
+      }
+    }
+    return filmVenues[0];
+  }, [primaryVenueId, venueLookup, filmVenues]);
 
   const handleImageLoad = () => setImageLoaded(true);
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -50,39 +90,38 @@ export const FilmCard: React.FC<FilmCardProps> = ({
     e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="280" height="157" viewBox="0 0 280 157"%3E%3Crect fill="%23f3f4f6" width="280" height="157"/%3E%3Cg transform="translate(140,78.5)"%3E%3Cpath fill="%239ca3af" d="M-35-42h70v84h-70z"/%3E%3Ccircle fill="%239ca3af" cx="-21" cy="0" r="11"/%3E%3Ccircle fill="%239ca3af" cx="21" cy="0" r="11"/%3E%3C/g%3E%3C/svg%3E';
   };
 
+
+
   return (
-    <article
+    <button
       data-testid="film-card"
       onClick={() => onClick(film)}
-      className="group cursor-pointer bg-white rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl hover:border-purple-200 transition-all duration-200 focus-within:outline-none focus-within:ring-2 focus-within:ring-purple-600 focus-within:ring-offset-2"
-      tabIndex={0}
-      role="figure"
-      aria-label={`${title}, ${film.director}, ${film.runtime_minutes} min`}
+      className="film-card"
+
+      aria-label={`${title}, ${t('filmCard.director')}: ${film.director}, ${t('filmCard.runtime', { minutes: film.runtime_minutes })}`}
     >
       {/* Poster Section */}
-      <figure className="relative aspect-[2/3] bg-gray-100 overflow-hidden">
+      <div className="film-card__poster">
         {/* Loading Skeleton */}
         {!imageLoaded && !imageError && (
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 animate-pulse" />
+          <div className="film-card__skeleton" />
         )}
 
         {/* Poster Image */}
         <img
           data-testid="film-poster"
           src={film.poster_url}
-          alt={`${title} poster`}
+          alt={t('filmCard.posterAlt', { title })}
           loading="lazy"
           decoding="async"
-          className={`w-full h-full object-cover transition-opacity duration-200 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
+          className="film-card__poster-img"
           onLoad={handleImageLoad}
           onError={handleImageError}
         />
 
         {/* Rating Badge */}
         {rating && (
-          <div className="absolute top-3 left-3 px-2 py-1 bg-gray-900/80 backdrop-blur-sm rounded text-white text-xs font-bold">
+          <div className="film-card__rating">
             {rating}
           </div>
         )}
@@ -94,66 +133,70 @@ export const FilmCard: React.FC<FilmCardProps> = ({
               e.stopPropagation();
               onToggleFavorite();
             }}
-            className={`absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all duration-200 z-10 shadow-sm ${
-              isFavorite ? 'scale-110' : 'hover:scale-105'
-            }`}
-            aria-label={isFavorite ? (isZh ? '移除收藏' : 'Remove from favorites') : (isZh ? '加入收藏' : 'Add to favorites')}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                onToggleFavorite();
+              }
+            }}
+            className={`film-card__favorite-btn ${isFavorite ? 'film-card__favorite-btn--favorited' : ''}`}
+            aria-label={isFavorite ? t('filmCard.removeFavorite', { title }) : t('filmCard.addFavorite', { title })}
+            tabIndex={0}
           >
-            {isFavorite ? (
-              <HeartSolidIcon className="w-5 h-5 text-purple-600 animate-pulse" />
-            ) : (
-              <HeartIcon className="w-5 h-5 text-gray-700 hover:text-purple-600 transition-colors" />
-            )}
+            <Heart className="film-card__favorite-icon" fill={isFavorite ? 'currentColor' : 'none'} aria-hidden="true" />
           </button>
         )}
-      </figure>
+      </div>
 
       {/* Content Section */}
-      <figcaption className="p-4">
+      <figcaption className="film-card__content">
         {/* Title */}
         <h3
           data-testid="film-title"
-          className="font-semibold text-base mb-1 line-clamp-2 leading-tight font-inter text-gray-900"
+          className="film-card__title"
         >
           {title}
         </h3>
 
         {/* Director & Year */}
-        <p className="text-gray-600 text-sm mb-3 font-inter leading-tight">
+        <p className="film-card__meta">
           {film.director} • {new Date().getFullYear()}
         </p>
 
         {/* Category Tags */}
         {categoryName && (
-          <div className="mb-3 flex flex-wrap gap-1.5">
-            <span className="inline-block px-2.5 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded font-inter">
+          <div className="film-card__categories">
+            <span className="film-card__category-tag">
               {categoryName}
             </span>
           </div>
         )}
 
         {/* Film Info - Reordered by importance: venue → screenings → runtime */}
-        <div className="space-y-1.5 text-xs mb-3">
+        <div className="film-card__info">
           {primaryVenue && (
-            <div className="flex items-center gap-1.5 px-2 py-1 bg-gray-50 rounded-md">
-              <MapPinIcon className="w-3.5 h-3.5 text-purple-600" />
-              <span className="line-clamp-1 font-semibold text-gray-900">{isZh ? primaryVenue.name_tc : primaryVenue.name_en}</span>
+            <div className="film-card__info-item film-card__info-item--venue">
+              <MapPin className="film-card__info-icon" aria-hidden="true" />
+              <span className="film-card__info-text film-card__info-text--venue">{isZh ? primaryVenue.name_tc : primaryVenue.name_en}</span>
             </div>
           )}
           {screeningsCount > 0 && (
-            <div className="flex items-center gap-1.5 px-2 py-1 bg-purple-50 rounded-md">
-              <CalendarIcon className="w-3.5 h-3.5 text-purple-600" />
-              <span className="font-medium text-purple-700">{screeningsCount} {isZh ? '場放映' : 'screenings'}</span>
+            <div className="film-card__info-item film-card__info-item--screenings">
+              <Calendar className="film-card__info-icon" aria-hidden="true" />
+              <span className="film-card__info-text film-card__info-text--screenings">{t('filmCard.screenings', { count: screeningsCount })}</span>
             </div>
           )}
           {film.runtime_minutes && (
-            <div className="flex items-center gap-1.5 px-2 py-1 bg-gray-50 rounded-md">
-              <ClockIcon className="w-3.5 h-3.5 text-gray-500" />
-              <span className="font-medium text-gray-600">{film.runtime_minutes} {isZh ? '分鐘' : 'min'}</span>
+            <div className="film-card__info-item film-card__info-item--runtime">
+              <Clock className="film-card__info-icon" aria-hidden="true" />
+              <span className="film-card__info-text film-card__info-text--runtime">{t('filmCard.runtime', { minutes: film.runtime_minutes })}</span>
             </div>
           )}
         </div>
       </figcaption>
-    </article>
+    </button>
   );
-};
+});
+
+FilmCard.displayName = 'FilmCard';
