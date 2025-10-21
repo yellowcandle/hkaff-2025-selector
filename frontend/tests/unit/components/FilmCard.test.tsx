@@ -300,13 +300,13 @@ describe('FilmCard Component', () => {
           film={mockFilm}
           category={mockCategory}
           onClick={mockOnClick}
-          onToggleFavorite={mockOnToggleFavorite}
           isFavorite={true}
+          onToggleFavorite={mockOnToggleFavorite}
         />
       );
 
-      expect(screen.getByTestId('heart-solid')).toBeInTheDocument();
-      expect(screen.queryByTestId('heart-outline')).not.toBeInTheDocument();
+      const heartIcon = screen.getByLabelText('Remove Film Title from favorites').querySelector('svg');
+      expect(heartIcon).toHaveAttribute('fill', 'currentColor');
     });
 
     it('shows outline heart when isFavorite is false', () => {
@@ -315,14 +315,16 @@ describe('FilmCard Component', () => {
           film={mockFilm}
           category={mockCategory}
           onClick={mockOnClick}
-          onToggleFavorite={mockOnToggleFavorite}
           isFavorite={false}
+          onToggleFavorite={mockOnToggleFavorite}
         />
       );
 
-      expect(screen.getByTestId('heart-outline')).toBeInTheDocument();
-      expect(screen.queryByTestId('heart-solid')).not.toBeInTheDocument();
+      const heartIcon = screen.getByLabelText('Add Film Title to favorites').querySelector('svg');
+      expect(heartIcon).toHaveAttribute('fill', 'none');
     });
+
+
   });
 
   describe('Accessibility', () => {

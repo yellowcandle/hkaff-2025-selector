@@ -18,7 +18,8 @@
   border-color: #a855f7;
 }
 
-.film-card:focus-within {
+.film-card:focus-within,
+.film-card:focus {
   outline: none;
   box-shadow: 0 0 0 2px #7c3aed, 0 0 0 4px rgba(124, 58, 237, 0.1);
 }
@@ -105,8 +106,8 @@
 }
 
 .film-card__favorite-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1rem;
+  height: 1rem;
   color: #6b7280;
   transition: color 0.2s ease;
 }
@@ -193,8 +194,8 @@
 }
 
 .film-card__info-icon {
-  width: 0.875rem;
-  height: 0.875rem;
+  width: 0.75rem;
+  height: 0.75rem;
   flex-shrink: 0;
 }
 

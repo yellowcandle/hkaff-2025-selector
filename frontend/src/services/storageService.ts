@@ -73,8 +73,8 @@ class StorageService implements IStorageService {
    */
   private getProperty<T>(data: unknown, property: string, defaultValue: T): T {
     if (this.isStorageData(data) && property in data) {
-      const value = (data as any)[property];
-      return value ?? defaultValue;
+      const value = (data as Record<string, unknown>)[property];
+      return (value as T) ?? defaultValue;
     }
     return defaultValue;
   }

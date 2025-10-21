@@ -40,13 +40,29 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   const hasActiveFilters = !!(selectedCategory || selectedVenue || selectedDate || searchQuery);
   const anyDropdownOpen = isCategoryOpen || isVenueOpen || isDateOpen;
 
+  // Handle escape key to close dropdowns
+  React.useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && anyDropdownOpen) {
+        setIsCategoryOpen(false);
+        setIsVenueOpen(false);
+        setIsDateOpen(false);
+      }
+    };
+
+    if (anyDropdownOpen) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [anyDropdownOpen]);
+
   return (
     <div className="bg-white border-b border-gray-200 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Search Bar */}
         <div className="mb-6">
           <div className="relative max-w-2xl mx-auto">
-            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
@@ -238,24 +254,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
       {/* Backdrop for dropdowns */}
       {anyDropdownOpen && (
-        <div
-          className="fixed inset-0 z-10"
-          onClick={() => {
-            setIsCategoryOpen(false);
-            setIsVenueOpen(false);
-            setIsDateOpen(false);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              setIsCategoryOpen(false);
-              setIsVenueOpen(false);
-              setIsDateOpen(false);
-            }
-          }}
-          role="button"
-          aria-label={isZh ? '關閉選單' : 'Close menu'}
-          tabIndex={-1}
-        />
+        <div className="fixed inset-0 z-10" />
       )}
     </div>
   );

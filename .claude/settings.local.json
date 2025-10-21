@@ -47,7 +47,12 @@
       "Bash(export CLOUDFLARE_API_TOKEN=\"3_kxWDeh3R9NfGLiXyFnIAoClBq-qlK1ARyUvo6i\")",
       "Bash(wrangler dev)",
       "Bash(wrangler dev:*)",
-      "Bash(wrangler deployments list:*)"
+      "Bash(wrangler deployments list:*)",
+      "Bash(npm --prefix frontend run build)",
+      "Bash(wrangler pages deployment list:*)",
+      "Read(//tmp/**)",
+      "Bash(wrangler versions list)",
+      "Read(//Users/swong/**)"
     ],
     "deny": [],
     "ask": []

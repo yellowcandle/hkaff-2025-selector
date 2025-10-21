@@ -317,7 +317,7 @@ describe('FilterPanel Component', () => {
       });
     });
 
-    it('closes dropdowns when clicking outside', async () => {
+    it('closes dropdowns when pressing escape', async () => {
       render(<FilterPanel {...mockProps} />);
 
       const categoryButton = screen.getByLabelText('Select category');
@@ -327,9 +327,8 @@ describe('FilterPanel Component', () => {
         expect(screen.getByText('Drama')).toBeInTheDocument();
       });
 
-      // Click on backdrop (the fixed div with role button)
-      const backdrop = screen.getByLabelText('Close menu', { hidden: true });
-      fireEvent.click(backdrop);
+      // Press escape key
+      fireEvent.keyDown(document, { key: 'Escape' });
 
       await waitFor(() => {
         expect(screen.queryByText('Drama')).not.toBeInTheDocument();
@@ -360,14 +359,15 @@ describe('FilterPanel Component', () => {
       expect(screen.getByLabelText('選擇日期')).toBeInTheDocument();
     });
 
-    it('closes dropdowns with proper ARIA label on backdrop', () => {
+    it('shows backdrop when dropdowns are open', () => {
       render(<FilterPanel {...mockProps} />);
 
       const categoryButton = screen.getByLabelText('Select category');
       fireEvent.click(categoryButton);
 
-      const backdrop = screen.getByLabelText('Close menu', { hidden: true });
-      expect(backdrop).toHaveAttribute('aria-label', 'Close menu');
+      // Backdrop should exist when dropdown is open
+      const backdrop = document.querySelector('.fixed.inset-0.z-10');
+      expect(backdrop).toBeInTheDocument();
     });
   });
 

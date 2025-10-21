@@ -85,6 +85,13 @@ export interface LocalStorageSchema {
   };
 }
 
+export interface UserPreferences {
+  language: 'tc' | 'en';
+  theme: 'light' | 'dark';
+  notifications: boolean;
+  autoSave: boolean;
+}
+
 // ============================================================================
 // Service Interfaces
 // ============================================================================

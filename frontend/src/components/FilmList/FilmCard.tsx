@@ -97,7 +97,7 @@ export const FilmCard: React.FC<FilmCardProps> = React.memo(({
       data-testid="film-card"
       onClick={() => onClick(film)}
       className="film-card"
-
+      type="button"
       aria-label={`${title}, ${t('filmCard.director')}: ${film.director}, ${t('filmCard.runtime', { minutes: film.runtime_minutes })}`}
     >
       {/* Poster Section */}
