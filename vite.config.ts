@@ -6,6 +6,9 @@ export default defineConfig({
   plugins: [react()],
   root: './frontend',
   publicDir: 'public',
+  resolve: {
+    dedupe: ['react', 'react-dom'],
+  },
   build: {
     outDir: '../dist',
     emptyOutDir: true,
