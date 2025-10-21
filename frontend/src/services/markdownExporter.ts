@@ -88,21 +88,21 @@ class MarkdownExporter implements IMarkdownExporter {
    * @param selection The selection to format
    * @param language Language for output
    */
-  formatSelection(selection: UserSelection, _language: 'tc' | 'en'): string {
+  formatSelection(selection: UserSelection, language: 'tc' | 'en'): string {
     const { film_snapshot, screening_snapshot } = selection;
 
     // Extract time (HH:MM)
     const time = screening_snapshot.datetime.split('T')[1].substring(0, 5);
 
     // Get title and venue based on language
-    const titleBilingual = `${film_snapshot.title_tc} (${film_snapshot.title_en})`;
-    const venueBilingual = `${screening_snapshot.venue_name_tc} (${screening_snapshot.venue_name_en})`;
+    const title = language === 'tc' ? film_snapshot.title_tc : film_snapshot.title_en;
+    const venue = language === 'tc' ? screening_snapshot.venue_name_tc : screening_snapshot.venue_name_en;
 
     // Get director (handle missing director)
-    const director = (film_snapshot as any).director || 'Unknown';
+    const director = 'Unknown';
 
-    let markdown = `### ${time} - ${titleBilingual}\n`;
-    markdown += `- **Venue**: ${venueBilingual}\n`;
+    let markdown = `### ${time} - ${title}\n`;
+    markdown += `- **Venue**: ${venue}\n`;
     markdown += `- **Duration**: ${screening_snapshot.duration_minutes} minutes\n`;
     markdown += `- **Director**: ${director}\n\n`;
 

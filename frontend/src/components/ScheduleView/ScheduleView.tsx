@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import { Selection, ConflictInfo } from '../../types';
 import { DateGroup as DateGroupComponent } from './DateGroup';
+import { conflictDetector } from '../../services/conflictDetector';
+import type { UserSelection } from '../../../../specs/001-given-this-film/contracts/service-interfaces';
 
 interface ScheduleViewProps {
   selections: Selection[];
@@ -42,57 +44,64 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
       groups.get(date)!.push(selection);
     });
 
-    // Detect conflicts within each date group
+    // Convert Selection[] to UserSelection[] for conflictDetector
+    const userSelections: UserSelection[] = sorted.map(selection => ({
+      screening_id: selection.screening_id,
+      added_at: selection.added_at,
+      film_snapshot: {
+        id: selection.film_snapshot.id,
+        title_tc: selection.film_snapshot.title_tc,
+        title_en: selection.film_snapshot.title_en,
+        poster_url: selection.film_snapshot.poster_url
+      },
+      screening_snapshot: {
+        id: selection.screening_snapshot.id,
+        datetime: selection.screening_snapshot.datetime,
+        duration_minutes: selection.screening_snapshot.duration_minutes,
+        venue_name_tc: selection.venue_snapshot.name_tc,
+        venue_name_en: selection.venue_snapshot.name_en
+      }
+    }));
+
+    // Detect conflicts using the conflictDetector service
+    const allConflicts = conflictDetector.detectConflicts(userSelections);
+
+    // Group conflicts by screening ID for easy lookup
+    const conflictsByScreeningId = new Map<string, ConflictInfo[]>();
+    allConflicts.forEach(conflict => {
+      // Convert service Conflict to component ConflictInfo
+      const conflictInfo: ConflictInfo = {
+        severity: conflict.severity,
+        screening_ids: [conflict.screening_a.screening_id, conflict.screening_b.screening_id],
+        overlap_minutes: conflict.overlap_minutes,
+        message_tc: conflict.severity === 'impossible'
+          ? `與另一場次重疊 ${conflict.overlap_minutes} 分鐘`
+          : `與另一場次間隔少於30分鐘，且在不同場地`,
+        message_en: conflict.severity === 'impossible'
+          ? `Overlaps ${conflict.overlap_minutes} minutes with another screening`
+          : `Less than 30 minutes between screenings at different venues`,
+      };
+
+      // Add conflict to both screenings involved
+      if (!conflictsByScreeningId.has(conflict.screening_a.screening_id)) {
+        conflictsByScreeningId.set(conflict.screening_a.screening_id, []);
+      }
+      conflictsByScreeningId.get(conflict.screening_a.screening_id)!.push(conflictInfo);
+
+      if (!conflictsByScreeningId.has(conflict.screening_b.screening_id)) {
+        conflictsByScreeningId.set(conflict.screening_b.screening_id, []);
+      }
+      conflictsByScreeningId.get(conflict.screening_b.screening_id)!.push(conflictInfo);
+    });
+
+    // Build date groups with conflicts
     const groupsWithConflicts: DateGroupData[] = [];
     groups.forEach((screenings, date) => {
-      const screeningsWithConflicts = screenings.map((screening, idx) => {
-        const conflicts: ConflictInfo[] = [];
-        const startTime = new Date(screening.screening_snapshot.datetime);
-        const endTime = new Date(startTime.getTime() + screening.screening_snapshot.duration_minutes * 60000);
-
-        // Check against other screenings in the same date
-        for (let i = 0; i < screenings.length; i++) {
-          if (i === idx) continue;
-
-          const otherScreening = screenings[i];
-          const otherStartTime = new Date(otherScreening.screening_snapshot.datetime);
-          const otherEndTime = new Date(otherStartTime.getTime() + otherScreening.screening_snapshot.duration_minutes * 60000);
-
-          // Check for overlap
-          const overlap = Math.max(0,
-            Math.min(endTime.getTime(), otherEndTime.getTime()) - Math.max(startTime.getTime(), otherStartTime.getTime())
-          );
-
-          if (overlap > 0) {
-            // Impossible conflict - true overlap
-            const overlapMinutes = Math.round(overlap / 60000);
-            conflicts.push({
-              severity: 'impossible',
-              screening_ids: [screening.screening_id, otherScreening.screening_id],
-              overlap_minutes: overlapMinutes,
-              message_tc: `與另一場次重疊 ${overlapMinutes} 分鐘`,
-              message_en: `Overlaps ${overlapMinutes} minutes with another screening`,
-            });
-          } else {
-            // Check for tight timing between different venues
-            const gap = Math.abs(startTime.getTime() - otherEndTime.getTime()) / 60000;
-            const sameVenue = screening.venue_snapshot.id === otherScreening.venue_snapshot.id;
-
-            if (!sameVenue && gap < 30) {
-              conflicts.push({
-                severity: 'warning',
-                screening_ids: [screening.screening_id, otherScreening.screening_id],
-                overlap_minutes: 0,
-                message_tc: `與另一場次間隔少於30分鐘，且在不同場地`,
-                message_en: `Less than 30 minutes between screenings at different venues`,
-              });
-            }
-          }
-        }
-
+      const screeningsWithConflicts = screenings.map((screening) => {
+        const conflicts = conflictsByScreeningId.get(screening.screening_id);
         return {
           ...screening,
-          conflicts: conflicts.length > 0 ? conflicts : undefined,
+          conflicts: conflicts && conflicts.length > 0 ? conflicts : undefined,
         };
       });
 
