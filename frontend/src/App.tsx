@@ -9,11 +9,13 @@ import { markdownExporter } from './services/markdownExporter';
 
 // Component imports - Keep critical components as static imports
 import { Hero } from './components/Hero/Hero';
-import { FilmList } from './components/FilmList/FilmList';
-import { FilterPanel } from './components/FilterPanel/FilterPanel';
+import { FilmBrowser } from './components/figma/FilmBrowser';
 import { LanguageToggle } from './components/LanguageToggle/LanguageToggle';
 import { ToastProvider, useToast } from './components/Toast/Toast';
 import { LoadingSpinner } from './components/Loading/LoadingSpinner';
+
+// Utils
+import { convertAllToFigmaFilms, type FigmaFilm } from './utils/filmDataAdapter';
 
 // Lazy-loaded components for code splitting
 const FilmDetail = lazy(() => import('./components/FilmDetail/FilmDetail').then(module => ({ default: module.FilmDetail })));
@@ -144,10 +146,10 @@ function AppContent() {
   const [venues, setVenues] = useState<Venue[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
-  // Filter states
+  // Filter states (kept for URL sync, but FilmBrowser manages its own filters internally)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedVenue, setSelectedVenue] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedDate] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   // UI states
@@ -337,12 +339,6 @@ function AppContent() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [films]);
 
-  // Extract unique dates from screenings
-  const uniqueDates = useMemo(() => {
-    const dates = screenings.map(s => s.datetime.split('T')[0]);
-    return [...new Set(dates)].sort();
-  }, [screenings]);
-
   // T054: Derived filtered films state
   const filteredFilms = useMemo(() => {
     let filtered = films;
@@ -397,9 +393,43 @@ function AppContent() {
       .filter((selection): selection is Selection => selection !== null);
   }, [userSelections, venues]);
 
-  // T055: Handle film card click to open detail modal
-  const handleFilmClick = (film: Film) => {
-    setSelectedFilm(film);
+  // Convert films to Figma format
+  const figmaFilms = useMemo(() => {
+    return convertAllToFigmaFilms(
+      filteredFilms,
+      screenings,
+      venues,
+      categories,
+      isZh ? 'tc' : 'en'
+    );
+  }, [filteredFilms, screenings, venues, categories, isZh]);
+
+  // Track selected film IDs for Figma components
+  const selectedFigmaFilmIds = useMemo(() => {
+    return new Set(userSelections.map(sel => {
+      const screening = screenings.find(s => s.id === sel.screening_id);
+      return screening?.film_id;
+    }).filter(Boolean));
+  }, [userSelections, screenings]);
+
+  // Handle Figma film click
+  const handleFigmaFilmClick = (figmaFilm: FigmaFilm) => {
+    const film = films.find(f => f.id === figmaFilm.id);
+    if (film) {
+      setSelectedFilm(film);
+    }
+  };
+
+  // Toggle film selection (for Figma components)
+  const handleToggleFigmaFilmSelection = (figmaFilm: FigmaFilm) => {
+    // For now, just open the detail modal
+    // The user can select specific screenings from there
+    handleFigmaFilmClick(figmaFilm);
+  };
+
+  // Check if a Figma film is selected
+  const isFigmaFilmSelected = (filmId: string): boolean => {
+    return selectedFigmaFilmIds.has(filmId);
   };
 
   const handleCloseFilmDetail = () => {
@@ -601,51 +631,13 @@ function AppContent() {
         <main id="main-content" role="main" className="min-h-screen">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {currentView === 'catalogue' ? (
-            <>
-              {/* Filter Panel */}
-              <FilterPanel
-                categories={categories}
-                venues={venues}
-                dates={uniqueDates}
-                selectedCategory={selectedCategory}
-                selectedVenue={selectedVenue}
-                selectedDate={selectedDate}
-                searchQuery={searchQuery}
-                onCategoryChange={setSelectedCategory}
-                onVenueChange={setSelectedVenue}
-                onDateChange={setSelectedDate}
-                onSearchChange={setSearchQuery}
-                onClearFilters={() => {
-                  setSelectedCategory(null);
-                  setSelectedVenue(null);
-                  setSelectedDate(null);
-                  setSearchQuery('');
-                }}
-              />
-
-               {/* Result Count */}
-               <div className="mb-6" aria-live="polite" aria-atomic="true">
-                 <p className="text-gray-700 text-sm font-medium">
-                   {isZh ? '顯示' : 'Showing'}
-                   <span className="text-purple-600 font-bold ml-1">{filteredFilms.length}</span>
-                   {isZh ? '部電影，共' : 'of'}
-                   <span className="font-bold ml-1">{films.length}</span>
-                   {isZh ? '部' : 'films'}
-                 </p>
-               </div>
-
-               {/* Film List */}
-                <FilmList
-                 films={filteredFilms}
-                 categories={categories}
-                 screenings={screenings}
-                 venues={venues}
-                 onFilmClick={handleFilmClick}
-                 isLoading={false}
-                 regionLabelId="catalogue-heading"
-               />
-            </>
-
+            <FilmBrowser
+              films={figmaFilms}
+              selectedFilms={figmaFilms.filter(f => isFigmaFilmSelected(f.id))}
+              onToggleSelection={handleToggleFigmaFilmSelection}
+              isFilmSelected={isFigmaFilmSelected}
+              onViewDetails={handleFigmaFilmClick}
+            />
           ) : currentView === 'schedule' ? (
             /* Schedule View */
             <Suspense fallback={
