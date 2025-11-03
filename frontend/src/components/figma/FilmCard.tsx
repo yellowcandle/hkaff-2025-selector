@@ -32,6 +32,16 @@ export function FilmCard({ film, isSelected, onToggleSelection, onViewDetails }:
     onToggleSelection();
   };
 
+  // Get first screening for date/time/venue display
+  const firstScreening = film.screenings[0];
+  const displayVenue = film.venue || firstScreening?.venue || '';
+  
+  // Format date for display
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
   return (
     <Card 
       className={`overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col group cursor-pointer w-full h-full ${
@@ -86,14 +96,26 @@ export function FilmCard({ film, isSelected, onToggleSelection, onViewDetails }:
               <Clock className="w-4 h-4 flex-shrink-0" />
               <span>{film.runtime} min</span>
             </div>
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 flex-shrink-0" />
-              <span className="line-clamp-1">{film.venue}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 flex-shrink-0" />
-              <span>{film.screenings.length} screenings</span>
-            </div>
+            {displayVenue && (
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 flex-shrink-0" />
+                <span className="line-clamp-1">{displayVenue}</span>
+              </div>
+            )}
+            {firstScreening ? (
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 flex-shrink-0" />
+                <span>
+                  {formatDate(firstScreening.date)} {firstScreening.time}
+                  {film.screenings.length > 1 && ` (+${film.screenings.length - 1} more)`}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 flex-shrink-0" />
+                <span>0 screenings</span>
+              </div>
+            )}
           </div>
         </div>
 

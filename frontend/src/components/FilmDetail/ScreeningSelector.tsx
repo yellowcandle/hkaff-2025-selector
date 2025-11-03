@@ -46,8 +46,13 @@ export const ScreeningSelector: React.FC<ScreeningSelectorProps> = ({
   const checkConflictForScreening = (screening: Screening): Conflict[] => {
     if (!existingSelections.length) return [];
     
+    // Look up venue information for accurate conflict detection
+    const venue = getVenueById(screening.venue_id);
+    const venueNameEn = venue?.name_en || '';
+    const venueNameTc = venue?.name_tc || '';
+    
     // Use the conflictDetector service's wouldConflict method
-    return conflictDetector.wouldConflict(existingSelections, screening);
+    return conflictDetector.wouldConflict(existingSelections, screening, venueNameEn, venueNameTc);
   };
 
   // Format conflict messages based on Conflict objects
