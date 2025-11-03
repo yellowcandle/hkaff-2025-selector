@@ -55,8 +55,16 @@ class ConflictDetector implements IConflictDetector {
           });
         } else if (a.venue_name_en !== b.venue_name_en) {
           // Different venues - check for tight timing
-          // Calculate gap (always positive since no overlap)
-          const gap = Math.abs(b_start - a_end);
+          // Calculate gap between screenings (bidirectional)
+          // Since no overlap, either a_end <= b_start or b_end <= a_start
+          let gap: number;
+          if (a_end <= b_start) {
+            // A ends before B starts
+            gap = b_start - a_end;
+          } else {
+            // B ends before A starts (b_end <= a_start)
+            gap = a_start - b_end;
+          }
 
           if (gap < TRAVEL_BUFFER_MS) {
             // Less than 30 minutes between screenings at different venues
@@ -79,10 +87,18 @@ class ConflictDetector implements IConflictDetector {
    * Check if adding a new screening would create conflicts
    * @param existingSelections Current user selections
    * @param newScreening Screening being considered
+   * @param venueNameEn Optional: English venue name (required for accurate conflict detection)
+   * @param venueNameTc Optional: Traditional Chinese venue name
    * @returns Array of conflicts with the new screening
    */
-  wouldConflict(existingSelections: UserSelection[], newScreening: Screening): Conflict[] {
+  wouldConflict(
+    existingSelections: UserSelection[], 
+    newScreening: Screening,
+    venueNameEn?: string,
+    venueNameTc?: string
+  ): Conflict[] {
     // Create a temporary UserSelection for the new screening
+    // Note: If venue names are not provided, conflict detection may be inaccurate
     const tempSelection: UserSelection = {
       screening_id: newScreening.id,
       added_at: new Date().toISOString(),
@@ -96,8 +112,8 @@ class ConflictDetector implements IConflictDetector {
         id: newScreening.id,
         datetime: newScreening.datetime,
         duration_minutes: newScreening.duration_minutes,
-        venue_name_tc: '',
-        venue_name_en: ''
+        venue_name_tc: venueNameTc || '',
+        venue_name_en: venueNameEn || ''
       }
     };
 

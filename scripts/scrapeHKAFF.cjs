@@ -124,14 +124,38 @@ async function scrapeFilms(page) {
         const synopsis = synopsisElement ? synopsisElement.textContent.trim() : '';
         
         // Get poster - look for images in the page (excluding logos)
-        const posterImg = Array.from(document.querySelectorAll('img')).find(img => 
-          img.src && 
-          !img.src.includes('logo') && 
-          !img.src.includes('icon') &&
-          !img.src.includes('header') &&
-          (img.src.includes('poster') || img.src.includes('film') || img.width > 100)
-        );
-        const poster = posterImg ? posterImg.src : '';
+        // Priority: images in .detail-img, .poster-img, or main content areas
+        let poster = '';
+        
+        // Try to find poster in common container classes
+        const detailImg = document.querySelector('.detail-img img, .poster-img img, .film-poster img, .detail-image img');
+        if (detailImg && detailImg.src) {
+          poster = detailImg.src;
+        } else {
+          // Fallback: look for images with film/poster in path or large images
+          const allImages = Array.from(document.querySelectorAll('img'));
+          const filmImages = allImages.filter(img => {
+            if (!img.src) return false;
+            const src = img.src.toLowerCase();
+            // Exclude logos, icons, headers
+            if (src.includes('logo') || src.includes('icon') || src.includes('header') || 
+                src.includes('system/') || src.includes('common/')) return false;
+            // Include if it has film/upload/film in path, or is reasonably large
+            return src.includes('/upload/film/') || 
+                   src.includes('/film/') || 
+                   src.includes('poster') ||
+                   (img.naturalWidth > 200 && img.naturalHeight > 300);
+          });
+          
+          if (filmImages.length > 0) {
+            // Prefer images with better dimensions (poster-like aspect ratio ~2:3)
+            const bestImage = filmImages.find(img => {
+              const aspectRatio = img.naturalWidth / img.naturalHeight;
+              return aspectRatio > 0.5 && aspectRatio < 0.8; // Roughly 2:3 aspect ratio
+            }) || filmImages[0];
+            poster = bestImage.src;
+          }
+        }
 
         return {
           id: `film-${id}`,
@@ -232,23 +256,52 @@ async function scrapeScreenings(page, films, venues) {
       await page.goto(film.detail_url_tc, { waitUntil: 'domcontentloaded', timeout: 10000 });
 
       const filmScreenings = await page.evaluate(({ filmId, filmRuntime }) => {
-        const screeningTable = document.querySelector('.time-venue-table');
-        if (!screeningTable) return [];
-
-        const rows = screeningTable.querySelectorAll('tr');
         const screenings = [];
 
-        rows.forEach(row => {
-          const cells = row.querySelectorAll('td');
-          if (cells.length >= 2) {
-            screenings.push({
-              datetime: cells[0].textContent.trim(),
-              venue: cells[1].textContent.trim(),
-              film_id: filmId,
-              duration_minutes: filmRuntime
-            });
+        // Try table format first (.time-venue-table)
+        const screeningTable = document.querySelector('.time-venue-table');
+        if (screeningTable) {
+          const rows = screeningTable.querySelectorAll('tr');
+          rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length >= 2) {
+              screenings.push({
+                datetime: cells[0].textContent.trim(),
+                venue: cells[1].textContent.trim(),
+                film_id: filmId,
+                duration_minutes: filmRuntime
+              });
+            }
+          });
+        }
+
+        // Also try text format (.right-col.common-padding)
+        const rightCol = document.querySelector('.right-col.common-padding');
+        if (rightCol && screenings.length === 0) {
+          const text = rightCol.textContent.trim();
+          
+          // Pattern: "時間及放映地點 * 22/10 7:00PM MOViE MOViE Pacific Place * 22/10 7:15PM ..."
+          // Split by asterisk, skip the first part (label)
+          const parts = text.split('*').map(p => p.trim()).filter(p => p);
+          
+          for (let i = 1; i < parts.length; i++) {
+            const part = parts[i];
+            // Remove "購票" if present
+            const cleanPart = part.replace(/購票\s*$/, '').trim();
+            
+            // Match: "22/10 7:00PM MOViE MOViE Pacific Place"
+            // Pattern: date/time (day/month hour:minuteAM|PM) venue name
+            const match = cleanPart.match(/(\d{1,2})\/(\d{1,2})\s+(\d{1,2}):(\d{2})(AM|PM)\s+(.+)/i);
+            if (match) {
+              screenings.push({
+                datetime: `${match[1]}/${match[2]} ${match[3]}:${match[4]}${match[5]}`,
+                venue: match[6].trim(),
+                film_id: filmId,
+                duration_minutes: filmRuntime
+              });
+            }
           }
-        });
+        }
 
         return screenings;
       }, { filmId: film.id, filmRuntime: film.runtime_minutes });

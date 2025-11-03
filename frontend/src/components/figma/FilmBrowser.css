@@ -1,0 +1,72 @@
+.film-browser-grid {
+  /* Mobile-first: single column layout */
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  width: 100%;
+}
+
+.film-browser-grid__item {
+  display: flex;
+  height: 100%;
+  transition: transform 220ms ease, filter 220ms ease;
+}
+
+.film-browser-grid__item > * {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.film-browser-grid__item:focus-within,
+.film-browser-grid__item:hover {
+  transform: translateY(-4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .film-browser-grid__item {
+    transition: none;
+  }
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 640px) {
+  .film-browser-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+/* Small desktop: 3 columns */
+@media (min-width: 768px) {
+  .film-browser-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Medium desktop: 4 columns */
+@media (min-width: 1024px) {
+  .film-browser-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.75rem;
+  }
+}
+
+/* Large desktop: 5 columns */
+@media (min-width: 1280px) {
+  .film-browser-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Extra large desktop: 6 columns */
+@media (min-width: 1536px) {
+  .film-browser-grid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2.25rem;
+  }
+}
+

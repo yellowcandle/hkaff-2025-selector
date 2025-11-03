@@ -567,9 +567,15 @@ function AppContent() {
         {/* Header - Clean Figma style */}
         <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            {/* Navigation Tabs */}
-            <nav role="navigation" aria-label={isZh ? '主要導航' : 'Main navigation'}>
-              <div className="flex justify-center gap-2 max-w-md mx-auto" role="tablist">
+            <div className="flex items-center justify-between gap-4">
+              {/* Language Toggle in top right */}
+              <div className="flex-shrink-0 order-2">
+                <LanguageToggle />
+              </div>
+              
+              {/* Navigation Tabs */}
+              <nav role="navigation" aria-label={isZh ? '主要導航' : 'Main navigation'} className="flex-1 order-1">
+                <div className="flex justify-center gap-2 max-w-md mx-auto" role="tablist">
                 <button
                   onClick={() => setCurrentView('catalogue')}
                   role="tab"
@@ -578,7 +584,7 @@ function AppContent() {
                   aria-controls="main-content"
                   className={`flex-1 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200 ${
                     currentView === 'catalogue'
-                      ? 'bg-primary text-white shadow-lg'
+                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -592,7 +598,7 @@ function AppContent() {
                   aria-controls="main-content"
                   className={`flex-1 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200 ${
                     currentView === 'schedule'
-                      ? 'bg-primary text-white shadow-lg'
+                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -617,12 +623,8 @@ function AppContent() {
                     </span>
                   )}
                 </button>
-              </div>
-            </nav>
-
-            {/* Language Toggle in top right */}
-            <div className="absolute top-4 right-4">
-              <LanguageToggle />
+                </div>
+              </nav>
             </div>
           </div>
         </header>

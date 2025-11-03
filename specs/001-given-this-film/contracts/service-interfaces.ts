@@ -212,9 +212,11 @@ export interface IConflictDetector {
    * Check if adding a new screening would create conflicts
    * @param existingSelections Current user selections
    * @param newScreening Screening being considered
+   * @param venueNameEn Optional English venue name for accurate conflict detection
+   * @param venueNameTc Optional Traditional Chinese venue name for accurate conflict detection
    * @returns Array of conflicts with the new screening
    */
-  wouldConflict(existingSelections: UserSelection[], newScreening: Screening): Conflict[];
+  wouldConflict(existingSelections: UserSelection[], newScreening: Screening, venueNameEn?: string, venueNameTc?: string): Conflict[];
   
   /**
    * Calculate overlap between two screenings in minutes

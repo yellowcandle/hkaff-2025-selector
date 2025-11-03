@@ -4,6 +4,7 @@ import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Badge } from '../ui/badge';
 import { Search, Filter } from 'lucide-react';
+import './FilmBrowser.css';
 
 interface Film {
   id: string;
@@ -90,48 +91,48 @@ export function FilmBrowser({
             <Filter className="w-4 h-4 text-gray-500" />
             <span className="text-gray-700">Filters:</span>
           </div>
-
+          
           <Select value={selectedGenre} onValueChange={setSelectedGenre}>
             <SelectTrigger className="w-[160px]">
               <SelectValue placeholder="All Genres" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Genres</SelectItem>
-              {allGenres.map((genre) => (
-                <SelectItem key={genre} value={genre}>
-                  {genre}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+              <SelectContent>
+                <SelectItem value="all">All Genres</SelectItem>
+                {allGenres.map((genre) => (
+                  <SelectItem key={genre} value={genre}>
+                    {genre}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
           <Select value={selectedVenue} onValueChange={setSelectedVenue}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="All Venues" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Venues</SelectItem>
-              {allVenues.map((venue) => (
-                <SelectItem key={venue} value={venue}>
-                  {venue}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+              <SelectContent>
+                <SelectItem value="all">All Venues</SelectItem>
+                {allVenues.map((venue) => (
+                  <SelectItem key={venue} value={venue}>
+                    {venue}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
           <Select value={selectedDate} onValueChange={setSelectedDate}>
             <SelectTrigger className="w-[160px]">
               <SelectValue placeholder="All Dates" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Dates</SelectItem>
-              {allDates.map((date) => (
-                <SelectItem key={date} value={date}>
-                  {formatDate(date)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+              <SelectContent>
+                <SelectItem value="all">All Dates</SelectItem>
+                {allDates.map((date) => (
+                  <SelectItem key={date} value={date}>
+                    {formatDate(date)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
           {activeFiltersCount > 0 && (
             <Badge variant="secondary">
@@ -142,20 +143,21 @@ export function FilmBrowser({
       </div>
 
       {/* Results count */}
-      <div className="text-gray-600">
+      <div className="text-gray-600 text-sm">
         Showing {filteredFilms.length} of {films.length} films
       </div>
 
       {/* Film Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="film-browser-grid">
         {filteredFilms.map((film) => (
-          <FilmCard
-            key={film.id}
-            film={film}
-            isSelected={isFilmSelected(film.id)}
-            onToggleSelection={() => onToggleSelection(film)}
-            onViewDetails={() => onViewDetails?.(film)}
-          />
+          <div key={film.id} className="film-browser-grid__item">
+            <FilmCard
+              film={film}
+              isSelected={isFilmSelected(film.id)}
+              onToggleSelection={() => onToggleSelection(film)}
+              onViewDetails={() => onViewDetails?.(film)}
+            />
+          </div>
         ))}
       </div>
 

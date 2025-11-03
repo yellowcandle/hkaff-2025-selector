@@ -1,0 +1,55 @@
+{
+  "title": "HKAFF to Figma Integration Guide",
+  "overview": "Sync real Hong Kong Asian Film Festival data to Figma designs",
+  "prerequisites": [
+    "Figma desktop app installed and running",
+    "Film Festival Scheduler Figma file open",
+    "Real HKAFF data scraped and processed",
+    "Node.js environment with Figma tools"
+  ],
+  "tools": [
+    {
+      "name": "figma-desktop_get_design_context",
+      "purpose": "Extract component structure and properties",
+      "usage": "Get film card component details"
+    },
+    {
+      "name": "figma-desktop_get_variable_defs",
+      "purpose": "Retrieve design system variables",
+      "usage": "Get colors, typography, spacing"
+    },
+    {
+      "name": "figma-desktop_get_code_connect_map",
+      "purpose": "Map Figma to codebase",
+      "usage": "Link components to React files"
+    },
+    {
+      "name": "figma-desktop_get_screenshot",
+      "purpose": "Capture component images",
+      "usage": "Generate poster documentation"
+    }
+  ],
+  "workflow": [
+    "1. Run data scraping scripts to get real HKAFF data",
+    "2. Process data into Figma-compatible format",
+    "3. Use Figma tools to analyze design structure",
+    "4. Create component instances with real data",
+    "5. Update design variables with film information",
+    "6. Validate sync results in Figma prototype",
+    "7. Export updated designs for development"
+  ],
+  "dataMapping": {
+    "filmTitle": "Figma text property",
+    "filmPoster": "Figma image fill",
+    "filmDirector": "Figma text property",
+    "filmRating": "Figma text property",
+    "filmRuntime": "Figma text property",
+    "filmVenue": "Figma text property"
+  },
+  "troubleshooting": [
+    "Ensure Figma desktop app is running",
+    "Check file permissions and edit access",
+    "Verify poster image paths are accessible",
+    "Confirm component properties match data structure"
+  ]
+}

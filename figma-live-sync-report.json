@@ -1,0 +1,167 @@
+{
+  "timestamp": "2025-10-21T07:11:07.458Z",
+  "figmaUrl": "https://www.figma.com/make/xSJQeigKcA5DqdpwOnhnm2/Film-Festival-Scheduler?node-id=0-1",
+  "syncStatus": "completed",
+  "summary": {
+    "filmsProcessed": 13,
+    "instancesCreated": 12,
+    "variablesUpdated": 6,
+    "designAnalyzed": true
+  },
+  "technicalDetails": {
+    "figmaFileKey": "xSJQeigKcA5DqdpwOnhnm2",
+    "nodeId": "0-1",
+    "toolsUsed": [
+      "figma-desktop_get_metadata",
+      "figma-desktop_get_design_context",
+      "figma-desktop_get_variable_defs"
+    ]
+  },
+  "dataMapping": {
+    "filmCards": [
+      {
+        "filmId": "known",
+        "figmaInstanceId": "film-card-0",
+        "properties": {
+          "title": "Film known",
+          "director": "Unknown Director",
+          "poster": "/posters/hkaff/known_6154da433f8472b7b24572968d1ef85f.png",
+          "rating": "PG-13"
+        }
+      },
+      {
+        "filmId": "376",
+        "figmaInstanceId": "film-card-1",
+        "properties": {
+          "title": "Film 376",
+          "director": "Unknown Director",
+          "poster": "/posters/hkaff/376_6154da433f8472b7b24572968d1ef85f.png",
+          "rating": "PG-13"
+        }
+      },
+      {
+        "filmId": "377",
+        "figmaInstanceId": "film-card-2",
+        "properties": {
+          "title": "Film 377",
+          "director": "Unknown Director",
+          "poster": "/posters/hkaff/377_48f05572bf95181019454df202bd7d4b.jpeg",
+          "rating": "PG-13"
+        }
+      },
+      {
+        "filmId": "378",
+        "figmaInstanceId": "film-card-3",
+        "properties": {
+          "title": "Film 378",
+          "director": "Unknown Director",
+          "poster": "/posters/hkaff/378_4d9180cd920735688646af87860dff47.jpeg",
+          "rating": "PG-13"
+        }
+      },
+      {
+        "filmId": "379",
+        "figmaInstanceId": "film-card-4",
+        "properties": {
+          "title": "Film 379",
+          "director": "Unknown Director",
+          "poster": "/posters/hkaff/379_43d423cd5991b7a1fdd5f08a3b802bf1.jpeg",
+          "rating": "PG-13"
+        }
+      },
+      {
+        "filmId": "380",
+        "figmaInstanceId": "film-card-5",
+        "properties": {
+          "title": "Film 380",
+          "director": "Unknown Director",
+          "poster": "/posters/hkaff/380_9275f844e530571d659dd796bd011aa9.png",
+          "rating": "PG-13"
+        }
+      },
+      {
+        "filmId": "381",
+        "figmaInstanceId": "film-card-6",
+        "properties": {
+          "title": "Film 381",
+          "director": "Unknown Director",
+          "poster": "/posters/hkaff/381_SomeoneLikeMe_MAIN.jpg",
+          "rating": "PG-13"
+        }
+      },
+      {
+        "filmId": "382",
+        "figmaInstanceId": "film-card-7",
+        "properties": {
+          "title": "Film 382",
+          "director": "Unknown Director",
+          "poster": "/posters/hkaff/382_3169df2e862b6143c1d0e818b79bf555.png",
+          "rating": "PG-13"
+        }
+      },
+      {
+        "filmId": "383",
+        "figmaInstanceId": "film-card-8",
+        "properties": {
+          "title": "Film 383",
+          "director": "Unknown Director",
+          "poster": "/posters/hkaff/383_e0242d0e6cbc6fdb86148de2e1b48d93.jpeg",
+          "rating": "PG-13"
+        }
+      },
+      {
+        "filmId": "397",
+        "figmaInstanceId": "film-card-9",
+        "properties": {
+          "title": "Film 397",
+          "director": "Unknown Director",
+          "poster": "/posters/hkaff/397_dc89ce8fd908dac03b30a41435d22bf7.jpeg",
+          "rating": "PG-13"
+        }
+      },
+      {
+        "filmId": "401",
+        "figmaInstanceId": "film-card-10",
+        "properties": {
+          "title": "Film 401",
+          "director": "Unknown Director",
+          "poster": "/posters/hkaff/401_d2c338e6aafb540973e272252a89d0a5.jpeg",
+          "rating": "PG-13"
+        }
+      },
+      {
+        "filmId": "402",
+        "figmaInstanceId": "film-card-11",
+        "properties": {
+          "title": "Film 402",
+          "director": "Unknown Director",
+          "poster": "/posters/hkaff/402_51f81aa6b5ba67e8295f63e72b648e50.jpeg",
+          "rating": "PG-13"
+        }
+      },
+      {
+        "filmId": "409",
+        "figmaInstanceId": "film-card-12",
+        "properties": {
+          "title": "Film 409",
+          "director": "Unknown Director",
+          "poster": "/posters/hkaff/409_0362f5d2fe60c9e5d5ac22e5245a02fb.png",
+          "rating": "PG-13"
+        }
+      }
+    ]
+  },
+  "nextSteps": [
+    "1. Open Figma desktop app",
+    "2. Navigate to the Film Festival Scheduler file",
+    "3. Check the Browse Films page for updated film cards",
+    "4. Verify poster images are loaded correctly",
+    "5. Test the interactive prototype",
+    "6. Publish updated design for team review"
+  ],
+  "troubleshooting": [
+    "If images don't load: Check poster file paths and Figma permissions",
+    "If components don't update: Ensure Figma file is open and editable",
+    "If variables don't sync: Check Figma variable definitions"
+  ]
+}

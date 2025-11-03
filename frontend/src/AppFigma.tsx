@@ -6,6 +6,7 @@ import { Film as FilmIcon } from 'lucide-react';
 import { filmService } from './services/filmService';
 import { storageService } from './services/storageService';
 import type { Film, Screening, Venue } from './types';
+import type { FigmaFilm } from './utils/filmDataAdapter';
 import { LoadingSpinner } from './components/Loading/LoadingSpinner';
 
 // Convert service types to frontend types
@@ -117,7 +118,7 @@ export default function AppFigma() {
     [figmaFilms, selectedFilmIds]
   );
 
-  const toggleFilmSelection = (film: any) => {
+  const toggleFilmSelection = (film: FigmaFilm) => {
     setSelectedFilmIds(prev => {
       const newSet = new Set(prev);
       if (newSet.has(film.id)) {
