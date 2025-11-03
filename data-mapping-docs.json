@@ -1,0 +1,86 @@
+{
+  "title": "HKAFF to Figma Component Data Mapping",
+  "overview": "How real film festival data maps to Figma-style React components",
+  "mappings": [
+    {
+      "hkaffField": "id",
+      "figmaField": "id",
+      "componentField": "film.id",
+      "example": "known",
+      "description": "Unique film identifier from HKAFF"
+    },
+    {
+      "hkaffField": "title",
+      "figmaField": "title",
+      "componentField": "film.title",
+      "example": "Film known",
+      "description": "Film title displayed in card header"
+    },
+    {
+      "hkaffField": "director",
+      "figmaField": "director",
+      "componentField": "film.director",
+      "example": "Unknown Director",
+      "description": "Director name with year in subtitle"
+    },
+    {
+      "hkaffField": "image",
+      "figmaField": "image",
+      "componentField": "film.image",
+      "example": "/posters/hkaff/known_6154da433f8472b7b24572968d1ef85f.png",
+      "description": "Poster image URL for card background"
+    },
+    {
+      "hkaffField": "runtime",
+      "figmaField": "runtime",
+      "componentField": "film.runtime",
+      "example": 90,
+      "description": "Film duration in minutes with clock icon"
+    },
+    {
+      "hkaffField": "venue",
+      "figmaField": "venue",
+      "componentField": "film.venue",
+      "example": "Multiple Venues",
+      "description": "Primary venue with map pin icon"
+    },
+    {
+      "hkaffField": "screenings.length",
+      "figmaField": "screenings.length",
+      "componentField": "film.screenings.length",
+      "example": 2,
+      "description": "Number of screenings with calendar icon"
+    },
+    {
+      "hkaffField": "rating",
+      "figmaField": "rating",
+      "componentField": "film.rating",
+      "example": "PG-13",
+      "description": "Age rating badge in top-right corner"
+    },
+    {
+      "hkaffField": "genre",
+      "figmaField": "genre",
+      "componentField": "film.genre",
+      "example": [
+        "Festival Film"
+      ],
+      "description": "Genre tags as outline badges"
+    }
+  ],
+  "implementation": {
+    "dataFlow": [
+      "1. Scrape HKAFF website → Raw film data",
+      "2. Process posters → Local file paths",
+      "3. Generate screenings → Schedule data",
+      "4. Format for Figma → Component-ready data",
+      "5. Load in React → Display in FilmCard components"
+    ],
+    "keyFiles": [
+      "all-hkaff-posters/ → Real poster images",
+      "frontend/dist/data/films.json → Processed film data",
+      "frontend/dist/data/figma-export.json → Figma-formatted data",
+      "frontend/src/components/figma/FilmCard.tsx → Display component"
+    ]
+  }
+}

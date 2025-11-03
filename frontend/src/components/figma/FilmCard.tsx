@@ -23,14 +23,40 @@ interface FilmCardProps {
 }
 
 export function FilmCard({ film, isSelected, onToggleSelection, onViewDetails }: FilmCardProps) {
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Don't trigger if clicking on buttons or links
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('a')) {
+      return;
+    }
+    onToggleSelection();
+  };
+
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col">
-      <div className="relative aspect-[2/3] overflow-hidden bg-gray-100">
+    <Card 
+      className={`overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col group cursor-pointer w-full h-full ${
+        isSelected 
+          ? 'ring-2 ring-primary/20' 
+          : ''
+      }`}
+      onClick={handleCardClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onToggleSelection();
+        }
+      }}
+      aria-label={`${isSelected ? 'Remove' : 'Add'} ${film.title} to selection`}
+    >
+      <div className="relative aspect-[2/3] overflow-hidden bg-gray-100 group-hover:scale-[1.02] transition-transform duration-300">
         <ImageWithFallback
           src={film.image}
           alt={film.title}
           className="w-full h-full object-cover"
         />
+
         {film.rating && (
           <div className="absolute top-2 right-2">
             <Badge variant="secondary" className="bg-black/70 text-white">
@@ -71,7 +97,7 @@ export function FilmCard({ film, isSelected, onToggleSelection, onViewDetails }:
           </div>
         </div>
 
-        <div className="flex gap-2 mt-4">
+        <div className="flex gap-2 mt-4" onClick={(e) => e.stopPropagation()}>
           <Button
             variant="outline"
             size="sm"
@@ -84,7 +110,10 @@ export function FilmCard({ film, isSelected, onToggleSelection, onViewDetails }:
           <Button
             variant={isSelected ? 'default' : 'outline'}
             size="sm"
-            onClick={onToggleSelection}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleSelection();
+            }}
             className="flex-1"
           >
             {isSelected ? (

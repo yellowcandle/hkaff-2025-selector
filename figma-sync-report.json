@@ -1,0 +1,111 @@
+{
+  "timestamp": "2025-10-21T07:11:05.098Z",
+  "figmaUrl": "https://www.figma.com/make/xSJQeigKcA5DqdpwOnhnm2/Film-Festival-Scheduler?node-id=0-1",
+  "summary": {
+    "totalFilms": 13,
+    "instancesCreated": 13,
+    "variablesCreated": 52,
+    "postersAvailable": 13
+  },
+  "films": [
+    {
+      "id": "known",
+      "title": "Film known",
+      "hasPoster": true,
+      "screeningsCount": 2,
+      "instanceId": "film-card-known"
+    },
+    {
+      "id": "376",
+      "title": "Film 376",
+      "hasPoster": true,
+      "screeningsCount": 2,
+      "instanceId": "film-card-376"
+    },
+    {
+      "id": "377",
+      "title": "Film 377",
+      "hasPoster": true,
+      "screeningsCount": 3,
+      "instanceId": "film-card-377"
+    },
+    {
+      "id": "378",
+      "title": "Film 378",
+      "hasPoster": true,
+      "screeningsCount": 3,
+      "instanceId": "film-card-378"
+    },
+    {
+      "id": "379",
+      "title": "Film 379",
+      "hasPoster": true,
+      "screeningsCount": 3,
+      "instanceId": "film-card-379"
+    },
+    {
+      "id": "380",
+      "title": "Film 380",
+      "hasPoster": true,
+      "screeningsCount": 3,
+      "instanceId": "film-card-380"
+    },
+    {
+      "id": "381",
+      "title": "Film 381",
+      "hasPoster": true,
+      "screeningsCount": 3,
+      "instanceId": "film-card-381"
+    },
+    {
+      "id": "382",
+      "title": "Film 382",
+      "hasPoster": true,
+      "screeningsCount": 2,
+      "instanceId": "film-card-382"
+    },
+    {
+      "id": "383",
+      "title": "Film 383",
+      "hasPoster": true,
+      "screeningsCount": 3,
+      "instanceId": "film-card-383"
+    },
+    {
+      "id": "397",
+      "title": "Film 397",
+      "hasPoster": true,
+      "screeningsCount": 3,
+      "instanceId": "film-card-397"
+    },
+    {
+      "id": "401",
+      "title": "Film 401",
+      "hasPoster": true,
+      "screeningsCount": 3,
+      "instanceId": "film-card-401"
+    },
+    {
+      "id": "402",
+      "title": "Film 402",
+      "hasPoster": true,
+      "screeningsCount": 3,
+      "instanceId": "film-card-402"
+    },
+    {
+      "id": "409",
+      "title": "Film 409",
+      "hasPoster": true,
+      "screeningsCount": 3,
+      "instanceId": "film-card-409"
+    }
+  ],
+  "instructions": [
+    "1. Open Figma design file",
+    "2. Navigate to the Browse Films page",
+    "3. Use the generated instances to replace placeholder cards",
+    "4. Update component properties with real data",
+    "5. Import poster images to Figma",
+    "6. Test the interactive prototype"
+  ]
+}
