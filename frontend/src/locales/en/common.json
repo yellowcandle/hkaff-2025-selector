@@ -56,7 +56,14 @@
     "selected": "Selected",
     "remove": "Remove",
     "duration": "Duration",
-    "minutes": "minutes"
+    "minutes": "minutes",
+    "screeningsCount": "{{count}} screening",
+    "screeningsCount_other": "{{count}} screenings"
+  },
+  "calendar": {
+    "clickDate": "Click a date to view screenings",
+    "noScreenings": "No screenings on this date",
+    "hasConflicts": "Has scheduling conflicts"
   },
   "schedule": {
     "title": "My Schedule",

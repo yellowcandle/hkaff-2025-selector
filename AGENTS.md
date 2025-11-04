@@ -24,4 +24,7 @@ JavaScript/TypeScript (ES2022+), Node.js 18+ for tooling: Follow standard conven
 - 001-given-this-film: Added JavaScript/TypeScript (ES2022+), Node.js 18+ for tooling + Modern frontend framework (React/Vue/Svelte), i18n library, date/time utilities
 
 <!-- MANUAL ADDITIONS START -->
+
+- you should use all mcps and tools available to you.
+- if it is advantageous to spawn subagents to parallelize your work, do so.
 <!-- MANUAL ADDITIONS END -->

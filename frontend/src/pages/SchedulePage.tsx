@@ -6,13 +6,13 @@ import type { Selection } from '../types';
 interface SchedulePageProps {
   selections: Selection[];
   onRemoveScreening: (screeningId: string) => void;
-  onExport: () => void;
+  onNavigateToCatalogue: () => void;
 }
 
 export const SchedulePage: React.FC<SchedulePageProps> = ({
   selections,
   onRemoveScreening,
-  onExport,
+  onNavigateToCatalogue,
 }) => {
   const { t } = useTranslation();
 
@@ -33,8 +33,8 @@ export const SchedulePage: React.FC<SchedulePageProps> = ({
         <div className="bg-white rounded-3xl shadow-xl p-8">
           <ScheduleView
             selections={selections}
-            onRemoveScreening={onRemoveScreening}
-            onExport={onExport}
+            onRemove={onRemoveScreening}
+            onNavigateToCatalogue={onNavigateToCatalogue}
           />
         </div>
       </div>

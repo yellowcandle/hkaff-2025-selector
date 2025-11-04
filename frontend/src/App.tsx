@@ -349,7 +349,7 @@ function AppContent() {
       filtered = filtered.filter(film => {
         const matchesTitle = film.title_tc.toLowerCase().includes(query) ||
                             film.title_en.toLowerCase().includes(query);
-        const matchesDirector = film.director.toLowerCase().includes(query);
+        const matchesDirector = film.director?.toLowerCase().includes(query) || false;
         const category = categories.find(c => c.id === film.category_id);
         const matchesCategory = category && (
           category.name_tc.toLowerCase().includes(query) ||
@@ -508,10 +508,10 @@ function AppContent() {
     }
   };
 
-  // Handle export
-  const handleExport = () => {
-    setShowExportModal(true);
-  };
+  // Handle export - TODO: Add export button to calendar view
+  // const handleExport = () => {
+  //   setShowExportModal(true);
+  // };
 
   const markdownContent = useMemo(() => {
     const lang = i18n.language as 'tc' | 'en';
@@ -649,8 +649,8 @@ function AppContent() {
             }>
               <ScheduleView
                 selections={selections}
-                onRemoveScreening={handleRemoveSelection}
-                onExport={handleExport}
+                onRemove={handleRemoveSelection}
+                onNavigateToCatalogue={() => setCurrentView('catalogue')}
               />
             </Suspense>
           ) : (

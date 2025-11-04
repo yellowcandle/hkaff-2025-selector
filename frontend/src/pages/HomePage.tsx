@@ -179,7 +179,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       const matchesTitle =
         film.title_tc.toLowerCase().includes(normalizedQuery) ||
         film.title_en.toLowerCase().includes(normalizedQuery);
-      const matchesDirector = film.director.toLowerCase().includes(normalizedQuery);
+      const matchesDirector = film.director?.toLowerCase().includes(normalizedQuery) || false;
       const matchesCategory =
         category &&
         (category.name_tc.toLowerCase().includes(normalizedQuery) ||
@@ -452,8 +452,8 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="rounded-3xl border border-gray-200 bg-white/80 p-6 shadow-xl backdrop-blur-md">
             <ScheduleView
               selections={selections}
-              onRemoveScreening={onRemoveSelection}
-              onExport={onExportSchedule}
+              onRemove={onRemoveSelection}
+              onNavigateToCatalogue={() => setCurrentView('catalogue')}
             />
           </div>
         )}

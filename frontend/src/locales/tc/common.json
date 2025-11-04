@@ -56,7 +56,13 @@
     "selected": "已選",
     "remove": "移除",
     "duration": "片長",
-    "minutes": "分鐘"
+    "minutes": "分鐘",
+    "screeningsCount": "{{count}} 場放映"
+  },
+  "calendar": {
+    "clickDate": "點擊日期查看當日場次",
+    "noScreenings": "此日期沒有場次",
+    "hasConflicts": "有時間衝突"
   },
   "schedule": {
     "title": "我的時間表",

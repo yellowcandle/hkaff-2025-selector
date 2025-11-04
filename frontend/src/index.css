@@ -268,7 +268,7 @@
     background: linear-gradient(120deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.05) 100%);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.18);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
   }
 
   .pill-button:hover {
@@ -284,12 +284,12 @@
   }
 
   .hover-lift {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
 
   .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 24px 48px rgba(31, 34, 51, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(31, 34, 51, 0.08);
   }
 
   .segmented-control {
@@ -304,7 +304,7 @@
     border-radius: calc(var(--radius) - 4px);
     padding: 8px 16px;
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
   }
 
   .segmented-control button.active {
@@ -319,14 +319,26 @@
     text-wrap: balance;
   }
 
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
   .animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
+    animation: fadeIn 0.2s ease-out;
   }
 
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(12px);
+      transform: translateY(8px);
     }
     to {
       opacity: 1;
@@ -335,13 +347,13 @@
   }
 
   .animate-dropdown {
-    animation: dropdownFade 0.2s ease-out;
+    animation: dropdownFade 0.15s ease-out;
   }
 
   @keyframes dropdownFade {
     from {
       opacity: 0;
-      transform: translateY(-8px);
+      transform: translateY(-4px);
     }
     to {
       opacity: 1;
@@ -350,13 +362,13 @@
   }
 
   .animate-scale-in {
-    animation: scaleIn 0.2s ease-out;
+    animation: scaleIn 0.15s ease-out;
   }
 
   @keyframes scaleIn {
     from {
       opacity: 0;
-      transform: scale(0.95);
+      transform: scale(0.98);
     }
     to {
       opacity: 1;
@@ -365,13 +377,13 @@
   }
 
   .animate-slide-up {
-    animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   @keyframes slideUp {
     from {
       opacity: 0;
-      transform: translateY(24px);
+      transform: translateY(12px);
     }
     to {
       opacity: 1;

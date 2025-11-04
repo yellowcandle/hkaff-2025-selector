@@ -2,50 +2,33 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import { Selection, ConflictInfo } from '../../types';
-import { DateGroup as DateGroupComponent } from './DateGroup';
+import { CalendarView } from './CalendarView';
 import { conflictDetector } from '../../services/conflictDetector';
 import type { UserSelection } from '../../../../specs/001-given-this-film/contracts/service-interfaces';
 
 interface ScheduleViewProps {
   selections: Selection[];
-  onRemoveScreening: (screeningId: string) => void;
-  onExport: () => void;
+  onRemove: (screeningId: string) => void;
+  onNavigateToCatalogue: () => void;
 }
 
-interface DateGroupData {
-  date: string;
-  screenings: (Selection & { conflicts?: ConflictInfo[] })[];
-}
+// Export these types for CalendarView
+export type { Selection, ConflictInfo };
 
 export const ScheduleView: React.FC<ScheduleViewProps> = ({
   selections,
-  onRemoveScreening,
-  onExport,
+  onRemove,
+  onNavigateToCatalogue,
 }) => {
   const { i18n } = useTranslation();
   const isZh = i18n.language === 'tc';
 
-  // Group selections by date and detect conflicts
-  const dateGroups: DateGroupData[] = useMemo(() => {
-    if (selections.length === 0) return [];
-
-    // Sort by datetime
-    const sorted = [...selections].sort((a, b) =>
-      new Date(a.screening_snapshot.datetime).getTime() - new Date(b.screening_snapshot.datetime).getTime()
-    );
-
-    // Group by date
-    const groups: Map<string, Selection[]> = new Map();
-    sorted.forEach((selection) => {
-      const date = format(new Date(selection.screening_snapshot.datetime), 'yyyy-MM-dd');
-      if (!groups.has(date)) {
-        groups.set(date, []);
-      }
-      groups.get(date)!.push(selection);
-    });
+  // Detect conflicts and create conflict map
+  const conflictsByScreeningId = useMemo(() => {
+    if (selections.length === 0) return new Map<string, ConflictInfo[]>();
 
     // Convert Selection[] to UserSelection[] for conflictDetector
-    const userSelections: UserSelection[] = sorted.map(selection => ({
+    const userSelections: UserSelection[] = selections.map(selection => ({
       screening_id: selection.screening_id,
       added_at: selection.added_at,
       film_snapshot: {
@@ -67,7 +50,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
     const allConflicts = conflictDetector.detectConflicts(userSelections);
 
     // Group conflicts by screening ID for easy lookup
-    const conflictsByScreeningId = new Map<string, ConflictInfo[]>();
+    const conflictMap = new Map<string, ConflictInfo[]>();
     allConflicts.forEach(conflict => {
       // Convert service Conflict to component ConflictInfo
       const conflictInfo: ConflictInfo = {
@@ -83,35 +66,18 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
       };
 
       // Add conflict to both screenings involved
-      if (!conflictsByScreeningId.has(conflict.screening_a.screening_id)) {
-        conflictsByScreeningId.set(conflict.screening_a.screening_id, []);
+      if (!conflictMap.has(conflict.screening_a.screening_id)) {
+        conflictMap.set(conflict.screening_a.screening_id, []);
       }
-      conflictsByScreeningId.get(conflict.screening_a.screening_id)!.push(conflictInfo);
+      conflictMap.get(conflict.screening_a.screening_id)!.push(conflictInfo);
 
-      if (!conflictsByScreeningId.has(conflict.screening_b.screening_id)) {
-        conflictsByScreeningId.set(conflict.screening_b.screening_id, []);
+      if (!conflictMap.has(conflict.screening_b.screening_id)) {
+        conflictMap.set(conflict.screening_b.screening_id, []);
       }
-      conflictsByScreeningId.get(conflict.screening_b.screening_id)!.push(conflictInfo);
+      conflictMap.get(conflict.screening_b.screening_id)!.push(conflictInfo);
     });
 
-    // Build date groups with conflicts
-    const groupsWithConflicts: DateGroupData[] = [];
-    groups.forEach((screenings, date) => {
-      const screeningsWithConflicts = screenings.map((screening) => {
-        const conflicts = conflictsByScreeningId.get(screening.screening_id);
-        return {
-          ...screening,
-          conflicts: conflicts && conflicts.length > 0 ? conflicts : undefined,
-        };
-      });
-
-      groupsWithConflicts.push({
-        date,
-        screenings: screeningsWithConflicts,
-      });
-    });
-
-    return groupsWithConflicts;
+    return conflictMap;
   }, [selections]);
 
   if (selections.length === 0) {
@@ -121,16 +87,14 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
           <div className="flex flex-col items-center gap-8">
             {/* Animated Icon */}
             <div className="relative">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 flex items-center justify-center shadow-2xl animate-pulse">
+              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 flex items-center justify-center shadow-2xl">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 flex items-center justify-center">
                   <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </div>
               </div>
-              {/* Decorative rings */}
-              <div className="absolute inset-0 rounded-full border-2 border-primary/20 animate-ping" style={{ animationDuration: '3s' }} />
-              <div className="absolute inset-0 rounded-full border-2 border-secondary/20 animate-ping" style={{ animationDuration: '4s', animationDelay: '1s' }} />
+              {/* Decorative rings - removed animations for performance */}
             </div>
 
             <div className="space-y-4">
@@ -154,7 +118,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 hover:shadow-lg transition-shadow duration-150 hover:-translate-y-0.5">
               <div className="text-4xl mb-3">🎬</div>
               <div className="font-bold text-primary mb-2 text-base">
                 {isZh ? '探索電影' : 'Explore Films'}
@@ -163,7 +127,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
                 {isZh ? '瀏覽豐富的電影選擇，發現精彩作品' : 'Browse our rich film selection and discover great works'}
               </p>
             </div>
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-secondary/5 to-secondary/10 border border-secondary/20 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-secondary/5 to-secondary/10 border border-secondary/20 hover:shadow-lg transition-shadow duration-150 hover:-translate-y-0.5">
               <div className="text-4xl mb-3">⏰</div>
               <div className="font-bold text-secondary mb-2 text-base">
                 {isZh ? '選擇場次' : 'Pick Screenings'}
@@ -172,7 +136,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
                 {isZh ? '選擇最適合您的放映時間和場地' : 'Choose the best screening times and venues for you'}
               </p>
             </div>
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-accent/5 to-accent/10 border border-accent/20 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-accent/5 to-accent/10 border border-accent/20 hover:shadow-lg transition-shadow duration-150 hover:-translate-y-0.5">
               <div className="text-4xl mb-3">✨</div>
               <div className="font-bold text-accent mb-2 text-base">
                 {isZh ? '自動檢測' : 'Auto-Detect'}
@@ -184,10 +148,10 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
           </div>
 
           <button
-            onClick={() => window.history.back()}
-            className="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-primary via-secondary to-accent text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 group mx-auto"
+            onClick={onNavigateToCatalogue}
+            className="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-primary via-secondary to-accent text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-shadow transition-transform duration-150 flex items-center justify-center gap-3 group mx-auto"
           >
-            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
             </svg>
             <span>{isZh ? '返回瀏覽電影' : 'Browse Films'}</span>
@@ -197,16 +161,23 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
     );
   }
 
-  const totalDays = dateGroups.length;
+  // Calculate statistics
   const totalScreenings = selections.length;
-  const conflicts = selections.filter(s => {
-    const group = dateGroups.find(g =>
-      g.screenings.find(sc => sc.screening_id === s.screening_id && sc.conflicts)
-    );
-    return !!group;
-  }).length;
+  const totalConflicts = Array.from(conflictsByScreeningId.values()).reduce(
+    (sum, conflicts) => sum + conflicts.length, 
+    0
+  ) / 2; // Divide by 2 because each conflict is counted twice
 
-    return (
+  const uniqueDates = useMemo(() => {
+    const dates = new Set<string>();
+    selections.forEach(selection => {
+      const date = format(new Date(selection.screening_snapshot.datetime), 'yyyy-MM-dd');
+      dates.add(date);
+    });
+    return dates.size;
+  }, [selections]);
+
+  return (
     <div data-testid="schedule-view" className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
       {/* Header Section */}
       <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 p-8 border-b border-gray-200">
@@ -217,7 +188,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
             </h2>
             <div className="flex flex-wrap gap-4 text-sm">
               <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm">
-                <div className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
+                <div className="w-2.5 h-2.5 rounded-full bg-primary" />
                 <span className="text-gray-700 font-semibold">
                   {totalScreenings} {isZh ? '場次' : 'screenings'}
                 </span>
@@ -225,49 +196,30 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
               <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm">
                 <div className="w-2.5 h-2.5 rounded-full bg-secondary" />
                 <span className="text-gray-700 font-semibold">
-                  {totalDays} {isZh ? '天' : 'days'}
+                  {uniqueDates} {isZh ? '天' : 'days'}
                 </span>
               </div>
-              {conflicts > 0 && (
+              {totalConflicts > 0 && (
                 <div className="flex items-center gap-2 px-4 py-2 bg-destructive/10 rounded-full shadow-sm border border-destructive/20">
-                  <div className="w-2.5 h-2.5 rounded-full bg-destructive animate-pulse" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-destructive" />
                   <span className="text-destructive font-bold">
-                    ⚠️ {conflicts} {isZh ? '個衝突' : 'conflicts'}
+                    ⚠️ {totalConflicts} {isZh ? '個衝突' : 'conflicts'}
                   </span>
                 </div>
               )}
             </div>
           </div>
-
-          <button
-            data-testid="export-btn"
-            onClick={onExport}
-            aria-label={isZh ? '匯出我的觀影時間表為 Markdown' : 'Export my schedule as Markdown'}
-            className="group relative min-h-[56px] px-10 py-4 bg-gradient-to-br from-secondary via-secondary to-accent text-white rounded-2xl font-bold shadow-xl hover:shadow-2xl hover:scale-105 focus:ring-4 focus:ring-secondary/50 focus:ring-offset-2 transition-all duration-300 overflow-hidden flex items-center gap-3 whitespace-nowrap"
-          >
-            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-            <svg className="w-6 h-6 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span className="relative z-10 text-lg">{isZh ? '匯出 Markdown' : 'Export'}</span>
-          </button>
         </div>
       </div>
 
-      {/* Date Groups */}
-      <div className="p-8 space-y-8">
-        {dateGroups.map((group, index) => (
-          <div key={group.date}>
-            <DateGroupComponent
-              date={group.date}
-              screenings={group.screenings}
-              onRemoveScreening={onRemoveScreening}
-            />
-            {index < dateGroups.length - 1 && (
-              <div className="mt-8 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-            )}
-          </div>
-        ))}
+      {/* Calendar View */}
+      <div className="p-8">
+        <CalendarView
+          selections={selections}
+          conflicts={conflictsByScreeningId}
+          onRemove={onRemove}
+          isZh={isZh}
+        />
       </div>
     </div>
   );

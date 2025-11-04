@@ -14,7 +14,7 @@ interface Film {
   year: number;
   runtime: number;
   genre: string[];
-  synopsis: string;
+  synopsis?: string;
   venue: string;
   screenings: Array<{ id: string; date: string; time: string; venue: string }>;
   language: string;

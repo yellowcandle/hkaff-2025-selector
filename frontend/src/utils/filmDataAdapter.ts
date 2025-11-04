@@ -13,7 +13,7 @@ export interface FigmaFilm {
   year: number;
   runtime: number;
   genre: string[];
-  synopsis: string;
+  synopsis?: string;
   venue: string;
   screenings: Array<{ id: string; date: string; time: string; venue: string }>;
   language: string;
@@ -46,8 +46,8 @@ export function convertToFigmaFilm(
   return {
     id: film.id,
     title: language === 'tc' ? film.title_tc : film.title_en,
-    director: film.director,
-    country: film.country,
+    director: film.director || '',
+    country: film.country || '',
     year: year,
     runtime: film.runtime_minutes,
     genre: category ? [language === 'tc' ? category.name_tc : category.name_en] : [],
@@ -74,7 +74,7 @@ export function convertToFigmaFilm(
     language: filmScreenings[0]?.language || '',
     subtitles: 'English', // Could be from data if available
     rating: undefined, // Could be from data if available
-    image: film.poster_url
+    image: film.poster_url || ''
   };
 }
 

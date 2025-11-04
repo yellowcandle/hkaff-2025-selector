@@ -7,14 +7,14 @@ export interface Film {
   title_tc: string;
   title_en: string;
   category_id: string;
-  synopsis_tc: string;
-  synopsis_en: string;
+  synopsis_tc?: string;
+  synopsis_en?: string;
   runtime_minutes: number;
-  director: string;
-  country: string;
-  poster_url: string;
-  detail_url_tc: string;
-  detail_url_en: string;
+  director?: string;
+  country?: string;
+  poster_url?: string;
+  detail_url_tc?: string;
+  detail_url_en?: string;
 }
 
 export interface Category {
@@ -68,4 +68,10 @@ export interface ConflictInfo {
 export interface DateGroup {
   date: string;
   screenings: (Selection & { conflicts?: ConflictInfo[] })[];
+}
+
+export interface FilmWithScreenings {
+  film: Film;
+  screenings: Screening[];
+  category: Category;
 }

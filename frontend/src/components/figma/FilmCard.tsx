@@ -44,7 +44,7 @@ export function FilmCard({ film, isSelected, onToggleSelection, onViewDetails }:
 
   return (
     <Card 
-      className={`overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col group cursor-pointer w-full h-full ${
+      className={`overflow-hidden hover:shadow-lg transition-shadow duration-150 flex flex-col group cursor-pointer w-full h-full ${
         isSelected 
           ? 'ring-2 ring-primary/20' 
           : ''
@@ -60,7 +60,7 @@ export function FilmCard({ film, isSelected, onToggleSelection, onViewDetails }:
       }}
       aria-label={`${isSelected ? 'Remove' : 'Add'} ${film.title} to selection`}
     >
-      <div className="relative aspect-[2/3] overflow-hidden bg-gray-100 group-hover:scale-[1.02] transition-transform duration-300">
+      <div className="relative aspect-[2/3] overflow-hidden bg-gray-100 group-hover:scale-[1.01] transition-transform duration-150">
         <ImageWithFallback
           src={film.image}
           alt={film.title}
@@ -123,7 +123,11 @@ export function FilmCard({ film, isSelected, onToggleSelection, onViewDetails }:
           <Button
             variant="outline"
             size="sm"
-            onClick={onViewDetails}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              onViewDetails();
+            }}
             className="flex-1"
           >
             <Info className="w-4 h-4 mr-1" />
@@ -134,6 +138,7 @@ export function FilmCard({ film, isSelected, onToggleSelection, onViewDetails }:
             size="sm"
             onClick={(e) => {
               e.stopPropagation();
+              e.preventDefault();
               onToggleSelection();
             }}
             className="flex-1"

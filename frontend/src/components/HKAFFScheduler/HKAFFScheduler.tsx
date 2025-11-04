@@ -1,11 +1,14 @@
 import React, { useState, useMemo } from 'react';
-import { Calendar, Clock, MapPin, Film as FilmIcon, Heart, X } from 'lucide-react';
+import { Calendar, Film as FilmIcon, X, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 
-import type { Film, Category, Venue, Screening } from '../../types';
+import type { Film, Category, Venue, Screening, FilmWithScreenings, Selection } from '../../types';
+import type { UserSelection } from '../../../../specs/001-given-this-film/contracts/service-interfaces';
 import { storageService } from '../../services/storageService';
 import { useToast } from '../Toast/Toast';
+import { FilmCard } from './FilmCard';
+import { ScheduleView } from '../ScheduleView/ScheduleView';
 
 interface HKAFFSchedulerProps {
   films: Film[];
@@ -100,15 +103,52 @@ export default function HKAFFScheduler({ films, screenings, venues, categories, 
     return [...new Set(screeningsWithDetails.map(s => s.date))].sort();
   }, [screeningsWithDetails]);
 
-  // Filter screenings
-  const filteredScreenings = useMemo(() => {
-    return screeningsWithDetails.filter(screening => {
-      if (filterCategory !== 'all' && screening.category !== filterCategory) return false;
-      if (filterVenue !== 'all' && screening.venue !== filterVenue) return false;
-      if (filterDate !== 'all' && screening.date !== filterDate) return false;
-      return true;
+  // Group screenings by film
+  const filmsWithScreenings = useMemo((): FilmWithScreenings[] => {
+    const filmMap = new Map<string, FilmWithScreenings>();
+    
+    screeningsWithDetails.forEach(screening => {
+      const filmId = screening.film.id;
+      
+      if (!filmMap.has(filmId)) {
+        const category = categories.find(c => c.id === screening.film.category_id)!;
+        filmMap.set(filmId, {
+          film: screening.film,
+          screenings: [],
+          category
+        });
+      }
+      
+      filmMap.get(filmId)!.screenings.push(screening.screening);
     });
-  }, [screeningsWithDetails, filterCategory, filterVenue, filterDate]);
+    
+    return Array.from(filmMap.values());
+  }, [screeningsWithDetails, categories]);
+
+  // Filter films based on their screenings
+  const filteredFilms = useMemo(() => {
+    return filmsWithScreenings.filter(filmWithScreenings => {
+      // Filter by category
+      if (filterCategory !== 'all') {
+        const categoryMatch = isZh 
+          ? filmWithScreenings.category.name_tc === filterCategory
+          : filmWithScreenings.category.name_en === filterCategory;
+        if (!categoryMatch) return false;
+      }
+      
+      // Check if film has at least one screening matching venue/date filters
+      const hasMatchingScreening = filmWithScreenings.screenings.some(screening => {
+        const screeningData = screeningsWithDetails.find(s => s.id === screening.id);
+        if (!screeningData) return false;
+        
+        if (filterVenue !== 'all' && screeningData.venue !== filterVenue) return false;
+        if (filterDate !== 'all' && screeningData.date !== filterDate) return false;
+        return true;
+      });
+      
+      return hasMatchingScreening;
+    });
+  }, [filmsWithScreenings, filterCategory, filterVenue, filterDate, screeningsWithDetails, isZh]);
 
   // Load existing selections from storage
   React.useEffect(() => {
@@ -153,25 +193,59 @@ export default function HKAFFScheduler({ films, screenings, venues, categories, 
     }
   };
 
-  // Get my schedule
-  const mySchedule = useMemo(() => {
-    const selected = screeningsWithDetails.filter(s => selectedScreenings.includes(s.id));
-    return selected.sort((a, b) => {
-      const dateCompare = a.date.localeCompare(b.date);
-      if (dateCompare !== 0) return dateCompare;
-      return a.time.localeCompare(b.time);
-    });
-  }, [screeningsWithDetails, selectedScreenings]);
-
-  // Format date
+  // Format date helper
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return format(date, 'MMM d, EEE');
   };
 
-  // Format time
+  // Format time helper
   const formatTime = (time: string) => {
     return time.slice(0, 5);
+  };
+
+  // Convert UserSelection[] to Selection[] for ScheduleView
+  const convertToSelections = (userSelections: UserSelection[]): Selection[] => {
+    return userSelections.map(us => {
+      const film = films.find(f => f.id === us.film_snapshot.id);
+      const screening = screenings.find(s => s.id === us.screening_snapshot.id);
+      const venue = venues.find(v => 
+        v.name_tc === us.screening_snapshot.venue_name_tc && 
+        v.name_en === us.screening_snapshot.venue_name_en
+      );
+
+      return {
+        screening_id: us.screening_id,
+        added_at: us.added_at,
+        film_snapshot: film || {
+          id: us.film_snapshot.id,
+          title_tc: us.film_snapshot.title_tc,
+          title_en: us.film_snapshot.title_en,
+          category_id: '',
+          synopsis_tc: '',
+          synopsis_en: '',
+          runtime_minutes: us.screening_snapshot.duration_minutes,
+          director: '',
+          country: '',
+          poster_url: us.film_snapshot.poster_url || '',
+          detail_url_tc: '',
+          detail_url_en: ''
+        },
+        screening_snapshot: screening || {
+          id: us.screening_snapshot.id,
+          film_id: us.film_snapshot.id,
+          venue_id: venue?.id || '',
+          datetime: us.screening_snapshot.datetime,
+          duration_minutes: us.screening_snapshot.duration_minutes,
+          language: ''
+        },
+        venue_snapshot: venue || {
+          id: '',
+          name_tc: us.screening_snapshot.venue_name_tc,
+          name_en: us.screening_snapshot.venue_name_en
+        }
+      };
+    });
   };
 
   return (
@@ -191,7 +265,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories, 
             <div className="flex gap-2">
               <button
                 onClick={() => onNavigateToCatalogue ? onNavigateToCatalogue() : setView('browse')}
-                className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                className={`px-6 py-2 rounded-lg font-medium transition-colors duration-150 ${
                   view === 'browse'
                     ? 'bg-red-600 text-white shadow-md'
                     : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
@@ -202,7 +276,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories, 
               </button>
               <button
                 onClick={() => setView('schedule')}
-                className={`px-6 py-2 rounded-lg font-medium transition-all relative ${
+                className={`px-6 py-2 rounded-lg font-medium transition-colors duration-150 relative ${
                   view === 'schedule'
                     ? 'bg-red-600 text-white shadow-md'
                     : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
@@ -278,187 +352,65 @@ export default function HKAFFScheduler({ films, screenings, venues, categories, 
               </div>
             </div>
 
-            {/* Screenings Grid */}
+            {/* Films Grid */}
+            <div className="mb-4 text-gray-400 text-sm">
+              {isZh ? `顯示 ${filteredFilms.length} 部電影` : `Showing ${filteredFilms.length} of ${films.length} films`}
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredScreenings.map(screening => {
-                const isSelected = selectedScreenings.includes(screening.id);
-                return (
-                  <div
-                    key={screening.id}
-                    className={`bg-gray-900 rounded-lg overflow-hidden border-2 transition-all hover:shadow-lg cursor-pointer ${
-                      isSelected ? 'border-red-500 shadow-md' : 'border-gray-700'
-                    }`}
-                    onClick={() => setSelectedFilm(screening)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setSelectedFilm(screening);
-                      }
-                    }}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`Select ${screening.film.title_en}`}
-                  >
-                    {screening.film.poster_url && (
-                      <div className="h-48 overflow-hidden bg-gray-800">
-                        <img
-                          src={screening.film.poster_url}
-                          alt={screening.title}
-                          className="w-full h-full object-cover"
-                          onError={(e) => (e.currentTarget.style.display = 'none')}
-                        />
-                      </div>
-                    )}
-                    <div className="p-6">
-                      <div className="flex items-start justify-between mb-3">
-                        <span className="text-xs font-semibold px-3 py-1 bg-blue-100 text-blue-800 rounded-full">
-                          {screening.category}
-                        </span>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleScreening(screening.id);
-                          }}
-                          className={`transition-all ${
-                            isSelected ? 'text-blue-600 scale-110' : 'text-gray-400 hover:text-blue-500'
-                          }`}
-                        >
-                          <Heart className={`w-6 h-6 ${isSelected ? 'fill-current' : ''}`} />
-                        </button>
-                      </div>
-                      
-                      <h3 className="text-xl font-bold mb-2 text-white">{screening.title}</h3>
-                      <p className="text-sm text-gray-400 mb-4 line-clamp-2">{screening.description}</p>
-                      
-                      <div className="space-y-2 text-sm">
-                        <div className="flex items-center text-gray-300">
-                          <Calendar className="w-4 h-4 mr-2 text-red-500" />
-                          {formatDate(screening.date)} at {formatTime(screening.time)}
-                        </div>
-                        <div className="flex items-center text-gray-300">
-                          <MapPin className="w-4 h-4 mr-2 text-red-500" />
-                          {screening.venue}
-                        </div>
-                        <div className="flex items-center text-gray-300">
-                          <Clock className="w-4 h-4 mr-2 text-red-500" />
-                          {screening.duration} min{screening.language && ` • ${screening.language}`}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              {filteredFilms.map(filmWithScreenings => (
+                <FilmCard
+                  key={filmWithScreenings.film.id}
+                  film={filmWithScreenings}
+                  selectedScreenings={selectedScreenings}
+                  existingSelections={storageService.getSelections()}
+                  onToggleScreening={toggleScreening}
+                  onShowDetails={(filmId) => {
+                    const screening = screeningsWithDetails.find(s => s.film.id === filmId);
+                    if (screening) setSelectedFilm(screening);
+                  }}
+                  getVenueById={(venueId) => venues.find(v => v.id === venueId)}
+                />
+              ))}
             </div>
 
-            {filteredScreenings.length === 0 && (
+            {filteredFilms.length === 0 && (
               <div className="text-center py-16 bg-gray-900 rounded-lg shadow-md border border-gray-800">
                 <FilmIcon className="w-16 h-16 mx-auto text-gray-500 mb-4" />
                 <p className="text-xl text-gray-400">
-                  {isZh ? '沒有符合篩選條件的場次' : 'No screenings match your filters'}
+                  {isZh ? '沒有符合篩選條件的電影' : 'No films match your filters'}
                 </p>
               </div>
             )}
           </>
         ) : (
-          <>
-            {/* My Schedule View */}
-            <div className="bg-gray-900 rounded-lg shadow-md p-6 border border-gray-800">
-              <h2 className="text-2xl font-bold mb-6 text-white">
-                {isZh ? `我的電影節時間表 (${mySchedule.length} 場)` : `My Festival Schedule (${mySchedule.length} screenings)`}
-              </h2>
-
-              {mySchedule.length === 0 ? (
-                <div className="text-center py-16">
-                  <Heart className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                  <p className="text-xl text-gray-400 mb-2">
-                    {isZh ? '尚未選擇任何場次' : 'No screenings selected yet'}
-                  </p>
-                  <p className="text-gray-400">
-                    {isZh ? '瀏覽電影並加入您的時間表！' : 'Browse films and add them to your schedule!'}
-                  </p>
-                  <button
-                    onClick={() => setView('browse')}
-                    className="mt-6 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
-                  >
-                    {isZh ? '瀏覽電影' : 'Browse Films'}
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {uniqueDates.map(date => {
-                    const screeningsOnDate = mySchedule.filter(s => s.date === date);
-                    if (screeningsOnDate.length === 0) return null;
-
-                    return (
-                      <div key={date} className="mb-6">
-                        <h3 className="text-lg font-semibold mb-3 text-blue-700">
-                          {formatDate(date)}
-                        </h3>
-                        <div className="space-y-3">
-                          {screeningsOnDate.map(screening => (
-                            <div
-                              key={screening.id}
-                              className="bg-gray-800 rounded-lg p-4 border border-gray-700 hover:border-red-500 transition-all"
-                            >
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-3 mb-2">
-                                    <span className="text-red-400 font-mono font-bold">
-                                      {formatTime(screening.time)}
-                                    </span>
-                                    <h4 className="text-lg font-semibold text-white">
-                                      {screening.title}
-                                    </h4>
-                                  </div>
-                                  <div className="flex flex-wrap gap-4 text-sm text-gray-400">
-                                    <span className="flex items-center">
-                                      <MapPin className="w-3 h-3 mr-1" />
-                                      {screening.venue}
-                                    </span>
-                                    <span className="flex items-center">
-                                      <Clock className="w-3 h-3 mr-1" />
-                                      {screening.duration} min
-                                    </span>
-                                    <span>{screening.category}</span>
-                                  </div>
-                                </div>
-                                <button
-                                  onClick={() => toggleScreening(screening.id)}
-                                  className="text-gray-400 hover:text-red-400 transition-colors ml-4"
-                                >
-                                  <X className="w-5 h-5" />
-                                </button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </>
+          <ScheduleView
+            selections={convertToSelections(storageService.getSelections())}
+            onRemove={toggleScreening}
+            onNavigateToCatalogue={() => setView('browse')}
+          />
         )}
       </div>
 
       {/* Film Detail Modal */}
       {selectedFilm && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-          onClick={() => setSelectedFilm(null)}
-          onKeyDown={(e) => {
-            if (e.key === 'Escape') {
-              setSelectedFilm(null);
-            }
-          }}
-          role="button"
-          tabIndex={-1}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="film-detail-title"
         >
+          <button
+            className="fixed inset-0 bg-black bg-opacity-50"
+            onClick={() => setSelectedFilm(null)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                setSelectedFilm(null);
+              }
+            }}
+            aria-label={isZh ? '關閉' : 'Close'}
+          />
           <div
-            className="bg-gray-900 rounded-2xl max-w-2xl w-full p-8 shadow-2xl max-h-[90vh] overflow-y-auto border border-gray-700"
-
-
+            className="relative bg-gray-900 rounded-2xl max-w-2xl w-full p-8 shadow-2xl max-h-[90vh] overflow-y-auto border border-gray-700"
           >
             {selectedFilm.film.poster_url && (
               <div className="mb-6 rounded-lg overflow-hidden">
@@ -476,7 +428,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories, 
                 <span className="text-xs font-semibold px-3 py-1 bg-blue-100 text-blue-800 rounded-full">
                   {selectedFilm.category}
                 </span>
-                <h2 className="text-3xl font-bold mt-3 text-white">{selectedFilm.title}</h2>
+                <h2 id="film-detail-title" className="text-3xl font-bold mt-3 text-white">{selectedFilm.title}</h2>
                 {selectedFilm.director && (
                   <p className="text-lg text-gray-400 mt-1">{selectedFilm.director}</p>
                 )}
@@ -526,7 +478,7 @@ export default function HKAFFScheduler({ films, screenings, venues, categories, 
                 toggleScreening(selectedFilm.id);
                 setSelectedFilm(null);
               }}
-              className={`w-full py-4 rounded-lg font-semibold text-lg transition-all ${
+              className={`w-full py-4 rounded-lg font-semibold text-lg transition-colors duration-150 ${
                 selectedScreenings.includes(selectedFilm.id)
                   ? 'bg-red-600 hover:bg-red-700 text-white shadow-md'
                   : 'bg-red-600 hover:bg-red-700 text-white shadow-md'
